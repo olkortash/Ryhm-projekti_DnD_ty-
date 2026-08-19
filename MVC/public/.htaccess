@@ -1,0 +1,18 @@
+# This file configures the Apache web server such that:
+#  - index.php is served
+#  - any other request is rerouted to index.php. 
+#AddType application/x-httpd-php5 .php
+AddType  application/x-httpd-php         .php
+RewriteEngine On
+RewriteRule ^/index\.php$ - [L,NC]
+
+RewriteRule . index.php [L]
+
+
+# php -- BEGIN cPanel-generated handler, do not edit
+# Set the “ea-php72” package as the default “PHP” programming language.
+#<IfModule mime_module>
+#  AddHandler application/x-httpd-ea-php72 .php .php7 .phtml
+#  DirectoryIndex index.html index.php
+#</IfModule>
+# php -- END cPanel-generated handler, do not edit
