@@ -1,59 +1,63 @@
 <?php
+
 session_start();
-set_include_path(dirname(__FILE__) . '/../');
 
-$route = explode("?", $_SERVER["REQUEST_URI"])[0];
-$method = strtolower($_SERVER["REQUEST_METHOD"]);
+require_once __DIR__ . '/../database/connection.php';
 
-require_once 'libraries/auth.php';
-require_once 'controllers/userManagement.php';
-require_once 'controllers/characterManagement.php';
+$pdo = connectDB();
 
-switch($route) {
-    case "/":
-        viewArticlesController();
-    break;
+$action = $_GET['action'] ?? 'landing';
 
-    case "/register":
-        registerController();
-    break;
-
-    case "/login":
-        loginController();
-    break;
-
-    case "/logout":
-        logoutController();
-    break;
-
-    case "/add_character":
-      if(isLoggedIn()){
-        addCharacterController();
-      } else {
-        loginController();
-      }
-    break;
-
-    case "/delete_character":
-      if(isLoggedIn()){
-        deleteCharacterController();
-      } else {
-        loginController();
-      }
-    break;
-
-    case "/update_character":
-      if(isLoggedIn()){
-        if($method == "get"){
-          editCharacterController();  
-        } else {
-          updateCharacterController();
-        }
-      } else {
-        loginController();
-      }
-    break;
-
+switch ($action) {
+    case 'landing':
+        require_once __DIR__ . '/../controllers/authController.php';
+        (new AuthController($pdo))->landing();
+        break;
+    case 'login':
+        require_once __DIR__ . '/../controllers/authController.php';
+        (new AuthController($pdo))->login();
+        break;
+    case 'register':
+        require_once __DIR__ . '/../controllers/authController.php';
+        (new AuthController($pdo))->register();
+        break;
+    case 'logout':
+        require_once __DIR__ . '/../controllers/authController.php';
+        (new AuthController($pdo))->logout();
+        break;
+    case 'dashboard':
+        require_once __DIR__ . '/../controllers/dashboardController.php';
+        (new DashboardController($pdo))->index();
+        break;
+    case 'character_create':
+        require_once __DIR__ . '/../controllers/characterController.php';
+        (new CharacterController($pdo))->create();
+        break;
+    case 'character_view':
+        require_once __DIR__ . '/../controllers/characterController.php';
+        (new CharacterController($pdo))->view();
+        break;
+    case 'character_update_hp':
+        require_once __DIR__ . '/../controllers/characterController.php';
+        (new CharacterController($pdo))->updateHp();
+        break;
+    case 'character_join_campaign':
+        require_once __DIR__ . '/../controllers/characterController.php';
+        (new CharacterController($pdo))->joinCampaign();
+        break;
+    case 'campaign_create':
+        require_once __DIR__ . '/../controllers/campaignController.php';
+        (new CampaignController($pdo))->create();
+        break;
+    case 'campaign_view':
+        require_once __DIR__ . '/../controllers/campaignController.php';
+        (new CampaignController($pdo))->view();
+        break;
+    case 'campaign_update':
+        require_once __DIR__ . '/../controllers/campaignController.php';
+        (new CampaignController($pdo))->update();
+        break;
     default:
-      echo "404";
-  }
+        echo "404 - Sivua ei löytynyt";
+        break;
+}
