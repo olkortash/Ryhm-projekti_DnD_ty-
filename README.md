@@ -1,4 +1,4 @@
-# Roolipeliprojekti
+# Sivuston rakenne
 
 index.php = etusivu/dashboard
 partials/header.php = sivun yläosa
