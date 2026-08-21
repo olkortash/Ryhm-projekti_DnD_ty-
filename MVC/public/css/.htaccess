@@ -1,0 +1,6 @@
+# This file configures the Apache web server so that all files in this directory are accessible
+
+RewriteEngine Off
+Allow From All
+Satisfy Any
+Options -Indexes
