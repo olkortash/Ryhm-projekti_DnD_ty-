@@ -2,107 +2,46 @@
 
 declare(strict_types=1);
 
-/*
- * MASTERS - Campaign Dashboard
- *
- * Yhteiset yhteydet:
- * - database
- * - session
- * - authentication
- * - helper functions
- */
-
 require_once __DIR__ . '/includes/bootstrap.php';
+
+require_login();
 
 $pageTitle = 'Campaign Dashboard';
 $activeNav = 'campaigns';
 
-// Ota käyttöön, kun dashboard vaatii kirjautumisen:
-// require_login();
+$userId = current_user_id();
 
 
 // -----------------------------------------------------------------------------
-// Load campaigns
+// Load current user's campaigns
 // -----------------------------------------------------------------------------
 
-$campaigns = [];
+$stmt = $pdo->prepare("
+    SELECT
+        c.campaign_id,
+        c.campaign_name,
+        c.description,
+        c.invite_code,
+        c.created_at,
+        COUNT(ch.character_id) AS character_count
+    FROM campaigns c
+    LEFT JOIN characters ch
+        ON ch.campaign_id = c.campaign_id
+    WHERE c.gm_id = :gm_id
+    GROUP BY
+        c.campaign_id,
+        c.campaign_name,
+        c.description,
+        c.invite_code,
+        c.created_at
+    ORDER BY c.created_at DESC
+");
 
-if (is_logged_in()) {
-    $stmt = $pdo->prepare("
-        SELECT
-            c.id,
-            c.title,
-            c.status,
-            c.gm_note,
-            c.next_session_at,
-            c.cover_image,
+$stmt->execute([
+    'gm_id' => $userId
+]);
 
-            (
-                SELECT COUNT(*)
-                FROM campaign_players cp
-                WHERE cp.campaign_id = c.id
-                AND cp.status = 'accepted'
-            ) AS players,
-
-            (
-                SELECT COUNT(*)
-                FROM campaign_sessions cs
-                WHERE cs.campaign_id = c.id
-            ) AS sessions,
-
-            (
-                SELECT COUNT(*)
-                FROM campaign_players cp
-                WHERE cp.campaign_id = c.id
-                AND cp.status = 'pending'
-            ) AS pending
-
-        FROM campaigns c
-        WHERE c.owner_id = :owner_id
-        ORDER BY c.updated_at DESC
-    ");
-
-    $stmt->execute([
-        'owner_id' => current_user_id()
-    ]);
-
-    $campaigns = $stmt->fetchAll();
-}
-
-
-// -----------------------------------------------------------------------------
-// Temporary development data
-// Poista tämä, kun tietokanta on käytössä.
-// -----------------------------------------------------------------------------
-
-if (!$campaigns) {
-    $campaigns = [
-        [
-            'id' => 1,
-            'status' => 'ACTIVE',
-            'title' => 'Echoes of the Sunken City',
-            'players' => 4,
-            'sessions' => 12,
-            'next_session' => 'MAY 24, 2026',
-            'pending' => 2,
-            'gm_note' => 'Players have reached the Drowned Market. Introduce Selara the smuggler next session.',
-            'tags' => ['Nautical', 'Mystery', 'Dungeon Crawl'],
-            'art_class' => 'art-stars'
-        ],
-        [
-            'id' => 2,
-            'status' => 'PLANNING',
-            'title' => 'The Verdant Heresy',
-            'players' => 5,
-            'sessions' => 0,
-            'next_session' => 'JUN 7, 2026',
-            'pending' => 5,
-            'gm_note' => "Session zero scheduled. Need to finalize the druid circle's motivations and the inciting incident.",
-            'tags' => ['Political Intrigue', 'Nature', 'High Fantasy'],
-            'art_class' => 'art-forest'
-        ]
-    ];
-}
+$campaigns = $stmt->fetchAll();
 
 
 require __DIR__ . '/partials/header.php';
@@ -113,10 +52,12 @@ require __DIR__ . '/partials/header.php';
 
     <!-- Hero -->
     <section class="hero">
+
         <div class="hero-glow glow-one"></div>
         <div class="hero-glow glow-two"></div>
 
         <div class="hero-content">
+
             <p class="eyebrow">THE GAMEMASTER'S SANCTUM</p>
 
             <h1>
@@ -131,15 +72,26 @@ require __DIR__ . '/partials/header.php';
             </p>
 
             <div class="hero-actions">
-                <a class="btn btn-primary" href="/campaigns/create.php">
-                    Start a campaign <span aria-hidden="true">→</span>
+
+                <a
+                    class="btn btn-primary"
+                    href="/campaigns/create.php"
+                >
+                    Start a campaign
+                    <span aria-hidden="true">→</span>
                 </a>
 
-                <a class="btn btn-secondary" href="/resources/handbook.php">
-                    GM handbook
+                <a
+                    class="btn btn-secondary"
+                    href="/resources/"
+                >
+                    GM resources
                 </a>
+
             </div>
+
         </div>
+
     </section>
 
 
@@ -147,192 +99,238 @@ require __DIR__ . '/partials/header.php';
     <section class="dashboard" id="campaigns">
 
         <div class="section-head">
+
             <div>
                 <p class="eyebrow">YOUR WORKSPACE</p>
                 <h2>Your campaigns</h2>
             </div>
 
-            <a class="btn btn-primary compact" href="/campaigns/create.php">
+            <a
+                class="btn btn-primary compact"
+                href="/campaigns/create.php"
+            >
                 <span aria-hidden="true">+</span>
                 New campaign
             </a>
+
         </div>
 
 
-        <div class="campaign-list">
+        <?php if (!$campaigns): ?>
 
-            <?php foreach ($campaigns as $campaign): ?>
+            <div class="empty-state">
 
-                <?php
-                $status = strtolower($campaign['status'] ?? 'planning');
-                $statusClass = $status === 'active' ? 'active' : 'planning';
-                $artClass = $campaign['art_class']
-                    ?? ($status === 'active' ? 'art-stars' : 'art-forest');
-                ?>
+                <h3>No campaigns yet</h3>
 
-                <article class="campaign-card">
+                <p>
+                    Create your first campaign and start building your world.
+                </p>
 
-                    <div class="campaign-art <?= e($artClass) ?>">
+                <a
+                    class="btn btn-primary"
+                    href="/campaigns/create.php"
+                >
+                    Create campaign
+                </a>
 
-                        <span class="status <?= e($statusClass) ?>">
-                            <?= e(strtoupper($status)) ?>
-                        </span>
+            </div>
 
-                        <div class="art-symbol" aria-hidden="true">
+        <?php else: ?>
 
-                            <?php if ($artClass === 'art-stars'): ?>
+            <div class="campaign-list">
 
-                                <span class="moon"></span>
-                                <span class="silhouette"></span>
+                <?php foreach ($campaigns as $campaign): ?>
 
-                            <?php else: ?>
+                    <article class="campaign-card">
 
-                                <span class="leaf leaf-a"></span>
-                                <span class="leaf leaf-b"></span>
-                                <span class="leaf leaf-c"></span>
+                        <div class="campaign-art art-stars">
 
-                            <?php endif; ?>
-
-                        </div>
-                    </div>
-
-
-                    <div class="campaign-body">
-
-                        <div class="campaign-top">
-
-                            <div>
-                                <p class="campaign-kicker">CAMPAIGN</p>
-                                <h3><?= e($campaign['title']) ?></h3>
-                            </div>
-
-                            <span class="pending">
-                                <span aria-hidden="true">◷</span>
-                                <?= (int) ($campaign['pending'] ?? 0) ?> pending
+                            <span class="status active">
+                                CAMPAIGN
                             </span>
 
-                        </div>
-
-
-                        <div class="stats">
-
-                            <div class="stat">
-                                <span class="stat-label">
-                                    <span>♙</span> Players
-                                </span>
-                                <strong><?= (int) ($campaign['players'] ?? 0) ?></strong>
-                            </div>
-
-                            <div class="stat">
-                                <span class="stat-label">
-                                    <span>◷</span> Sessions
-                                </span>
-                                <strong><?= (int) ($campaign['sessions'] ?? 0) ?></strong>
-                            </div>
-
-                            <div class="stat">
-                                <span class="stat-label">
-                                    <span>▣</span> Next Session
-                                </span>
-                                <strong><?= e($campaign['next_session'] ?? '—') ?></strong>
+                            <div
+                                class="art-symbol"
+                                aria-hidden="true"
+                            >
+                                <span class="moon"></span>
+                                <span class="silhouette"></span>
                             </div>
 
                         </div>
 
 
-                        <div class="gm-note">
-                            <span class="note-label">GM NOTE</span>
+                        <div class="campaign-body">
 
-                            <p>
-                                <?= e($campaign['gm_note'] ?? 'No GM note yet.') ?>
-                            </p>
-                        </div>
+                            <div class="campaign-top">
+
+                                <div>
+
+                                    <p class="campaign-kicker">
+                                        CAMPAIGN
+                                    </p>
+
+                                    <h3>
+                                        <?= e($campaign['campaign_name']) ?>
+                                    </h3>
+
+                                </div>
+
+                            </div>
 
 
-                        <div class="campaign-footer">
+                            <div class="stats">
 
-                            <div class="tags">
+                                <div class="stat">
 
-                                <?php foreach ($campaign['tags'] ?? [] as $tag): ?>
-
-                                    <span class="tag">
-                                        <?= e($tag) ?>
+                                    <span class="stat-label">
+                                        <span>♙</span>
+                                        Characters
                                     </span>
 
-                                <?php endforeach; ?>
+                                    <strong>
+                                        <?= (int) $campaign['character_count'] ?>
+                                    </strong>
+
+                                </div>
+
+
+                                <div class="stat">
+
+                                    <span class="stat-label">
+                                        <span>▣</span>
+                                        Created
+                                    </span>
+
+                                    <strong>
+                                        <?= e(
+                                            date(
+                                                'M j, Y',
+                                                strtotime($campaign['created_at'])
+                                            )
+                                        ) ?>
+                                    </strong>
+
+                                </div>
+
+
+                                <div class="stat">
+
+                                    <span class="stat-label">
+                                        <span>⌁</span>
+                                        Invite code
+                                    </span>
+
+                                    <strong>
+                                        <?= e($campaign['invite_code']) ?>
+                                    </strong>
+
+                                </div>
 
                             </div>
 
 
-                            <!-- TODO: Vaihda tarvittaessa oman projektin URL:ksi. -->
-                            <a
-                                class="manage-link"
-                                href="/campaigns/manage.php?id=<?= (int) $campaign['id'] ?>"
-                            >
-                                Manage <span aria-hidden="true">→</span>
-                            </a>
+                            <div class="gm-note">
+
+                                <span class="note-label">
+                                    DESCRIPTION
+                                </span>
+
+                                <p>
+                                    <?= e(
+                                        $campaign['description']
+                                        ?: 'No description yet.'
+                                    ) ?>
+                                </p>
+
+                            </div>
+
+
+                            <div class="campaign-footer">
+
+                                <span class="tag">
+                                    <?= (int) $campaign['character_count'] ?>
+                                    characters
+                                </span>
+
+
+                                <a
+                                    class="manage-link"
+                                    href="/campaigns/manage.php?id=<?= (int) $campaign['campaign_id'] ?>"
+                                >
+                                    Manage
+                                    <span aria-hidden="true">→</span>
+                                </a>
+
+                            </div>
 
                         </div>
 
-                    </div>
+                    </article>
 
-                </article>
+                <?php endforeach; ?>
 
-            <?php endforeach; ?>
+            </div>
 
-        </div>
+        <?php endif; ?>
 
     </section>
 
 
-    <!-- Main feature links -->
+    <!-- Features -->
     <section class="feature-grid">
 
         <div class="feature-card">
+
             <span class="feature-icon">✦</span>
 
-            <h3>Session tools</h3>
+            <h3>Characters</h3>
 
             <p>
-                Prepare encounters, track initiative,
-                and keep important notes close at hand.
+                Create and manage the characters belonging
+                to your campaigns.
             </p>
 
-            <a href="/tools/">
-                Explore tools →
+            <a href="/characters/">
+                Manage characters →
             </a>
+
         </div>
 
 
-        <div class="feature-card" id="resources">
+        <div class="feature-card">
+
             <span class="feature-icon">◈</span>
 
-            <h3>GM resources</h3>
+            <h3>Campaigns</h3>
 
             <p>
-                Keep your campaign references,
-                worldbuilding material, and handbooks organized.
+                Create campaigns, manage their information,
+                and share invite codes with players.
+            </p>
+
+            <a href="/campaigns/">
+                Manage campaigns →
+            </a>
+
+        </div>
+
+
+        <div class="feature-card">
+
+            <span class="feature-icon">⌁</span>
+
+            <h3>Resources</h3>
+
+            <p>
+                Keep your campaign references and
+                worldbuilding material organized.
             </p>
 
             <a href="/resources/">
                 Browse resources →
             </a>
-        </div>
 
-
-        <div class="feature-card">
-            <span class="feature-icon">⌁</span>
-
-            <h3>Player hub</h3>
-
-            <p>
-                Invite players and manage campaign access
-                in one place.
-            </p>
-
-            <a href="/players/">
-                Manage players →
-            </a>
         </div>
 
     </section>
