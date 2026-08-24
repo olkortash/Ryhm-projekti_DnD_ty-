@@ -1,5 +1,5 @@
 <?php
-require_once "database/connection.php"
+require_once "database/connection.php";
 
 function addCharacter($character_name, $character_class_id, $character_race_id, $character_job_id, $level, $hp_max, $player_id){
     $pdo =connectDB();
