@@ -55,10 +55,11 @@ $activeNav = $activeNav ?? '';
 
         <?php else: ?>
 
-            <a href="/auth/login.php" class="text-link">Sign in</a>
+            <a href="/auth/register.php" class="text-link">Register</a>
 
+           <!-- <a href="/auth/login.php" class="text-link">Sign in</a> -->
 
-            <a href="/auth/login.php" class="avatar" aria-label="Sign in">GM</a>
+            <a href="/auth/login.php" class="avatar" aria-label="Sign in">Sign in</a>
 
         <?php endif; ?>
 

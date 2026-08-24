@@ -28,51 +28,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     );
 
 
-    /*
-    |--------------------------------------------------------------------------
-    | TODO:
-    | Muuta users-taulu ja kentät olemassa olevan tietokannan mukaisiksi.
-    |--------------------------------------------------------------------------
-    */
-
     $stmt = $pdo->prepare("
-        SELECT
-            id,
-            password_hash
-        FROM users
-        WHERE email = :email
-        LIMIT 1
-    ");
+    SELECT
+        user_id,
+        username,
+        email,
+        password_hash
+    FROM users
+    WHERE email = :email
+    LIMIT 1
+");
 
+$stmt->execute([
+    'email' => $email
+]);
 
-    $stmt->execute([
-        'email' => $email
-    ]);
+$user = $stmt->fetch();
 
+if (
+    $user &&
+    password_verify($password, $user['password_hash'])
+) {
+    login_user((int) $user['user_id']);
 
-    $user = $stmt->fetch();
+    redirect('/index.php');
+}
 
-
-    if (
-        $user &&
-        password_verify(
-            $password,
-            $user['password_hash']
-        )
-    ) {
-
-        login_user(
-            (int) $user['id']
-        );
-
-
-        redirect('/index.php');
-
+$error = 'Invalid email or password.';
+    
     }
 
-
-    $error = 'Invalid email or password.';
-}
 
 
 $pageTitle = 'Sign in';
@@ -87,16 +72,11 @@ require __DIR__ . '/../partials/header.php';
 
 <main class="form-page">
 
-    <section class="form-card">
+    <section class="hero-content">
 
-        <p class="eyebrow">
-            THE GAMEMASTER'S SANCTUM
-        </p>
+        <p class="eyebrow">THE GAMEMASTER'S SANCTUM</p>
 
-
-        <h1>
-            Sign in
-        </h1>
+        <h1>Sign in</h1>
 
 
         <?php if ($error): ?>
@@ -110,24 +90,15 @@ require __DIR__ . '/../partials/header.php';
         <?php endif; ?>
 
 
-        <form
-            method="post"
-            action=""
-        >
+        <form method="post" action="">
 
             <?= csrf_field() ?>
-
 
             <label>
 
                 Email
-
-                <input
-                    type="email"
-                    name="email"
-                    required
-                    autocomplete="email"
-                >
+            
+                <input type="email" name="email" required autocomplete="email">
 
             </label>
 
@@ -136,20 +107,12 @@ require __DIR__ . '/../partials/header.php';
 
                 Password
 
-                <input
-                    type="password"
-                    name="password"
-                    required
-                    autocomplete="current-password"
-                >
+                <input type="password" name="password" required autocomplete="current-password">
 
             </label>
 
 
-            <button
-                type="submit"
-                class="btn btn-primary"
-            >
+            <button type="submit" class="btn btn-primary">
                 Sign in
             </button>
 
