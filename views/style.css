@@ -738,3 +738,245 @@ a {
         align-items: flex-start;
     }
 }
+
+/* 
+   ukkojen luonti
+*/
+
+   .dnd-builder-container {
+    width: min(1160px, 89%);
+    margin: 40px auto 70px;
+}
+
+.top-bar {
+    margin-bottom: 30px;
+}
+
+.back-link {
+    color: var(--muted);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    transition: color 0.2s ease;
+}
+
+.back-link:hover {
+    color: var(--gold);
+}
+
+.subtitle {
+    color: var(--gold);
+    font-size: 11px;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    margin-top: 18px;
+}
+
+.page-title {
+    margin: 6px 0 24px;
+    color: var(--cream);
+    font-size: clamp(32px, 4vw, 48px);
+    letter-spacing: -0.02em;
+    text-transform: uppercase;
+}
+
+.wizard-steps {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--line-soft);
+    position: relative;
+}
+
+.wizard-steps .step {
+    color: var(--muted);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+}
+
+.wizard-steps .step.active {
+    color: var(--gold);
+    border-bottom: 2px solid var(--gold);
+    padding-bottom: 12px;
+    margin-bottom: -14px;
+}
+
+.step-count {
+    margin-left: auto;
+    color: var(--purple);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.builder-layout {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 36px;
+    align-items: start;
+}
+
+.section-label {
+    display: block;
+    color: var(--gold);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+}
+
+.dnd-input {
+    width: 100%;
+    height: 48px;
+    padding: 0 16px;
+    background: var(--panel-2);
+    border: 1px solid var(--line-soft);
+    border-radius: 5px;
+    color: var(--cream);
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 15px;
+    margin-bottom: 28px;
+    transition: border-color 0.2s ease;
+}
+
+.dnd-input:focus {
+    outline: none;
+    border-color: var(--gold);
+}
+
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin-bottom: 28px;
+}
+
+.dnd-card {
+    background: linear-gradient(135deg, var(--panel-2), var(--panel));
+    border: 1px solid var(--line-soft);
+    border-radius: 6px;
+    padding: 18px 16px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.dnd-card:hover {
+    border-color: rgba(213, 169, 30, 0.4);
+    background: var(--panel-3);
+    transform: translateY(-2px);
+}
+
+.dnd-card.selected {
+    border-color: var(--gold);
+    background: var(--purple-dark);
+    box-shadow: 0 0 15px rgba(213, 169, 30, 0.15);
+}
+
+.card-title {
+    color: var(--cream);
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.summary-card {
+    background: linear-gradient(135deg, var(--panel-2), var(--panel));
+    border: 1px solid var(--line);
+    border-radius: 7px;
+    padding: 24px;
+    box-shadow: var(--shadow);
+    position: sticky;
+    top: 94px;
+}
+
+.summary-title {
+    margin: 0 0 18px;
+    color: var(--gold);
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+}
+
+.summary-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.summary-icon {
+    width: 44px;
+    height: 44px;
+    display: grid;
+    place-items: center;
+    background: var(--panel-3);
+    border: 1px solid var(--line-soft);
+    border-radius: 50%;
+    font-size: 18px;
+}
+
+.summary-name {
+    color: var(--cream);
+    font-size: 16px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+}
+
+.summary-sub {
+    color: var(--muted);
+    font-size: 12px;
+    margin-top: 2px;
+    font-style: italic;
+}
+
+.submit-btn {
+    width: 100%;
+    min-height: 48px;
+    background: var(--gold);
+    color: #171008;
+    border: 1px solid var(--gold);
+    border-radius: 5px;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-top: 10px;
+}
+
+.submit-btn:hover {
+    background: var(--gold-bright);
+    border-color: var(--gold-bright);
+    transform: translateY(-2px);
+}
+
+@media (max-width: 850px) {
+    .builder-layout {
+        grid-template-columns: 1fr;
+    }
+    .summary-card {
+        position: static;
+    }
+    .card-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 620px) {
+    .wizard-steps {
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+    .step-count {
+        width: 100%;
+        margin-left: 0;
+    }
+    .card-grid {
+        grid-template-columns: 1fr;
+    }
+}

@@ -30,15 +30,14 @@ $activeNav = $activeNav ?? '';
 
 
     <nav class="main-nav" aria-label="Main navigation">
+    <a class="nav-link <?= $activeNav === 'campaigns' ? 'active' : '' ?>" href="/index.php">Campaigns</a>
 
-        <a class="nav-link <?= $activeNav === 'campaigns' ? 'active' : '' ?>" href="/index.php">Campaigns</a>
+    <a class="nav-link <?= $activeNav === 'create_character' ? 'active' : '' ?>" href="/views/create_character.php">Create Character</a>
 
-        <a class="nav-link <?= $activeNav === 'tools' ? 'active' : '' ?>" href="/tools/">Tools</a>
-
-        <a class="nav-link <?= $activeNav === 'resources' ? 'active' : '' ?>" href="/resources/">Resources</a>
-
-    </nav>
-
+    <a class="nav-link <?= $activeNav === 'tools' ? 'active' : '' ?>" href="/tools/">Tools</a>
+    
+    <a class="nav-link <?= $activeNav === 'resources' ? 'active' : '' ?>" href="/resources/">Resources</a>
+</nav>
 
     <div class="account-actions">
 
