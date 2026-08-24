@@ -17,9 +17,7 @@ $activeNav = $activeNav ?? '';
         <?= e($pageTitle) ?> — Masters
     </title>
 
-    <link rel="stylesheet"
-        href="/views/style.css"
-    >
+    <link rel="stylesheet" href="/views/style.css">
 </head>
 
 
@@ -28,42 +26,16 @@ $activeNav = $activeNav ?? '';
 
 <header class="topbar">
 
-    <a
-        class="brand"
-        href="/index.php"
-        aria-label="Masters home"
-    >
-        MASTERS
-    </a>
+    <a class="brand" href="/index.php" aria-label="Masters home">MASTERS</a>
 
 
-    <nav
-        class="main-nav"
-        aria-label="Main navigation"
-    >
+    <nav class="main-nav" aria-label="Main navigation">
 
-        <a
-            class="nav-link <?= $activeNav === 'campaigns' ? 'active' : '' ?>"
-            href="/index.php"
-        >
-            Campaigns
-        </a>
+        <a class="nav-link <?= $activeNav === 'campaigns' ? 'active' : '' ?>" href="/index.php">Campaigns</a>
 
+        <a class="nav-link <?= $activeNav === 'tools' ? 'active' : '' ?>" href="/tools/">Tools</a>
 
-        <a
-            class="nav-link <?= $activeNav === 'tools' ? 'active' : '' ?>"
-            href="/tools/"
-        >
-            Tools
-        </a>
-
-
-        <a
-            class="nav-link <?= $activeNav === 'resources' ? 'active' : '' ?>"
-            href="/resources/"
-        >
-            Resources
-        </a>
+        <a class="nav-link <?= $activeNav === 'resources' ? 'active' : '' ?>" href="/resources/">Resources</a>
 
     </nav>
 
@@ -77,39 +49,16 @@ $activeNav = $activeNav ?? '';
             Hae käyttäjän nimi/avatar tietokannasta.
             -->
 
-            <a
-                href="/auth/logout.php"
-                class="text-link"
-            >
-                Logout
-            </a>
+            <a href="/auth/logout.php" class="text-link" >Logout</a>
 
-
-            <a
-                href="/account/"
-                class="avatar"
-                aria-label="Account"
-            >
-                GM
-            </a>
+            <a href="/account/" class="avatar" aria-label="Account">GM</a>
 
         <?php else: ?>
 
-            <a
-                href="/auth/login.php"
-                class="text-link"
-            >
-                Sign in
-            </a>
+            <a href="/auth/login.php" class="text-link">Sign in</a>
 
 
-            <a
-                href="/auth/login.php"
-                class="avatar"
-                aria-label="Sign in"
-            >
-                GM
-            </a>
+            <a href="/auth/login.php" class="avatar" aria-label="Sign in">GM</a>
 
         <?php endif; ?>
 
