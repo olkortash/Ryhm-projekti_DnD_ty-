@@ -23,173 +23,103 @@ $pageTitle = $pageTitle ?? 'Masters';
 
 <head>
 
-```
-<meta charset="UTF-8">
+    <meta charset="UTF-8">
 
-<meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
->
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-<meta
-    name="description"
-    content="Masters campaign dashboard"
->
+    <meta
+        name="description"
+        content="Masters campaign dashboard"
+    >
 
-<title>
-    <?= e($pageTitle) ?>
-</title>
+    <title>
+        <?= htmlspecialchars($pageTitle, ENT_QUOTES, 'UTF-8') ?>
+    </title>
 
-
-<!--
-    ========================================================
-    CSS
-    ========================================================
-
-    TODO:
-    Tarkista projektisi todellinen public-kansion sijainti.
-
-    Jos public on web-rootissa:
-        /css/style.css
-
-    Jos public on projektin juuressa:
-        /public/css/style.css
-    ========================================================
--->
-
-<link
-    rel="stylesheet"
-    href="/public/css/style.css"
->
-```
+    <link
+        rel="stylesheet"
+        href="/public/css/style.css"
+    >
 
 </head>
+
 
 <body>
 
 <header class="topbar">
 
-```
-<!-- ========================================================
-     BRAND
-     ======================================================== -->
-
-<a
-    class="brand"
-    href="/index.php"
-    aria-label="Masters home"
->
-    MASTERS
-</a>
-
-
-<!-- ========================================================
-     MAIN NAVIGATION
-     ======================================================== -->
-
-<nav
-    class="main-nav"
-    aria-label="Main navigation"
->
-
     <a
-        class="nav-link"
+        class="brand"
         href="/index.php"
+        aria-label="Masters home"
     >
-        Campaigns
-    </a>
-
-    <a
-        class="nav-link"
-        href="/tools/"
-    >
-        Tools
-    </a>
-
-    <a
-        class="nav-link"
-        href="/resources/"
-    >
-        Resources
-    </a>
-
-</nav>
-
-
-<!-- ========================================================
-     ACCOUNT
-     ======================================================== -->
-
-<div class="account-actions">
-
-
-    <!--
-        ====================================================
-        TODO: KIRJAUTUMISEN TARKISTUS
-        ====================================================
-
-        Kun kirjautumisjärjestelmä tehdään, tähän tulee
-        tarkistus esimerkiksi:
-
-        if (isset($_SESSION['user_id']))
-
-        Kirjautuneelle käyttäjälle näytetään:
-
-            Logout
-            Account / avatar
-
-        Kirjautumattomalle käyttäjälle näytetään:
-
-            Register
-            Sign in
-        ====================================================
-    -->
-
-
-    <!--
-        TODO:
-        Käyttäjän nimi ja avatar haetaan myöhemmin
-        tietokannasta.
-    -->
-
-    <a
-        href="/auth/register.php"
-        class="text-link"
-    >
-        Register
+        MASTERS
     </a>
 
 
-    <a
-        href="/auth/login.php"
-        class="avatar"
-        aria-label="Sign in"
+    <nav
+        class="main-nav"
+        aria-label="Main navigation"
     >
-        Sign in
-    </a>
-
-
-    <!--
-        TODO: Kirjautuneen käyttäjän vaihtoehto:
 
         <a
-            href="/index.php?action=logout"
+            class="nav-link"
+            href="/index.php"
+        >
+            Campaigns
+        </a>
+
+        <a
+            class="nav-link"
+            href="/tools/"
+        >
+            Tools
+        </a>
+
+        <a
+            class="nav-link"
+            href="/resources/"
+        >
+            Resources
+        </a>
+
+    </nav>
+
+
+    <div class="account-actions">
+
+        <!--
+            TODO:
+            Kun kirjautumisjärjestelmä tehdään, tähän lisätään
+            tarkistus käyttäjän kirjautumistilasta.
+
+            Kirjautunut:
+                Logout
+                Account / avatar
+
+            Kirjautumaton:
+                Register
+                Sign in
+        -->
+
+        <a
+            href="/auth/register.php"
             class="text-link"
         >
-            Logout
+            Register
         </a>
 
         <a
-            href="/account/"
+            href="/auth/login.php"
             class="avatar"
-            aria-label="Account"
+            aria-label="Sign in"
         >
-            GM
+            Sign in
         </a>
-    -->
 
-
-</div>
-```
+    </div>
 
 </header>
