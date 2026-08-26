@@ -21,7 +21,7 @@ require __DIR__ . '/partials/head.php';
 
 
 
-        <form method="post" class="auth-form">
+        <form action="index.php?action=register" method="post" class="auth-form">
 
 
 
@@ -95,7 +95,7 @@ require __DIR__ . '/partials/head.php';
 
         <p class="auth-footer">
             Already have an account?
-            <a href="/auth/login.php">Sign in</a>
+            <a href="index.php?action=login">Sign in</a>
         </p>
 
     </section>

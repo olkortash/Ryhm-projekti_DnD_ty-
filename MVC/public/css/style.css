@@ -649,6 +649,99 @@ a {
     margin: 0;
 }
 
+.auth-page {
+    min-height: calc(100vh - 168px);
+    padding: 52px 20px 58px;
+    display: grid;
+    place-items: center;
+}
+
+.auth-card {
+    width: min(480px, 100%);
+    padding: 41px 42px 38px;
+    background: rgba(16, 13, 22, 0.96);
+    border: 1px solid rgba(117, 98, 143, 0.4);
+    border-radius: 6px;
+    box-shadow: 0 22px 55px rgba(0, 0, 0, 0.34);
+}
+
+.auth-card h1 {
+    margin: 0;
+    color: #f2e8d2;
+    font-size: clamp(32px, 5vw, 38px);
+    line-height: 1.1;
+}
+
+.auth-intro {
+    max-width: 350px;
+    margin: 14px 0 35px;
+    color: #b7a9bd;
+    font-size: 16px;
+    line-height: 1.35;
+}
+
+.auth-form {
+    display: grid;
+    gap: 10px;
+}
+
+.auth-form label {
+    margin-top: 5px;
+    color: var(--cream);
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.auth-form input {
+    width: 100%;
+    min-height: 44px;
+    padding: 10px 12px;
+    color: var(--cream);
+    background: rgba(8, 7, 12, 0.82);
+    border: 1px solid rgba(117, 98, 143, 0.44);
+    border-radius: 4px;
+    font: inherit;
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.auth-form input:focus {
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px rgba(213, 169, 30, 0.12);
+}
+
+.auth-submit {
+    width: 100%;
+    min-height: 46px;
+    margin-top: 19px;
+}
+
+.auth-footer {
+    margin: 25px 0 0;
+    color: var(--muted);
+    font-size: 14px;
+    text-align: center;
+}
+
+.auth-footer a {
+    color: var(--gold-bright);
+}
+
+.auth-footer a:hover {
+    color: var(--cream);
+}
+
+.form-error {
+    margin: -18px 0 24px;
+    padding: 10px 12px;
+    color: #e6b1bd;
+    background: rgba(102, 29, 57, 0.2);
+    border: 1px solid rgba(166, 62, 97, 0.5);
+    border-radius: 4px;
+    font-size: 13px;
+}
+
 @media (max-width: 850px) {
     .topbar {
         gap: 24px;
@@ -736,5 +829,13 @@ a {
     .footer {
         flex-direction: column;
         align-items: flex-start;
+    }
+
+    .auth-page {
+        padding: 32px 15px 40px;
+    }
+
+    .auth-card {
+        padding: 34px 27px 31px;
     }
 }
