@@ -108,7 +108,7 @@ $pageTitle = $pageTitle ?? 'Masters';
                 Sign in
         -->
 
-        <a href="../views/register.php" class="text-link">Register</a>
+        <a href="index.php?action=register" class="text-link">Register</a>
 
         <a href="index.php?action=login" class="avatar" aria-label="Sign in">Sign in</a>
 
