@@ -1,5 +1,5 @@
 <?php
-require_once "database/connection.php";
+require_once __DIR__ . '/../connection.php';
 
 class Campaign {
     private $pdo;

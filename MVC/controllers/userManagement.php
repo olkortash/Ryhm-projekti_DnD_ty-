@@ -1,6 +1,5 @@
 <?php
-require_once "database/models/users.php";
-require_once 'libraries/cleaners.php';
+require_once __DIR__ . '/../database/models/users.php';
 
 function cleanUpInput($value) {
     return trim(strip_tags((string)$value));

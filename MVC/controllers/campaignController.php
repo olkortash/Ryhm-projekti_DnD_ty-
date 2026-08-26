@@ -1,5 +1,5 @@
 <?php
-require_once "database/models/campaign.php";
+require_once __DIR__ . '/../database/models/campaign.php';
 
 class CampaignController {
     private $campaignModel;
