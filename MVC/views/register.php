@@ -3,80 +3,6 @@
 declare(strict_types=1);
 
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-
-    verify_csrf();
-
-    $username = trim($_POST['username'] ?? '');
-    $email = trim($_POST['email'] ?? '');
-    $password = $_POST['password'] ?? '';
-    $passwordConfirm = $_POST['password_confirm'] ?? '';
-
-    // Basic validation
-    if ($username === '' || $email === '' || $password === '') {
-        $error = 'Please fill in all fields.';
-    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $error = 'Please enter a valid email address.';
-    } elseif (strlen($username) < 3 || strlen($username) > 50) {
-        $error = 'Username must be between 3 and 50 characters.';
-    } elseif (strlen($password) < 8) {
-        $error = 'Password must contain at least 8 characters.';
-    } elseif ($password !== $passwordConfirm) {
-        $error = 'Passwords do not match.';
-    }
-
-    // Check whether username or email already exists
-    if ($error === '') {
-
-        $stmt = $pdo->prepare("
-            SELECT user_id
-            FROM users
-            WHERE username = :username
-               OR email = :email
-            LIMIT 1
-        ");
-
-        $stmt->execute([
-            'username' => $username,
-            'email' => $email
-        ]);
-
-        if ($stmt->fetch()) {
-            $error = 'Username or email is already in use.';
-        }
-    }
-
-    // Create account
-    if ($error === '') {
-
-        $passwordHash = password_hash(
-            $password,
-            PASSWORD_DEFAULT
-        );
-
-        $stmt = $pdo->prepare("
-            INSERT INTO users (
-                username,
-                email,
-                password_hash
-            )
-            VALUES (
-                :username,
-                :email,
-                :password_hash
-            )
-        ");
-
-        $stmt->execute([
-            'username' => $username,
-            'email' => $email,
-            'password_hash' => $passwordHash
-        ]);
-
-        redirect('/auth/login.php?registered=1');
-    }
-}
-
 require __DIR__ . '/partials/head.php';
 
 ?>
@@ -94,18 +20,9 @@ require __DIR__ . '/partials/head.php';
         </p>
 
 
-        <?php if ($error): ?>
-
-            <div class="form-error">
-                <?= e($error) ?>
-            </div>
-
-        <?php endif; ?>
-
 
         <form method="post" class="auth-form">
 
-            <?= csrf_field() ?>
 
 
             <label for="username">
