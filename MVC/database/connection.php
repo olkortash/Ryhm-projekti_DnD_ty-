@@ -1,29 +1,53 @@
 <?php
 
+$envFile = __DIR__ . '/../.env';
+if (file_exists($envFile)) {
+    $lines = file($envFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    if ($lines !== false) {
+        foreach ($lines as $line) {
+            $line = trim($line);
+            if ($line === '' || str_starts_with($line, '#')) {
+                continue;
+            }
+
+            [$key, $value] = array_pad(explode('=', $line, 2), 2, '');
+            $key = trim($key);
+            $value = trim($value);
+            if ($key !== '') {
+                putenv($key . '=' . $value);
+                $_ENV[$key] = $value;
+                $_SERVER[$key] = $value;
+            }
+        }
+    }
+}
+
 function connectDB(){
-        static $connection;
-        if(!isset($connection)) {
-            $connection = connect();
-        }      
-        return $connection;
+    static $connection;
+    if(!isset($connection)) {
+        $connection = connect();
+    }
+    return $connection;
 }
 
 function connect() {
-        $host = getenv('DB_HOST', true) ?: "ricsaa25.treok.io";
-        $port = getenv('DB_PORT', true) ?: 3306; 
-        $dbname = getenv('DB_NAME', true) ?: "ricsaa25_dnd_projekti"; 
-        $user = getenv('DB_USERNAME', true) ?: "ricsaa25_dnd_projekti"; 
-        $password = getenv('DB_PASSWORD', true) ?: "K&psOqm#o*Mh3+k#"; 
+    $host = getenv('DB_HOST') ?: 'localhost';
+    $port = getenv('DB_PORT') ?: 3306;
+    $dbname = getenv('DB_NAME') ?: '';
+    $user = getenv('DB_USERNAME') ?: '';
+    $password = getenv('DB_PASSWORD') ?: '';
 
-        $connectionString = "mysql:host=$host;dbname=$dbname;port=$port;charset=utf8";
+    if ($dbname === '' || $user === '') {
+        throw new PDOException('Missing database configuration. Add DB_HOST, DB_PORT, DB_NAME, DB_USERNAME and DB_PASSWORD to the environment or .env file.');
+    }
 
-        try {       
-                $pdo = new PDO($connectionString, $user, $password);
-                $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-                echo "Connected successfully";
-                return $pdo;
-        } catch (PDOException $e){
-                echo "Virhe tietokantayhteydessä: " . $e->getMessage();
-                die();
-        }
+    $connectionString = "mysql:host=$host;dbname=$dbname;port=$port;charset=utf8";
+
+    try {
+        $pdo = new PDO($connectionString, $user, $password);
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        return $pdo;
+    } catch (PDOException $e) {
+        throw new PDOException('Virhe tietokantayhteydessä: ' . $e->getMessage());
+    }
 }

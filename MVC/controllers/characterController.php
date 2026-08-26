@@ -1,88 +1,89 @@
 <?php
 require_once "database/models/character.php";
-require_once 'libraries/cleaners.php';
+require_once "database/models/campaign.php";
 
-function viewCharactersController(){
-    $allcharacters = getAllCharacters();
-    require "views/characters.view.php";    
-}
+class CharacterController {
+    private $characterModel;
+    private $campaignModel;
 
-function addCharacterController(){
-    if(isset($_POST['character_name'], $_POST[''], $_POST['newstime'], $_POST['removedate'])){
-        $title = cleanUpInput($_POST['newstitle']);
-        $text = cleanUpInput($_POST['newstext']);
-        $time = cleanUpInput($_POST['newstime']);
-        $removetime = cleanUpInput($_POST['removedate']);   
-        $userid = $_SESSION["userid"];
-        addArticle($title, $text, $time, $removetime, $userid); 
-        header("Location: /");    
-    } else {
-        require "views/newArticle.view.php";
+    public function __construct($pdo) {
+        $this->characterModel = new Character($pdo);
+        $this->campaignModel = new Campaign($pdo);
     }
-}
 
-function editArticleController(){
-    try {
-        if(isset($_GET["id"])){
-            $id = cleanUpInput($_GET["id"]);
-            $news = getArticleById($id);
-        } else {
-            echo "Virhe: id puuttuu ";    
+    public function create() {
+        if (!isset($_SESSION['user_id'])) {
+            header('Location: index.php?action=login');
+            exit;
         }
-    } catch (PDOException $e){
-        echo "Virhe uutista haettaessa: " . $e->getMessage();
-    }
-    
-    if($news){
-        $id = $news['articleid'];
-        $title = $news['title'];
-        $text = $news['text'];
-        $dbtime = $news['created'];
-        $time = implode("T", explode(" ",$dbtime));
-        $removetime = $news['expirydate'];
-        $id = $news['articleid'];
-    
-        require "views/updateArticle.view.php";
-    } else {
-        header("Location: /");
-        exit;
-    }
-}
 
-function updateArticleController(){
-    if(isset($_POST['newstitle'], $_POST['newstext'], $_POST['newstime'], $_POST['removedate'], $_POST["id"])){
-        $title = cleanUpInput($_POST['newstitle']);
-        $text = cleanUpInput($_POST['newstext']);
-        $time = cleanUpInput($_POST['newstime']);
-        $removetime = cleanUpInput($_POST['removedate']);
-        $id = cleanUpInput($_POST["id"]);
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $data = [
+                'player_id' => $_SESSION['user_id'],
+                'campaign_id' => !empty($_POST['campaign_id']) ? $_POST['campaign_id'] : null,
+                'character_name' => trim($_POST['character_name']),
+                'character_class_id' => $_POST['character_class_id'],
+                'character_race_id' => $_POST['character_race_id'],
+                'character_job_id' => $_POST['character_job_id'],
+                'level' => $_POST['level'] ?? 1,
+                'hp_max' => $_POST['hp_max']
+            ];
 
-        try{
-            updateArticle($title, $text, $time, $removetime, $id);
-            header("Location: /");    
-        } catch (PDOException $e){
-                echo "Virhe uutista päivitettäessä: " . $e->getMessage();
+            if ($this->characterModel->create($data)) {
+                header('Location: index.php?action=dashboard');
+                exit;
+            }
         }
-    } else {
-        header("Location: /");
-        exit;
-    }
-}
 
-function deleteArticleController(){
-    try {
-        if(isset($_GET["id"])){
-            $id = cleanUpInput($_GET["id"]);
-            deleteArticle($id);
-        } else {
-            echo "Virhe: id puuttuu ";    
+        $classes = $this->characterModel->getClasses();
+        $races = $this->characterModel->getRaces();
+        $jobs = $this->characterModel->getJobs();
+        require __DIR__ . '/../views/character_create.php';
+    }
+
+    public function view() {
+        if (!isset($_SESSION['user_id'])) {
+            header('Location: index.php?action=login');
+            exit;
         }
-    } catch (PDOException $e){
-        echo "Virhe uutista poistettaessa: " . $e->getMessage();
+
+        $characterId = $_GET['id'] ?? null;
+        $character = $this->characterModel->getById($characterId);
+
+        if (!$character) {
+            header('Location: index.php?action=dashboard');
+            exit;
+        }
+
+        require __DIR__ . '/../views/character_view.php';
     }
 
-    $allnews = getAllArticles();
+    public function updateHp() {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $characterId = $_POST['character_id'];
+            $newHp = $_POST['hp_current'];
+            
+            $this->characterModel->updateHp($characterId, $newHp);
+            header("Location: index.php?action=character_view&id=" . $characterId);
+            exit;
+        }
+    }
 
-    header("Location: /");
-    exit;
+    public function joinCampaign() {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $inviteCode = trim($_POST['invite_code']);
+            $characterId = $_POST['character_id'];
+
+            $campaign = $this->campaignModel->getByInviteCode($inviteCode);
+            if ($campaign) {
+                $this->characterModel->joinCampaign($characterId, $campaign['campaign_id']);
+                header("Location: index.php?action=character_view&id=" . $characterId);
+                exit;
+            } else {
+                $error = "Virheellinen kutsukoodi.";
+                header("Location: index.php?action=character_view&id=" . $characterId . "&error=invcode");
+                exit;
+            }
+        }
+    }
 }
