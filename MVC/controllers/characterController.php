@@ -1,6 +1,6 @@
 <?php
-require_once "database/models/character.php";
-require_once "database/models/campaign.php";
+require_once __DIR__ . '/../database/models/character.php';
+require_once __DIR__ . '/../database/models/campaign.php';
 
 class CharacterController {
     private $characterModel;
