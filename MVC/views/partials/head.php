@@ -36,7 +36,6 @@
 
     <div class="account-actions">
 
-        <?php if (is_logged_in()): ?>
 
             <!--
             TODO:
@@ -47,7 +46,6 @@
 
             <a href="#" class="avatar" aria-label="Account">GM</a>
 
-        <?php else: ?>
 
             <a href="/auth/register.php" class="text-link">Register</a>
 
@@ -55,7 +53,6 @@
 
             <a href="/auth/login.php" class="avatar" aria-label="Sign in">Sign in</a>
 
-        <?php endif; ?>
 
     </div>
 
