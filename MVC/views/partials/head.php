@@ -1,9 +1,3 @@
-<?php
-
-$pageTitle = $pageTitle ?? 'Masters';
-$activeNav = $activeNav ?? '';
-
-?>
 
 <!DOCTYPE html>
 
@@ -14,7 +8,7 @@ $activeNav = $activeNav ?? '';
     <meta name="description" content="Masters campaign dashboard">
 
     <title>
-        <?= e($pageTitle) ?> — Masters
+        Masters
     </title>
 
     <link rel="stylesheet" href="../public/css/style.css">
