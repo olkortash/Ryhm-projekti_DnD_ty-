@@ -25,11 +25,11 @@
 
     <nav class="main-nav" aria-label="Main navigation">
 
-        <a class="nav-link <?= $activeNav === 'campaigns' ? 'active' : '' ?>" href="/index.php">Campaigns</a>
+        <a class="nav-link>" href="/index.php">Campaigns</a>
 
-        <a class="nav-link <?= $activeNav === 'tools' ? 'active' : '' ?>" href="/tools/">Tools</a>
+        <a class="nav-link>" href="/tools/">Tools</a>
 
-        <a class="nav-link <?= $activeNav === 'resources' ? 'active' : '' ?>" href="/resources/">Resources</a>
+        <a class="nav-link>" href="/resources/">Resources</a>
 
     </nav>
 
