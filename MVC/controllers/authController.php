@@ -9,7 +9,7 @@ class AuthController {
     }
 
     public function landing() {
-        require __DIR__ . '/../views/landing.php';
+        require __DIR__ . '/../views/mainpage.php';
     }
 
     public function login() {

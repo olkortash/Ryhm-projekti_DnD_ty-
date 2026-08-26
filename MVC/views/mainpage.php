@@ -1,24 +1,6 @@
-<?php
-
-declare(strict_types=1);
-
-
-require_login();
-
-$pageTitle = 'Campaign Dashboard';
-$activeNav = 'campaigns';
-
-$userId = current_user_id();
-
-
-// -----------------------------------------------------------------------------
-// Load current user's campaigns
-// -----------------------------------------------------------------------------
-
-
-
-require __DIR__ . '/partials/head.php';
-
+<?php 
+$pageTitle = "Main page - Roolipelisovellus";
+require __DIR__ . '/partials/head.php'; 
 ?>
 
 <main>
