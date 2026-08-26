@@ -20,7 +20,6 @@ require __DIR__ . '/partials/head.php';
 
 <main>
 
-```
 <!-- =========================================================
      HERO
      ========================================================= -->
@@ -51,7 +50,7 @@ require __DIR__ . '/partials/head.php';
 
             <a
                 class="btn btn-primary"
-                href="/campaigns/create.php"
+                href="index.php?action=dashboard"
             >
                 Start a campaign
                 <span aria-hidden="true">→</span>
@@ -59,7 +58,7 @@ require __DIR__ . '/partials/head.php';
 
             <a
                 class="btn btn-secondary"
-                href="/resources/"
+                href="index.php?action=landing#features"
             >
                 GM resources
             </a>
@@ -97,7 +96,7 @@ require __DIR__ . '/partials/head.php';
 
         <a
             class="btn btn-primary compact"
-            href="/campaigns/create.php"
+            href="index.php?action=dashboard"
         >
             <span aria-hidden="true">+</span>
             New campaign
@@ -120,7 +119,7 @@ require __DIR__ . '/partials/head.php';
 
             <a
                 class="btn btn-primary"
-                href="/campaigns/create.php"
+                href="index.php?action=dashboard"
             >
                 Create campaign
             </a>
@@ -290,7 +289,7 @@ require __DIR__ . '/partials/head.php';
 
                                 <a
                                     class="manage-link"
-                                    href="/campaigns/manage.php?id=<?= (int) $campaign['campaign_id'] ?>"
+                                    href="index.php?action=campaign_view&id=<?= (int) $campaign['campaign_id'] ?>"
                                 >
                                     Manage
 
@@ -342,7 +341,7 @@ require __DIR__ . '/partials/head.php';
             to your campaigns.
         </p>
 
-        <a href="/characters/">
+        <a href="index.php?action=dashboard">
             Manage characters →
         </a>
 
@@ -367,7 +366,7 @@ require __DIR__ . '/partials/head.php';
             and share invite codes with players.
         </p>
 
-        <a href="/campaigns/">
+        <a href="index.php?action=dashboard">
             Manage campaigns →
         </a>
 
@@ -392,7 +391,7 @@ require __DIR__ . '/partials/head.php';
             worldbuilding material organized.
         </p>
 
-        <a href="/resources/">
+        <a href="index.php?action=landing#features">
             Browse resources →
         </a>
 
@@ -400,7 +399,6 @@ require __DIR__ . '/partials/head.php';
 
 
 </section>
-```
 
 </main>
 

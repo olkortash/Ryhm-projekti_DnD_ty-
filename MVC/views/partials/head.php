@@ -1,5 +1,11 @@
 <?php
 
+if (!function_exists('e')) {
+    function e($value): string {
+        return htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8');
+    }
+}
+
 /*
  * ============================================================
  * PAGE TITLE
@@ -40,7 +46,9 @@ $pageTitle = $pageTitle ?? 'Masters';
     </title>
 
     <link
-        rel="stylesheet" href="../public/css/style.css">
+        rel="stylesheet"
+        href="css/style.css"
+    >
 
 </head>
 
@@ -51,7 +59,7 @@ $pageTitle = $pageTitle ?? 'Masters';
 
     <a
         class="brand"
-        href="/index.php"
+        href="index.php?action=landing"
         aria-label="Masters home"
     >
         MASTERS
@@ -65,21 +73,21 @@ $pageTitle = $pageTitle ?? 'Masters';
 
         <a
             class="nav-link"
-            href="/index.php"
+            href="index.php?action=landing#campaigns"
         >
             Campaigns
         </a>
 
         <a
             class="nav-link"
-            href="/tools/"
+            href="index.php?action=landing#features"
         >
             Tools
         </a>
 
         <a
             class="nav-link"
-            href="/resources/"
+            href="index.php?action=landing#features"
         >
             Resources
         </a>
@@ -104,14 +112,14 @@ $pageTitle = $pageTitle ?? 'Masters';
         -->
 
         <a
-            href="/auth/register.php"
+            href="index.php?action=register"
             class="text-link"
         >
             Register
         </a>
 
         <a
-            href="/auth/login.php"
+            href="index.php?action=login"
             class="avatar"
             aria-label="Sign in"
         >
