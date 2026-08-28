@@ -43,8 +43,10 @@ class AuthController {
                 exit;
             } else {
                 $error = "Rekisteröinti epäonnistui.";
-                require __DIR__ . '/../views/login.php';
+                require __DIR__ . '/../views/register.php';
             }
+        } else {
+            require __DIR__ . '/../views/register.php';
         }
     }
 
