@@ -29,6 +29,10 @@ switch ($action) {
         require_once __DIR__ . '/../controllers/dashboardController.php';
         (new DashboardController($pdo))->index();
         break;
+    case 'profile':
+        require_once __DIR__ . '/../controllers/profileController.php';
+        (new ProfileController($pdo))->index();
+        break;
     case 'character_create':
         require_once __DIR__ . '/../controllers/characterController.php';
         (new CharacterController($pdo))->create();
