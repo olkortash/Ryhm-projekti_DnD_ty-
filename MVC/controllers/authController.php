@@ -39,7 +39,14 @@ class AuthController {
             $password = trim($_POST['password'] ?? '');
 
             if ($this->userModel->register($username, $email, $password)) {
-                header('Location: index.php?action=login&registered=1');
+                $user = $this->userModel->login($username, $password);
+
+                if ($user) {
+                    $_SESSION['user_id'] = $user['user_id'];
+                    $_SESSION['username'] = $user['username'];
+                }
+
+                header('Location: index.php?action=dashboard');
                 exit;
             } else {
                 $error = "Rekisteröinti epäonnistui.";
