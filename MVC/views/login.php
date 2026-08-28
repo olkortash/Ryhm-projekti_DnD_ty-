@@ -1,26 +1,68 @@
-<?php 
-$pageTitle = "Kirjaudu sisään - Roolipelisovellus";
-require __DIR__ . '/partials/head.php'; 
+<?php
+$pageTitle = 'Sign in - Roolipelisovellus';
+require __DIR__ . '/partials/head.php';
 ?>
 
+<main class="auth-page">
 
-    <h2>Kirjaudu sisään</h2>
-    <?php if (isset($error)) echo "<p style='color:red;'>$error</p>"; ?>
-    <form action="index.php?action=login" method="POST">
-        <label>Käyttäjätunnus: <input type="text" name="username" required></label><br>
-        <label>Salasana: <input type="password" name="password" required></label><br>
-        <button type="submit">Kirjaudu</button>
-    </form>
+    <section class="auth-card">
 
-    <hr>
+        <p class="eyebrow">THE GAMEMASTER'S SANCTUM</p>
 
-    <h2>Rekisteröidy uutena käyttäjänä</h2>
-    <form action="index.php?action=register" method="POST">
-        <label>Käyttäjätunnus: <input type="text" name="username" required></label><br>
-        <label>Sähköposti: <input type="email" name="email" required></label><br>
-        <label>Salasana: <input type="password" name="password" required></label><br>
-        <button type="submit">Rekisteröidy</button>
-    </form>
+        <h1>Sign in</h1>
 
+        <p class="auth-intro">
+            Sign in to continue building your campaign.
+        </p>
+
+        <?php if (isset($error)): ?>
+            <p class="form-error"><?= e($error) ?></p>
+        <?php endif; ?>
+
+        <form action="index.php?action=login" method="post" class="auth-form">
+
+            <label for="username">
+                Username
+            </label>
+
+            <input
+                type="text"
+                id="username"
+                name="username"
+                maxlength="50"
+                value="<?= e($_POST['username'] ?? '') ?>"
+                autocomplete="username"
+                required
+            >
+
+            <label for="password">
+                Password
+            </label>
+
+            <input
+                type="password"
+                id="password"
+                name="password"
+                autocomplete="current-password"
+                required
+            >
+
+            <button
+                type="submit"
+                class="btn btn-primary auth-submit"
+            >
+                Sign in
+            </button>
+
+        </form>
+
+        <p class="auth-footer">
+            Don't have an account?
+            <a href="index.php?action=register">Register</a>
+        </p>
+
+    </section>
+
+</main>
 
 <?php require __DIR__ . '/partials/footer.php'; ?>
