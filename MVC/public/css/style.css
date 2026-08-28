@@ -99,16 +99,34 @@ a {
 }
 
 .avatar {
-    width: 36px;
+    min-width: 92px;
     height: 36px;
-    display: grid;
+    display: inline-grid;
     place-items: center;
-    border: 1px solid rgba(213, 169, 30, 0.4);
-    border-radius: 50%;
-    color: var(--gold);
-    font-size: 11px;
-    letter-spacing: 0.08em;
-    background: #17111d;
+    padding: 0 16px;
+    border: 1px solid var(--gold);
+    border-radius: 4px;
+    color: var(--bg);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    background: var(--gold);
+    box-shadow: 0 5px 16px rgba(213, 169, 30, 0.16);
+    transition: 0.2s ease;
+}
+
+.avatar:hover {
+    color: var(--bg);
+    background: var(--gold-bright);
+    border-color: var(--gold-bright);
+    transform: translateY(-1px);
+    box-shadow: 0 7px 20px rgba(213, 169, 30, 0.28);
+}
+
+.avatar:focus-visible {
+    outline: 2px solid var(--cream);
+    outline-offset: 3px;
 }
 
 .hero {
