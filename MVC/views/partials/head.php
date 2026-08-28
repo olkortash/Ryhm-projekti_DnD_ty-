@@ -45,7 +45,7 @@ $pageTitle = $pageTitle ?? 'Masters';
         <?= htmlspecialchars($pageTitle, ENT_QUOTES, 'UTF-8') ?>
     </title>
 
-    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="../public/css/style.css">
 
 </head>
 
@@ -94,23 +94,14 @@ $pageTitle = $pageTitle ?? 'Masters';
 
     <div class="account-actions">
 
-        <!--
-            TODO:
-            Kun kirjautumisjärjestelmä tehdään, tähän lisätään
-            tarkistus käyttäjän kirjautumistilasta.
-
-            Kirjautunut:
-                Logout
-                Account / avatar
-
-            Kirjautumaton:
-                Register
-                Sign in
-        -->
-
-        <a href="index.php?action=register" class="text-link">Register</a>
-
-        <a href="index.php?action=login" class="avatar" aria-label="Sign in">Sign in</a>
+        <?php if (isset($_SESSION['user_id'])): ?>
+            <a href="index.php?action=dashboard" class="text-link">Dashboard</a>
+            <a href="index.php?action=profile" class="text-link">Profile</a>
+            <a href="index.php?action=logout" class="text-link">Log out</a>
+        <?php else: ?>
+            <a href="index.php?action=register" class="text-link">Register</a>
+            <a href="index.php?action=login" class="avatar" aria-label="Sign in">Sign in</a>
+        <?php endif; ?>
 
     </div>
 
