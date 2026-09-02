@@ -63,6 +63,12 @@ class Campaign {
         ]);
     }
 
+    public function delete($campaign_id) {
+        $sql = "DELETE FROM campaigns WHERE campaign_id = :campaign_id";
+        $stmt = $this->pdo->prepare($sql);
+        return $stmt->execute([':campaign_id' => $campaign_id]);
+    }
+
     public function getCharactersInCampaign($campaign_id) {
         $sql = "SELECT c.*, u.username as player_name, cl.class_name, r.race_name 
                 FROM characters c
