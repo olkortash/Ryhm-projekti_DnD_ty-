@@ -2,18 +2,6 @@
 
 $pageTitle = "Main page - Roolipelisovellus";
 
-/*
- * TODO: Lisää tähän myöhemmin käyttäjän kampanjoiden tietokantahaku.
- *
- * Esimerkiksi:
- *
- * $campaigns = $campaignModel->getByGmId($gm_id);
- *
- * Tällä hetkellä käytetään tyhjää taulukkoa,
- * jotta sivu toimii ilman tietokantahakua.
- */
-$campaigns = [];
-
 require __DIR__ . '/partials/head.php';
 
 ?>
@@ -84,23 +72,25 @@ require __DIR__ . '/partials/head.php';
         <div>
 
             <p class="eyebrow">
-                YOUR WORKSPACE
+                COMMUNITY
             </p>
 
             <h2>
-                Your campaigns
+                Public campaigns
             </h2>
 
         </div>
 
 
-        <a
-            class="btn btn-primary compact"
-            href="index.php?action=dashboard"
-        >
-            <span aria-hidden="true">+</span>
-            New campaign
-        </a>
+        <?php if (isset($_SESSION['user_id'])): ?>
+            <a
+                class="btn btn-primary compact"
+                href="index.php?action=dashboard"
+            >
+                <span aria-hidden="true">+</span>
+                New campaign
+            </a>
+        <?php endif; ?>
 
     </div>
 
@@ -110,19 +100,28 @@ require __DIR__ . '/partials/head.php';
         <div class="empty-state">
 
             <h3>
-                No campaigns yet
+                No public campaigns yet
             </h3>
 
             <p>
-                Create your first campaign and start building your world.
+                Be the first to create a campaign for the community.
             </p>
 
-            <a
-                class="btn btn-primary"
-                href="index.php?action=dashboard"
-            >
-                Create campaign
-            </a>
+            <?php if (isset($_SESSION['user_id'])): ?>
+                <a
+                    class="btn btn-primary"
+                    href="index.php?action=dashboard"
+                >
+                    Create campaign
+                </a>
+            <?php else: ?>
+                <a
+                    class="btn btn-primary"
+                    href="index.php?action=login"
+                >
+                    Log in to create one
+                </a>
+            <?php endif; ?>
 
         </div>
 
@@ -287,17 +286,31 @@ require __DIR__ . '/partials/head.php';
 
                             <?php if (isset($campaign['campaign_id'])): ?>
 
-                                <a
-                                    class="manage-link"
-                                    href="index.php?action=campaign_view&id=<?= (int) $campaign['campaign_id'] ?>"
-                                >
-                                    Manage
+                                <?php if (isset($_SESSION['user_id'])): ?>
+                                    <a
+                                        class="manage-link"
+                                        href="index.php?action=campaign_view&id=<?= (int) $campaign['campaign_id'] ?>"
+                                    >
+                                        Join campaign
 
-                                    <span aria-hidden="true">
-                                        →
-                                    </span>
+                                        <span aria-hidden="true">
+                                            →
+                                        </span>
 
-                                </a>
+                                    </a>
+                                <?php else: ?>
+                                    <a
+                                        class="manage-link"
+                                        href="index.php?action=login"
+                                    >
+                                        Log in to join
+
+                                        <span aria-hidden="true">
+                                            →
+                                        </span>
+
+                                    </a>
+                                <?php endif; ?>
 
                             <?php endif; ?>
 

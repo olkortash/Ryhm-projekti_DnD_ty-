@@ -15,6 +15,17 @@ class Campaign {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public function getPublicCampaigns() {
+        $sql = "SELECT c.*, COUNT(ch.character_id) AS character_count
+                FROM campaigns c
+                LEFT JOIN characters ch ON ch.campaign_id = c.campaign_id
+                GROUP BY c.campaign_id
+                ORDER BY c.campaign_id DESC";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     public function getById($campaign_id) {
         $sql = "SELECT * FROM campaigns WHERE campaign_id = :campaign_id";
         $stmt = $this->pdo->prepare($sql);
@@ -50,6 +61,12 @@ class Campaign {
             ':description' => $description,
             ':campaign_id' => $campaign_id
         ]);
+    }
+
+    public function delete($campaign_id) {
+        $sql = "DELETE FROM campaigns WHERE campaign_id = :campaign_id";
+        $stmt = $this->pdo->prepare($sql);
+        return $stmt->execute([':campaign_id' => $campaign_id]);
     }
 
     public function getCharactersInCampaign($campaign_id) {

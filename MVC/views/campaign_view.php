@@ -14,10 +14,10 @@ require __DIR__ . '/partials/head.php';
 
     <div class="campaign-info-section">
         <div class="info-card">
-            <h3>Kampanjan Tiedot</h3>
+            <h3>Kampanjan tiedot</h3>
             <div class="info-grid">
                 <div class="info-item">
-                    <label>Kampajan nimi</label>
+                    <label>Kampanjan nimi</label>
                     <span><?= htmlspecialchars($campaign['campaign_name']); ?></span>
                 </div>
                 <div class="info-item">
@@ -28,10 +28,10 @@ require __DIR__ . '/partials/head.php';
         </div>
 
         <div class="info-card">
-            <h3>Päivitä Kampanjaa</h3>
-            <form action="index.php?action=campaign_update" method="POST" class="campaign-form">
+            <h3>Päivitä kampanjaa</h3>
+            <form action="index.php?action=campaign_update&redirect=dashboard" method="POST" class="campaign-form">
                 <input type="hidden" name="campaign_id" value="<?= $campaign['campaign_id']; ?>">
-                
+
                 <div class="form-group">
                     <label>Kampanjan nimi</label>
                     <input type="text" name="campaign_name" value="<?= htmlspecialchars($campaign['campaign_name']); ?>" required>
@@ -42,7 +42,10 @@ require __DIR__ . '/partials/head.php';
                     <textarea name="description" rows="4"><?= htmlspecialchars($campaign['description'] ?? ''); ?></textarea>
                 </div>
 
-                <button type="submit" class="btn btn-primary">Tallenna muutokset</button>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Tallenna muutokset</button>
+                    <button type="submit" name="delete_campaign" value="1" formaction="index.php?action=campaign_delete&redirect=dashboard" class="btn btn-danger">Poista kampanja</button>
+                </div>
             </form>
         </div>
     </div>

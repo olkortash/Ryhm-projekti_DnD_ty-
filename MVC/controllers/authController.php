@@ -1,14 +1,18 @@
 <?php
 require_once __DIR__ . '/../database/models/users.php';
+require_once __DIR__ . '/../database/models/campaign.php';
 
 class AuthController {
     private $userModel;
+    private $campaignModel;
 
     public function __construct($pdo) {
         $this->userModel = new User($pdo);
+        $this->campaignModel = new Campaign($pdo);
     }
 
     public function landing() {
+        $campaigns = $this->campaignModel->getPublicCampaigns();
         require __DIR__ . '/../views/mainpage.php';
     }
 
