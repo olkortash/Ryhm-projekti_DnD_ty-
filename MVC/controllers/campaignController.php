@@ -45,12 +45,39 @@ class CampaignController {
 
     public function update() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            if (!isset($_SESSION['user_id'])) {
+                header('Location: index.php?action=login');
+                exit;
+            }
+
             $campaignId = $_POST['campaign_id'];
             $name = trim($_POST['campaign_name']);
             $description = trim($_POST['description']);
 
             $this->campaignModel->update($campaignId, $name, $description);
-            header("Location: index.php?action=campaign_view&id=" . $campaignId);
+
+            $redirect = $_GET['redirect'] ?? 'campaign_view';
+            if ($redirect === 'dashboard') {
+                header("Location: index.php?action=dashboard");
+            } else {
+                header("Location: index.php?action=campaign_view&id=" . $campaignId);
+            }
+            exit;
+        }
+    }
+
+    public function delete() {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            if (!isset($_SESSION['user_id'])) {
+                header('Location: index.php?action=login');
+                exit;
+            }
+
+            $campaignId = $_POST['campaign_id'];
+            $this->campaignModel->delete($campaignId);
+
+            $redirect = $_GET['redirect'] ?? 'dashboard';
+            header("Location: index.php?action=" . $redirect);
             exit;
         }
     }

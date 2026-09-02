@@ -61,7 +61,13 @@ switch ($action) {
         require_once __DIR__ . '/../controllers/campaignController.php';
         (new CampaignController($pdo))->update();
         break;
-    default:
+    case 'campaign_delete':
+        require_once __DIR__ . '/../controllers/campaignController.php';
+        (new CampaignController($pdo))->delete();
+        break;    case 'campaign_delete':
+        require_once __DIR__ . '/../controllers/campaignController.php';
+        (new CampaignController($pdo))->delete();
+        break;    default:
         echo "404 - Sivua ei löytynyt";
         break;
 }
