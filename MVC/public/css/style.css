@@ -760,6 +760,159 @@ a {
     font-size: 13px;
 }
 
+/* Dashboard Components */
+
+.dashboard-hero {
+    margin-bottom: 48px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--line-soft);
+}
+
+.dashboard-hero h1 {
+    margin: 0 0 12px;
+    color: #f2e8d2;
+    font-size: clamp(32px, 5vw, 42px);
+    line-height: 1.1;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+}
+
+.dashboard-hero p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 15px;
+    line-height: 1.5;
+}
+
+.dashboard-section {
+    margin-bottom: 48px;
+}
+
+.dashboard-section:last-child {
+    margin-bottom: 0;
+}
+
+.dashboard-section .section-head {
+    margin-bottom: 28px;
+}
+
+.empty-state {
+    padding: 48px 24px;
+    text-align: center;
+    border: 1px solid var(--line-soft);
+    border-radius: 7px;
+    background: rgba(18, 13, 23, 0.5);
+}
+
+.empty-state h3 {
+    margin: 0 0 10px;
+    font-size: 18px;
+    text-transform: uppercase;
+}
+
+.empty-state p {
+    margin: 0 0 24px;
+    color: var(--muted);
+    font-size: 14px;
+}
+
+.dashboard-list {
+    display: grid;
+    gap: 18px;
+}
+
+.dashboard-card {
+    padding: 24px;
+    background: linear-gradient(135deg, rgba(22, 16, 28, 0.8), rgba(14, 11, 20, 0.8));
+    border: 1px solid rgba(213, 169, 30, 0.15);
+    border-radius: 7px;
+    transition: all 0.2s ease;
+}
+
+.dashboard-card:hover {
+    border-color: rgba(213, 169, 30, 0.35);
+    background: linear-gradient(135deg, rgba(26, 19, 35, 0.9), rgba(18, 14, 26, 0.9));
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+}
+
+.dashboard-card-header {
+    margin-bottom: 16px;
+}
+
+.dashboard-card h3 {
+    margin: 0 0 8px;
+    font-size: clamp(16px, 2vw, 20px);
+    text-transform: uppercase;
+    letter-spacing: 0.01em;
+    line-height: 1.2;
+}
+
+.dashboard-card h3 a {
+    color: inherit;
+    transition: color 0.2s ease;
+}
+
+.dashboard-card:hover h3 a {
+    color: var(--gold);
+}
+
+.dashboard-card-meta {
+    margin: 0;
+    color: var(--purple);
+    font-family: Arial, sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    line-height: 1.5;
+}
+
+.dashboard-card-desc {
+    margin: 12px 0 0;
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.5;
+    font-style: italic;
+}
+
+.dashboard-card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding-top: 16px;
+    border-top: 1px solid rgba(213, 169, 30, 0.1);
+}
+
+.dashboard-form {
+    max-width: 500px;
+}
+
+.dashboard-form label {
+    margin-top: 5px;
+    color: var(--cream);
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.dashboard-form input {
+    width: 100%;
+    min-height: 44px;
+    padding: 10px 12px;
+    color: var(--cream);
+    background: rgba(8, 7, 12, 0.82);
+    border: 1px solid rgba(117, 98, 143, 0.44);
+    border-radius: 4px;
+    font: inherit;
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.dashboard-form input:focus {
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px rgba(213, 169, 30, 0.12);
+}
+
 @media (max-width: 850px) {
     .topbar {
         gap: 24px;
@@ -780,6 +933,31 @@ a {
 
     .feature-grid {
         grid-template-columns: 1fr;
+    }
+
+    .dashboard-hero {
+        margin-bottom: 36px;
+    }
+
+    .dashboard-hero h1 {
+        font-size: 28px;
+    }
+
+    .section-head {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .section-head .btn {
+        align-self: flex-start;
+    }
+
+    .dashboard-list {
+        gap: 16px;
+    }
+
+    .dashboard-card {
+        padding: 20px;
     }
 }
 
@@ -855,5 +1033,37 @@ a {
 
     .auth-card {
         padding: 34px 27px 31px;
+    }
+
+    .dashboard-hero {
+        margin-bottom: 28px;
+    }
+
+    .dashboard-hero h1 {
+        font-size: 24px;
+    }
+
+    .dashboard-hero p {
+        font-size: 13px;
+    }
+
+    .dashboard-section {
+        margin-bottom: 32px;
+    }
+
+    .dashboard-card {
+        padding: 16px;
+    }
+
+    .dashboard-card h3 {
+        font-size: 15px;
+    }
+
+    .empty-state {
+        padding: 32px 16px;
+    }
+
+    .empty-state p {
+        font-size: 13px;
     }
 }
