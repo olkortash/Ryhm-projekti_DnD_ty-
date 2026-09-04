@@ -45,6 +45,10 @@ switch ($action) {
         require_once __DIR__ . '/../controllers/characterController.php';
         (new CharacterController($pdo))->updateHp();
         break;
+    case 'character_delete':
+        require_once __DIR__ . '/../controllers/characterController.php';
+        (new CharacterController($pdo))->delete();
+        break;
     case 'character_join_campaign':
         require_once __DIR__ . '/../controllers/characterController.php';
         (new CharacterController($pdo))->joinCampaign();

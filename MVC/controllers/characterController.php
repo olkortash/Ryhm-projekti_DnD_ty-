@@ -69,6 +69,21 @@ class CharacterController {
         }
     }
 
+    public function delete() {
+        if (!isset($_SESSION['user_id'])) {
+            header('Location: index.php?action=login');
+            exit;
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $characterId = $_POST['character_id'] ?? null;
+            $this->characterModel->delete($characterId, $_SESSION['user_id']);
+        }
+
+        header('Location: index.php?action=dashboard');
+        exit;
+    }
+
     public function joinCampaign() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $inviteCode = trim($_POST['invite_code']);

@@ -1,84 +1,73 @@
-<?php
-$target_dir = "uploads/";
-$uploadOk = 0;
-//^^^^EI TOIMI VIELÄ^^^^
+<?php 
 $pageTitle = "Hahmon Tiedot - Roolipelisovellus";
-require __DIR__ . '/partials/head.php';
+require __DIR__ . '/partials/head.php'; 
 ?>
-<!--EI TEE VIELÄ MITÄÄN-->
-<h1><?= htmlspecialchars($character['character_name']); ?></h1>
-<p>Taso: <?= $character['level']; ?> | Rotu: <?= $character['race_name']; ?> | Luokka: <?= $character['class_name']; ?> | Ammatti: <?= $character['job_name']; ?></p>
-<p>Kampanja: <?= $character['campaign_name'] ? htmlspecialchars($character['campaign_name']) : "Ei kampanjassa"; ?></p>
 
-<?php if(!$character['character_img_id']): ?>
 
-    <?php
-    if(isset($_POST["submit"])) {
-        $imageFileType = strtolower(pathinfo($_FILES["fileToUpload"]["name"], PATHINFO_EXTENSION));
+<main class="character-page">
+    <div class="character-page-header">
+        <a class="manage-link" href="index.php?action=dashboard">← Dashboard</a>
+        <p class="eyebrow">CHARACTER PROFILE</p>
+        <h1><?= htmlspecialchars($character['character_name']); ?></h1>
+        <p class="character-subtitle">Level <?= $character['level']; ?> · <?= htmlspecialchars($character['race_name']); ?> <?= htmlspecialchars($character['class_name']); ?></p>
+    </div>
 
-        if ($imageFileType == "jpg" || $imageFileType == "png") {
-            $fileName = $character['character_id'] . '.' . $imageFileType;
-            $target_file = $target_dir . $fileName;
-            $check = getimagesize($_FILES["fileToUpload"]["tmp_name"]);
+    <div class="character-profile-layout">
+        <section class="character-portrait-panel" aria-label="Character profile image">
+            <div class="character-portrait-placeholder" role="img" aria-label="Profile image placeholder">
+                <span aria-hidden="true">✦</span>
+                <p>Profile image</p>
+                <small>Coming soon</small>
+            </div>
+            <p class="portrait-note">A portrait can be selected or uploaded when creating the character.</p>
+        </section>
 
-            if($check !== false) {
-                if (!file_exists($target_file)) {
-                    if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
-                        echo "The file " . htmlspecialchars($fileName) . " has been uploaded.";
+        <section class="character-details-panel" aria-label="Character details">
+            <div class="character-stat-grid">
+                <div class="character-stat"><span class="stat-label">Race</span><strong><?= htmlspecialchars($character['race_name']); ?></strong></div>
+                <div class="character-stat"><span class="stat-label">Class</span><strong><?= htmlspecialchars($character['class_name']); ?></strong></div>
+                <div class="character-stat"><span class="stat-label">Job</span><strong><?= htmlspecialchars($character['job_name']); ?></strong></div>
+                <div class="character-stat"><span class="stat-label">Campaign</span><strong><?= $character['campaign_name'] ? htmlspecialchars($character['campaign_name']) : 'No campaign'; ?></strong></div>
+            </div>
 
-                        // Tallenna sama nimi tietokantaan
-                        // Esimerkki:
-                        // UPDATE characters SET character_img_id = ? WHERE character_id = ?
-                    } else {
-                        echo "There was an error uploading the image.";
-                    }
-                } else {
-                    echo "File already exists.";
-                }
-            } else {
-                echo "File is not an image.";
-            }
-        } else {
-            echo "not target filetype";
-        }
-    }
-    ?>
+            <div class="character-action-section">
+                <p class="eyebrow">PLAYING STATUS</p>
+                <h2>Hit Points</h2>
+                <form class="character-hp-form" action="index.php?action=character_update_hp" method="POST">
+                    <input type="hidden" name="character_id" value="<?= $character['character_id']; ?>">
+                    <label for="hp-current">Current HP</label>
+                    <div class="hp-input-row">
+                        <input id="hp-current" type="number" name="hp_current" value="<?= $character['hp_current']; ?>" min="0" max="<?= $character['hp_max']; ?>">
+                        <span>/ <?= $character['hp_max']; ?></span>
+                        <button type="submit" class="btn btn-primary">Update HP</button>
+                    </div>
+                </form>
+            </div>
 
-    <form method="post" enctype="multipart/form-data">
-        lisää hahmolle kuva tästä:
-        <input type="file" name="fileToUpload" id="fileToUpload"><br>
-        <input type="submit" value="Upload Image" name="submit">
-    </form>
+            <?php if (!$character['campaign_id']): ?>
+                <div class="character-action-section">
+                    <p class="eyebrow">CAMPAIGN</p>
+                    <h2>Join a campaign</h2>
+                    <form class="character-hp-form" action="index.php?action=character_join_campaign" method="POST">
+                        <input type="hidden" name="character_id" value="<?= $character['character_id']; ?>">
+                        <label for="invite-code">Invite code</label>
+                        <div class="hp-input-row">
+                            <input id="invite-code" type="text" name="invite_code" required>
+                            <button type="submit" class="btn btn-secondary">Join</button>
+                        </div>
+                    </form>
+                </div>
+            <?php endif; ?>
 
-<?php else: ?>
-    <img src="uploads/<?=$character["character_img_id"]; ?>" alt="kuva">
-<?php endif; ?>
-<!--^^^^^^^^ EI TEE VIELÄ MITÄÄN ^^^^^^^^-->
-    <hr>
-
-    <h3>HP-Hallinta (Pelinäkymä)</h3>
-    <form action="index.php?action=character_update_hp" method="POST">
-        <input type="hidden" name="character_id" value="<?= $character['character_id']; ?>">
-        <label>Nykyinen HP: 
-            <input type="number" name="hp_current" value="<?= $character['hp_current']; ?>" max="<?= $character['hp_max']; ?>">
-        </label>
-        / <?= $character['hp_max']; ?>
-        <button type="submit">Päivitä HP</button>
-    </form>
-
-    <hr>
-
-    <?php if (!$character['campaign_id']): ?>
-        <h3>Liity kampanjaan</h3>
-        <form action="index.php?action=character_join_campaign" method="POST">
-            <input type="hidden" name="character_id" value="<?= $character['character_id']; ?>">
-            <label>Syötä kutsukoodi: <input type="text" name="invite_code" required></label>
-            <button type="submit">Liity</button>
-        </form>
-    <?php endif; ?>
-
-    <br>
-    <a href="index.php?action=dashboard">Palaa päänäkymään</a>
+            <div class="character-danger-zone">
+                <form action="index.php?action=character_delete" method="POST" onsubmit="return confirm('Haluatko varmasti poistaa tämän hahmon? Tätä toimintoa ei voi perua.');">
+                    <input type="hidden" name="character_id" value="<?= $character['character_id']; ?>">
+                    <button type="submit" class="btn btn-danger">Delete character</button>
+                </form>
+            </div>
+        </section>
+    </div>
+</main>
 
 
 
