@@ -74,6 +74,15 @@ class Character {
         ]);
     }
 
+    public function delete($character_id, $player_id) {
+        $sql = "DELETE FROM characters WHERE character_id = :character_id AND player_id = :player_id";
+        $stmt = $this->pdo->prepare($sql);
+        return $stmt->execute([
+            ':character_id' => $character_id,
+            ':player_id' => $player_id
+        ]);
+    }
+
     public function joinCampaign($character_id, $campaign_id) {
         $sql = "UPDATE characters SET campaign_id = :campaign_id WHERE character_id = :character_id";
         $stmt = $this->pdo->prepare($sql);

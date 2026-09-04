@@ -270,6 +270,17 @@ a {
     background: rgba(25, 17, 31, 0.85);
 }
 
+.btn-danger {
+    color: #e6b1bd;
+    border-color: rgba(166, 62, 97, 0.55);
+    background: rgba(102, 29, 57, 0.24);
+}
+
+.btn-danger:hover {
+    border-color: #c56b83;
+    background: rgba(126, 35, 68, 0.42);
+}
+
 .dashboard {
     width: min(1160px, 89%);
     margin: 0 auto;
@@ -874,6 +885,184 @@ a {
     word-break: break-word;
 }
 
+.character-page {
+    width: min(1080px, 89%);
+    margin: 0 auto;
+    padding: 62px 0 72px;
+}
+
+.character-page-header {
+    margin-bottom: 34px;
+    padding-bottom: 25px;
+    border-bottom: 1px solid var(--line-soft);
+}
+
+.character-page-header .manage-link {
+    display: inline-block;
+    margin-bottom: 28px;
+}
+
+.character-page-header h1 {
+    margin: 0 0 10px;
+    color: #f2e8d2;
+    font-size: clamp(36px, 5vw, 58px);
+    line-height: 1;
+    text-transform: uppercase;
+}
+
+.character-subtitle {
+    margin: 0;
+    color: var(--muted);
+    font-size: 16px;
+}
+
+.character-profile-layout {
+    display: grid;
+    grid-template-columns: minmax(230px, 31%) 1fr;
+    gap: 22px;
+}
+
+.character-portrait-panel,
+.character-details-panel {
+    padding: 26px;
+    background: linear-gradient(135deg, rgba(22, 16, 28, 0.88), rgba(14, 11, 20, 0.88));
+    border: 1px solid rgba(213, 169, 30, 0.15);
+    border-radius: 7px;
+}
+
+.character-portrait-panel {
+    align-self: start;
+}
+
+.character-portrait-placeholder {
+    aspect-ratio: 1 / 1;
+    display: grid;
+    place-items: center;
+    align-content: center;
+    gap: 8px;
+    border: 1px solid rgba(213, 169, 30, 0.28);
+    background:
+        radial-gradient(circle at 50% 35%, rgba(213, 169, 30, 0.22), transparent 22%),
+        linear-gradient(145deg, #24172b, #0d0b13 75%);
+    color: var(--gold);
+}
+
+.character-portrait-placeholder span {
+    font-size: 34px;
+}
+
+.character-portrait-placeholder p {
+    margin: 0;
+    font-size: 15px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+.character-portrait-placeholder small,
+.portrait-note {
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.character-portrait-placeholder small {
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.portrait-note {
+    margin: 16px 0 0;
+    line-height: 1.55;
+}
+
+.character-details-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+}
+
+.character-stat-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1px;
+    background: var(--line-soft);
+    border: 1px solid var(--line-soft);
+}
+
+.character-stat {
+    min-height: 82px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 8px;
+    padding: 15px 17px;
+    background: rgba(8, 7, 12, 0.55);
+}
+
+.character-stat strong {
+    color: var(--cream);
+    font-size: 17px;
+    font-weight: 400;
+}
+
+.character-action-section {
+    padding-top: 2px;
+}
+
+.character-action-section .eyebrow {
+    margin-bottom: 7px;
+}
+
+.character-action-section h2 {
+    margin: 0 0 17px;
+    font-size: 24px;
+    text-transform: uppercase;
+}
+
+.character-hp-form {
+    display: grid;
+    gap: 9px;
+}
+
+.character-hp-form label {
+    color: var(--cream);
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.hp-input-row {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+}
+
+.hp-input-row input {
+    width: 100px;
+    min-height: 44px;
+    padding: 9px 11px;
+    color: var(--cream);
+    background: rgba(8, 7, 12, 0.82);
+    border: 1px solid rgba(117, 98, 143, 0.44);
+    border-radius: 4px;
+    font: inherit;
+}
+
+.hp-input-row input:focus {
+    border-color: var(--gold);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(213, 169, 30, 0.12);
+}
+
+.hp-input-row > span {
+    margin-right: auto;
+    color: var(--muted);
+}
+
+.character-danger-zone {
+    padding-top: 22px;
+    border-top: 1px solid rgba(166, 62, 97, 0.25);
+}
+
 @media (max-width: 850px) {
     .topbar {
         gap: 24px;
@@ -927,6 +1116,14 @@ a {
 
     .profile-info-grid {
         gap: 24px;
+    }
+
+    .character-profile-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .character-portrait-panel {
+        max-width: 360px;
     }
 }
 
@@ -1044,6 +1241,31 @@ a {
 
     .profile-value {
         font-size: 14px;
+    }
+
+    .character-page {
+        padding-top: 38px;
+    }
+
+    .character-page-header h1 {
+        font-size: 36px;
+    }
+
+    .character-portrait-panel,
+    .character-details-panel {
+        padding: 20px;
+    }
+
+    .character-stat-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .hp-input-row {
+        flex-wrap: wrap;
+    }
+
+    .hp-input-row .btn {
+        width: 100%;
     }
 }
 
