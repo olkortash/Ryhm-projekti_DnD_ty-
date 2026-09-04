@@ -53,20 +53,24 @@ class Campaign {
         return $this->pdo->lastInsertId();
     }
 
-    public function update($campaign_id, $name, $description) {
-        $sql = "UPDATE campaigns SET campaign_name = :campaign_name, description = :description WHERE campaign_id = :campaign_id";
+    public function update($campaign_id, $gm_id, $name, $description) {
+        $sql = "UPDATE campaigns SET campaign_name = :campaign_name, description = :description WHERE campaign_id = :campaign_id AND gm_id = :gm_id";
         $stmt = $this->pdo->prepare($sql);
         return $stmt->execute([
             ':campaign_name' => $name,
             ':description' => $description,
-            ':campaign_id' => $campaign_id
+            ':campaign_id' => $campaign_id,
+            ':gm_id' => $gm_id
         ]);
     }
 
-    public function delete($campaign_id) {
-        $sql = "DELETE FROM campaigns WHERE campaign_id = :campaign_id";
+    public function delete($campaign_id, $gm_id) {
+        $sql = "DELETE FROM campaigns WHERE campaign_id = :campaign_id AND gm_id = :gm_id";
         $stmt = $this->pdo->prepare($sql);
-        return $stmt->execute([':campaign_id' => $campaign_id]);
+        return $stmt->execute([
+            ':campaign_id' => $campaign_id,
+            ':gm_id' => $gm_id
+        ]);
     }
 
     public function getCharactersInCampaign($campaign_id) {

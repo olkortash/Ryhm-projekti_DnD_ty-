@@ -34,11 +34,12 @@ class CampaignController {
         $campaignId = $_GET['id'] ?? null;
         $campaign = $this->campaignModel->getById($campaignId);
 
-        if (!$campaign || $campaign['gm_id'] != $_SESSION['user_id']) {
+        if (!$campaign) {
             header('Location: index.php?action=dashboard');
             exit;
         }
 
+        $isGm = $campaign['gm_id'] == $_SESSION['user_id'];
         $players = $this->campaignModel->getCharactersInCampaign($campaignId);
         require __DIR__ . '/../views/campaign_view.php';
     }
@@ -54,7 +55,7 @@ class CampaignController {
             $name = trim($_POST['campaign_name']);
             $description = trim($_POST['description']);
 
-            $this->campaignModel->update($campaignId, $name, $description);
+            $this->campaignModel->update($campaignId, $_SESSION['user_id'], $name, $description);
 
             $redirect = $_GET['redirect'] ?? 'campaign_view';
             if ($redirect === 'dashboard') {
@@ -74,7 +75,7 @@ class CampaignController {
             }
 
             $campaignId = $_POST['campaign_id'];
-            $this->campaignModel->delete($campaignId);
+            $this->campaignModel->delete($campaignId, $_SESSION['user_id']);
 
             $redirect = $_GET['redirect'] ?? 'dashboard';
             header("Location: index.php?action=" . $redirect);
