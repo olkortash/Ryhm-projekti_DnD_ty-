@@ -27,7 +27,8 @@ require __DIR__ . '/partials/head.php';
             </div>
         </div>
 
-        <div class="info-card">
+        <?php if ($isGm): ?>
+            <div class="info-card">
             <h3>Päivitä kampanjaa</h3>
             <form action="index.php?action=campaign_update&redirect=dashboard" method="POST" class="campaign-form">
                 <input type="hidden" name="campaign_id" value="<?= $campaign['campaign_id']; ?>">
@@ -47,7 +48,14 @@ require __DIR__ . '/partials/head.php';
                     <button type="submit" name="delete_campaign" value="1" formaction="index.php?action=campaign_delete&redirect=dashboard" class="btn btn-danger">Poista kampanja</button>
                 </div>
             </form>
-        </div>
+            </div>
+        <?php else: ?>
+            <div class="info-card campaign-join-note">
+                <h3>Liity kampanjaan</h3>
+                <p>Lisää hahmosi tähän kampanjaan käyttämällä kutsukoodia hahmon tietosivulla.</p>
+                <a href="index.php?action=dashboard" class="btn btn-secondary">View my characters</a>
+            </div>
+        <?php endif; ?>
     </div>
 
     <div class="characters-section">

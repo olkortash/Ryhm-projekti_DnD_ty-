@@ -234,24 +234,6 @@ require __DIR__ . '/partials/head.php';
                             </div>
 
 
-                            <div class="stat">
-
-                                <span class="stat-label">
-
-                                    <span aria-hidden="true">
-                                        ⌁
-                                    </span>
-
-                                    Invite code
-
-                                </span>
-
-                                <strong>
-                                    <?= e($campaign['invite_code'] ?? '—') ?>
-                                </strong>
-
-                            </div>
-
                         </div>
 
 
