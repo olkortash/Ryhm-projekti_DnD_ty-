@@ -1348,8 +1348,8 @@ a {
 .form-group select {
     width: 100%;
     padding: 10px;
-    background: var(--panel-3);
-    border: 1px solid var(--line);
+    background: rgba(9, 8, 13, 0.92);
+    border: 1px solid rgba(213, 169, 30, 0.24);
     color: var(--cream);
     font-size: 14px;
     border-radius: 4px;
@@ -1361,6 +1361,84 @@ a {
     outline: none;
     border-color: var(--gold);
     box-shadow: 0 0 10px rgba(213, 169, 30, 0.2);
+}
+
+.dark-select {
+    background: rgba(9, 8, 13, 0.92) !important;
+    color: var(--cream) !important;
+}
+
+.stats-points {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 18px;
+    padding: 10px 12px;
+    border: 1px solid rgba(213, 169, 30, 0.3);
+    border-radius: 4px;
+    background: rgba(22, 17, 28, 0.8);
+    color: var(--muted);
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.stats-points strong {
+    color: var(--gold);
+    font-size: 18px;
+    letter-spacing: 0.04em;
+}
+
+.stat-stepper {
+    display: grid;
+    grid-template-columns: 42px minmax(80px, 1fr) 42px;
+    gap: 8px;
+    align-items: center;
+}
+
+.stat-button {
+    width: 42px;
+    height: 42px;
+    border: 1px solid rgba(213, 169, 30, 0.42);
+    border-radius: 6px;
+    background: rgba(12, 10, 16, 0.94);
+    color: var(--gold);
+    font-size: 24px;
+    line-height: 1;
+    cursor: pointer;
+    transition: transform 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+}
+
+.stat-button:hover:not(:disabled) {
+    background: rgba(24, 18, 30, 0.95);
+    border-color: rgba(213, 169, 30, 0.72);
+    transform: translateY(-1px);
+}
+
+.stat-button:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.stat-button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.stat-stepper .stat-input,
+.stat-stepper .hp-input {
+    text-align: center;
+    width: 100%;
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type="number"] {
+    -moz-appearance: textfield;
 }
 
 /* Kampanja */
