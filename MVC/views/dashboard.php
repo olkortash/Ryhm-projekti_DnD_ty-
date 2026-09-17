@@ -37,11 +37,27 @@ require __DIR__ . '/partials/head.php';
                                 <?= $char['race_name']; ?> • 
                                 <?= $char['class_name']; ?>
                             </p>
+                            <p class="dashboard-card-campaign">
+                                <span>Campaign:</span>
+                                <?php if (!empty($char['campaign_id']) && !empty($char['campaign_name'])): ?>
+                                    <a href="index.php?action=campaign_view&id=<?= $char['campaign_id']; ?>">
+                                        <?= htmlspecialchars($char['campaign_name']); ?>
+                                    </a>
+                                <?php else: ?>
+                                    <span class="dashboard-card-campaign-empty">No campaign</span>
+                                <?php endif; ?>
+                            </p>
                         </div>
                         <div class="dashboard-card-footer">
                             <a class="manage-link" href="index.php?action=character_view&id=<?= $char['character_id']; ?>">
                                 View →
                             </a>
+                            <?php if (!empty($char['campaign_id'])): ?>
+                                <form action="index.php?action=character_unlink_campaign" method="POST" onsubmit="return confirm('Remove this character from the campaign?');">
+                                    <input type="hidden" name="character_id" value="<?= $char['character_id']; ?>">
+                                    <button type="submit" class="btn btn-danger compact">Leave campaign</button>
+                                </form>
+                            <?php endif; ?>
                         </div>
                     </article>
                 <?php endforeach; ?>

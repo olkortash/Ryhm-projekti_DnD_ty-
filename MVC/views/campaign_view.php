@@ -64,16 +64,25 @@ require __DIR__ . '/partials/head.php';
         <?php if (count($players) > 0): ?>
             <div class="characters-table">
                 <div class="table-header">
-                    <div class="col-player">Pelaaja</div>
-                    <div class="col-character">Hahmo</div>
-                    <div class="col-race">Rotu / Luokka</div>
+                    <div class="col-player">Player</div>
+                    <div class="col-character">Character</div>
+                    <div class="col-race">Race / Class</div>
                     <div class="col-hp">HP</div>
                 </div>
 
                 <?php foreach ($players as $p): ?>
                     <div class="table-row">
                         <div class="col-player"><?= htmlspecialchars($p['player_name']); ?></div>
-                        <div class="col-character"><?= htmlspecialchars($p['character_name']); ?></div>
+                        <div class="col-character">
+                            <?= htmlspecialchars($p['character_name']); ?>
+                            <?php if ($isGm): ?>
+                                <form action="index.php?action=campaign_remove_character" method="POST" onsubmit="return confirm('Remove this character from the campaign?');">
+                                    <input type="hidden" name="character_id" value="<?= $p['character_id']; ?>">
+                                    <input type="hidden" name="campaign_id" value="<?= $campaign['campaign_id']; ?>">
+                                    <button type="submit" class="btn btn-danger compact">Remove</button>
+                                </form>
+                            <?php endif; ?>
+                        </div>
                         <div class="col-race">
                             <span class="race-badge"><?= $p['race_name']; ?></span>
                             <span class="class-badge"><?= $p['class_name']; ?></span>

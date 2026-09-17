@@ -101,4 +101,42 @@ class CharacterController {
             }
         }
     }
+
+    public function unlinkCampaign() {
+        if (!isset($_SESSION['user_id'])) {
+            header('Location: index.php?action=login');
+            exit;
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $characterId = $_POST['character_id'] ?? null;
+            $this->characterModel->unlinkFromCampaignByOwner($characterId, $_SESSION['user_id']);
+        }
+
+        header('Location: index.php?action=dashboard');
+        exit;
+    }
+
+    public function removeFromCampaign() {
+        if (!isset($_SESSION['user_id'])) {
+            header('Location: index.php?action=login');
+            exit;
+        }
+
+        $campaignId = $_POST['campaign_id'] ?? null;
+        $characterId = $_POST['character_id'] ?? null;
+        $campaign = $this->campaignModel->getById($campaignId);
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && $campaign
+            && (int) $campaign['gm_id'] === (int) $_SESSION['user_id']) {
+            $this->characterModel->unlinkFromCampaignByGm(
+                $characterId,
+                $campaignId,
+                $_SESSION['user_id']
+            );
+        }
+
+        header('Location: index.php?action=campaign_view&id=' . urlencode($campaignId));
+        exit;
+    }
 }

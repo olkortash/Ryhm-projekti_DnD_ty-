@@ -92,6 +92,38 @@ class Character {
         ]);
     }
 
+    public function unlinkFromCampaignByOwner($character_id, $player_id) {
+        $sql = "UPDATE characters
+                SET campaign_id = NULL
+                WHERE character_id = :character_id
+                  AND player_id = :player_id
+                  AND campaign_id IS NOT NULL";
+        $stmt = $this->pdo->prepare($sql);
+        return $stmt->execute([
+            ':character_id' => $character_id,
+            ':player_id' => $player_id
+        ]);
+    }
+
+    public function unlinkFromCampaignByGm($character_id, $campaign_id, $gm_id) {
+        $sql = "UPDATE characters
+                SET campaign_id = NULL
+                WHERE character_id = :character_id
+                  AND campaign_id = :campaign_id_filter
+                  AND EXISTS (
+                      SELECT 1 FROM campaigns
+                      WHERE campaign_id = :campaign_id_exists
+                        AND gm_id = :gm_id
+                  )";
+        $stmt = $this->pdo->prepare($sql);
+        return $stmt->execute([
+            ':character_id' => $character_id,
+            ':campaign_id_filter' => $campaign_id,
+            ':campaign_id_exists' => $campaign_id,
+            ':gm_id' => $gm_id
+        ]);
+    }
+
     // Apufunktiot lomakkeiden alasvetovalikoille
     public function getClasses() {
         return $this->pdo->query("SELECT * FROM classes")->fetchAll(PDO::FETCH_ASSOC);
