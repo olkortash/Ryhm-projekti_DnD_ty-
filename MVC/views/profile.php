@@ -44,6 +44,32 @@ $memberSince = !empty($user['created_at'])
         </div>
     </section>
 
+    <section class="dashboard-section">
+        <div class="section-head">
+            <div>
+                <p class="eyebrow">YOUR ADVENTURE</p>
+                <h2>Activity Summary</h2>
+            </div>
+        </div>
+
+        <div class="profile-summary-grid">
+            <div class="profile-summary-item">
+                <span class="profile-summary-label">Characters</span>
+                <strong><?= $characterCount ?></strong>
+            </div>
+            <div class="profile-summary-item">
+                <span class="profile-summary-label">Created Campaigns</span>
+                <strong><?= $createdCampaignCount ?></strong>
+            </div>
+            <div class="profile-summary-item">
+                <span class="profile-summary-label">Joined Campaigns</span>
+                <strong><?= $joinedCampaignCount ?></strong>
+            </div>
+        </div>
+    </section>
+
+
+
 </div>
 
 <?php require __DIR__ . '/partials/footer.php'; ?>

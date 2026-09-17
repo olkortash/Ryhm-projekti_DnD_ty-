@@ -79,6 +79,14 @@ switch ($action) {
         require_once __DIR__ . '/../controllers/characterController.php';
         (new CharacterController($pdo))->joinCampaign();
         break;
+    case 'character_unlink_campaign':
+        require_once __DIR__ . '/../controllers/characterController.php';
+        (new CharacterController($pdo))->unlinkCampaign();
+        break;
+    case 'campaign_remove_character':
+        require_once __DIR__ . '/../controllers/characterController.php';
+        (new CharacterController($pdo))->removeFromCampaign();
+        break;
     case 'campaign_create':
         require_once __DIR__ . '/../controllers/campaignController.php';
         (new CampaignController($pdo))->create();
