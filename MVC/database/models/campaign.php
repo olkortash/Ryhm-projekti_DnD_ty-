@@ -50,6 +50,13 @@ class Campaign {
                 FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
             )
         ");
+
+        // Do not try to alter the table by adding another AUTO_INCREMENT column,
+        // because MySQL rejects that schema and it is not required for this logic.
+        $column = $this->pdo->query("SHOW COLUMNS FROM campaign_members LIKE 'member_id'")->fetch();
+        if (!$column) {
+            return;
+        }
     }
 
     public function getMembers($campaign_id) {
@@ -70,8 +77,12 @@ class Campaign {
 
         $sql = "SELECT u.user_id, u.username
                 FROM users u
-                LEFT JOIN campaign_members cm ON cm.user_id = u.user_id AND cm.campaign_id = :campaign_id
-                WHERE cm.member_id IS NULL
+                WHERE NOT EXISTS (
+                    SELECT 1
+                    FROM campaign_members cm
+                    WHERE cm.user_id = u.user_id
+                      AND cm.campaign_id = :campaign_id
+                )
                 ORDER BY u.username ASC";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([':campaign_id' => $campaign_id]);
