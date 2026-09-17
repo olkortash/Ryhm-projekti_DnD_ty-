@@ -23,7 +23,7 @@ require __DIR__ . '/partials/head.php';
         </div>
 
         <?php if (!empty($characters)): ?>
-            <div class="dashboard-list">
+            <div class="dashboard-list dashboard-list-compact">
                 <?php foreach ($characters as $char): ?>
                     <article class="dashboard-card">
                         <div class="dashboard-card-header">
@@ -93,7 +93,7 @@ require __DIR__ . '/partials/head.php';
         </form>
 
         <?php if (!empty($gmCampaigns)): ?>
-            <div class="dashboard-list">
+            <div class="dashboard-list dashboard-list-compact">
                 <?php foreach ($gmCampaigns as $camp): ?>
                     <article class="dashboard-card">
                         <div class="dashboard-card-header">
