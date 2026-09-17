@@ -17,14 +17,20 @@ class AuthController {
     }
 
     public function login() {
+        if (isset($_GET['timeout']) && $_GET['timeout'] === '1') {
+            $error = "Istuntosi on vanhentunut, koska et ole ollut aktiivinen. Kirjaudu sisään uudelleen.";
+        }
+
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $username = trim($_POST['username'] ?? '');
             $password = trim($_POST['password'] ?? '');
 
             $user = $this->userModel->login($username, $password);
             if ($user) {
+                session_regenerate_id(true);
                 $_SESSION['user_id'] = $user['user_id'];
                 $_SESSION['username'] = $user['username'];
+                $_SESSION['last_activity'] = time();
                 header('Location: index.php?action=dashboard');
                 exit;
             } else {
@@ -46,8 +52,10 @@ class AuthController {
                 $user = $this->userModel->login($username, $password);
 
                 if ($user) {
+                    session_regenerate_id(true);
                     $_SESSION['user_id'] = $user['user_id'];
                     $_SESSION['username'] = $user['username'];
+                    $_SESSION['last_activity'] = time();
                 }
 
                 header('Location: index.php?action=dashboard');
@@ -62,6 +70,7 @@ class AuthController {
     }
 
     public function logout() {
+        session_unset();
         session_destroy();
         header('Location: index.php?action=landing');
         exit;

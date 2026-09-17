@@ -86,9 +86,72 @@ class Character {
     public function joinCampaign($character_id, $campaign_id) {
         $sql = "UPDATE characters SET campaign_id = :campaign_id WHERE character_id = :character_id";
         $stmt = $this->pdo->prepare($sql);
-        return $stmt->execute([
+        $result = $stmt->execute([
             ':campaign_id' => $campaign_id,
             ':character_id' => $character_id
+        ]);
+
+        if ($result) {
+            $this->pdo->exec("
+                CREATE TABLE IF NOT EXISTS campaign_members (
+                    member_id INT AUTO_INCREMENT PRIMARY KEY,
+                    campaign_id INT NOT NULL,
+                    user_id INT NOT NULL,
+                    role ENUM('Player', 'Game Master') NOT NULL DEFAULT 'Player',
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    UNIQUE KEY unique_campaign_user (campaign_id, user_id),
+                    KEY idx_campaign_user (campaign_id, user_id),
+                    KEY idx_campaign_role (campaign_id, role),
+                    FOREIGN KEY (campaign_id) REFERENCES campaigns(campaign_id) ON DELETE CASCADE,
+                    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+                )
+            ");
+
+            $character = $this->getById($character_id);
+            if ($character && !empty($character['player_id'])) {
+                $memberSql = "INSERT INTO campaign_members (campaign_id, user_id, role)
+                              VALUES (:campaign_id, :user_id, 'Player')
+                              ON DUPLICATE KEY UPDATE role = VALUES(role)";
+                $memberStmt = $this->pdo->prepare($memberSql);
+                $memberStmt->execute([
+                    ':campaign_id' => $campaign_id,
+                    ':user_id' => $character['player_id'],
+                ]);
+            }
+        }
+
+        return $result;
+    }
+
+    public function unlinkFromCampaignByOwner($character_id, $player_id) {
+        $sql = "UPDATE characters
+                SET campaign_id = NULL
+                WHERE character_id = :character_id
+                  AND player_id = :player_id
+                  AND campaign_id IS NOT NULL";
+        $stmt = $this->pdo->prepare($sql);
+        return $stmt->execute([
+            ':character_id' => $character_id,
+            ':player_id' => $player_id
+        ]);
+    }
+
+    public function unlinkFromCampaignByGm($character_id, $campaign_id, $gm_id) {
+        $sql = "UPDATE characters
+                SET campaign_id = NULL
+                WHERE character_id = :character_id
+                  AND campaign_id = :campaign_id_filter
+                  AND EXISTS (
+                      SELECT 1 FROM campaigns
+                      WHERE campaign_id = :campaign_id_exists
+                        AND gm_id = :gm_id
+                  )";
+        $stmt = $this->pdo->prepare($sql);
+        return $stmt->execute([
+            ':character_id' => $character_id,
+            ':campaign_id_filter' => $campaign_id,
+            ':campaign_id_exists' => $campaign_id,
+            ':gm_id' => $gm_id
         ]);
     }
 

@@ -41,7 +41,85 @@ class CampaignController {
 
         $isGm = $campaign['gm_id'] == $_SESSION['user_id'];
         $players = $this->campaignModel->getCharactersInCampaign($campaignId);
+        $campaignMembers = $this->campaignModel->getMembers($campaignId);
+        $availableUsers = $this->campaignModel->getAvailableUsers($campaignId);
+        $sessionNotes = $this->campaignModel->getSessionNotes($campaignId);
         require __DIR__ . '/../views/campaign_view.php';
+    }
+
+    public function updateMembers() {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: index.php?action=dashboard');
+            exit;
+        }
+
+        if (!isset($_SESSION['user_id'])) {
+            header('Location: index.php?action=login');
+            exit;
+        }
+
+        $campaignId = (int)($_POST['campaign_id'] ?? 0);
+        $campaign = $this->campaignModel->getById($campaignId);
+        if (!$campaign || (int)$campaign['gm_id'] !== (int)$_SESSION['user_id']) {
+            header('Location: index.php?action=dashboard');
+            exit;
+        }
+
+        if (isset($_POST['add_member'])) {
+            $userId = (int)($_POST['user_id'] ?? 0);
+            $role = $_POST['member_role'] ?? 'Player';
+            $this->campaignModel->addMember($campaignId, $_SESSION['user_id'], $userId, $role);
+        }
+
+        if (isset($_POST['update_member_role'])) {
+            $userId = (int)($_POST['user_id'] ?? 0);
+            $role = $_POST['member_role'] ?? 'Player';
+            $this->campaignModel->setMemberRole($campaignId, $_SESSION['user_id'], $userId, $role);
+        }
+
+        if (isset($_POST['remove_member'])) {
+            $userId = (int)($_POST['user_id'] ?? 0);
+            $this->campaignModel->removeMember($campaignId, $_SESSION['user_id'], $userId);
+        }
+
+        header('Location: index.php?action=campaign_view&id=' . $campaignId);
+        exit;
+    }
+
+    public function saveSession() {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: index.php?action=dashboard');
+            exit;
+        }
+
+        if (!isset($_SESSION['user_id'])) {
+            header('Location: index.php?action=login');
+            exit;
+        }
+
+        $campaignId = (int)($_POST['campaign_id'] ?? 0);
+        $sessionDate = trim($_POST['session_date'] ?? '');
+        $title = trim($_POST['session_title'] ?? '');
+        $summary = trim($_POST['session_summary'] ?? '');
+        $attendees = $_POST['attendees'] ?? [];
+
+        $campaign = $this->campaignModel->getById($campaignId);
+        if (!$campaign || (int)$campaign['gm_id'] !== (int)$_SESSION['user_id']) {
+            header('Location: index.php?action=dashboard');
+            exit;
+        }
+
+        $this->campaignModel->saveSessionNote(
+            $campaignId,
+            $_SESSION['user_id'],
+            $sessionDate,
+            $title,
+            $summary,
+            $attendees
+        );
+
+        header('Location: index.php?action=campaign_view&id=' . $campaignId);
+        exit;
     }
 
     public function update() {
