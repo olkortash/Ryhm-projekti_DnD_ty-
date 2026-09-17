@@ -53,7 +53,7 @@ require __DIR__ . '/partials/head.php';
                     <h3>Job</h3>
                     <div class="form-group">
                         <select name="character_job_id" required id="jobSelect">
-                            <option value="">Valitse ammatti...</option>
+                            <option value="">Choose a profession...</option>
                             <?php foreach ($jobs as $job): ?>
                                 <option value="<?= $job['job_id']; ?>" 
                                         data-job="<?= htmlspecialchars($job['job_name']); ?>">
@@ -67,13 +67,22 @@ require __DIR__ . '/partials/head.php';
                 <div class="form-section">
                     <h3>Stats</h3>
                     <div class="form-group">
-                        <label>Level</label>
-                        <input type="number" name="level" value="1" min="1" max="20">
+                        <label>Agility (AGI)</label>
+                        <input type="number" name="agi" value="1" min="1" max="10">
                     </div>
                     <div class="form-group">
                         <label>Hit Points (HP)</label>
-                        <input type="number" name="hp_max" value="10" min="1" required>
+                        <input type="number" name="hp_max" value="1" min="1" max="10 required>
                     </div>
+                    <div class="form-group">
+                        <label>Strength (STR)</label>
+                        <input type="number" name="str" value="1" min="1" max="10" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Dexterity (DEX)</label>
+                        <input type="number" name="dex" value="1" min="1" max="10" required>
+                    </div>
+                    
                 </div>
 
                 <div class="form-actions">

@@ -9,19 +9,19 @@ require __DIR__ . '/partials/head.php';
             <h1><?= htmlspecialchars($campaign['campaign_name']); ?></h1>
             <p class="campaign-tagline"><?= htmlspecialchars($campaign['description'] ?? 'Ei kuvausta'); ?></p>
         </div>
-        <a href="index.php?action=dashboard" class="btn btn-secondary">← Takaisin</a>
+        <a href="index.php?action=dashboard" class="btn btn-secondary">Back to Dashboard</a>
     </div>
 
     <div class="campaign-info-section">
         <div class="info-card">
-            <h3>Kampanjan tiedot</h3>
+            <h3>Campaign Information</h3>
             <div class="info-grid">
                 <div class="info-item">
-                    <label>Kampanjan nimi</label>
+                    <label>Campaign Name</label>
                     <span><?= htmlspecialchars($campaign['campaign_name']); ?></span>
                 </div>
                 <div class="info-item">
-                    <label>Kutsukoodi pelaajille</label>
+                    <label>Invite Code</label>
                     <code class="invite-code"><?= $campaign['invite_code']; ?></code>
                 </div>
             </div>
@@ -29,38 +29,38 @@ require __DIR__ . '/partials/head.php';
 
         <?php if ($isGm): ?>
             <div class="info-card">
-            <h3>Päivitä kampanjaa</h3>
+            <h3>Update Campaign</h3>
             <form action="index.php?action=campaign_update&redirect=dashboard" method="POST" class="campaign-form">
                 <input type="hidden" name="campaign_id" value="<?= $campaign['campaign_id']; ?>">
 
                 <div class="form-group">
-                    <label>Kampanjan nimi</label>
+                    <label>Campaign Name</label>
                     <input type="text" name="campaign_name" value="<?= htmlspecialchars($campaign['campaign_name']); ?>" required>
                 </div>
 
                 <div class="form-group">
-                    <label>Kuvaus</label>
+                    <label>Description</label>
                     <textarea name="description" rows="4"><?= htmlspecialchars($campaign['description'] ?? ''); ?></textarea>
                 </div>
 
                 <div class="form-actions">
-                    <button type="submit" class="btn btn-primary">Tallenna muutokset</button>
-                    <button type="submit" name="delete_campaign" value="1" formaction="index.php?action=campaign_delete&redirect=dashboard" class="btn btn-danger">Poista kampanja</button>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                    <button type="submit" name="delete_campaign" value="1" formaction="index.php?action=campaign_delete&redirect=dashboard" class="btn btn-danger">Delete Campaign</button>
                 </div>
             </form>
             </div>
         <?php else: ?>
             <div class="info-card campaign-join-note">
-                <h3>Liity kampanjaan</h3>
-                <p>Lisää hahmosi tähän kampanjaan käyttämällä kutsukoodia hahmon tietosivulla.</p>
+                <h3>Join Campaign</h3>
+                <p>Add your character to this campaign using the invite code on the character details page.</p>
                 <a href="index.php?action=dashboard" class="btn btn-secondary">View my characters</a>
             </div>
         <?php endif; ?>
     </div>
 
     <div class="characters-section">
-        <h2>Kampanjan Hahmot (<?= count($players); ?>)</h2>
-        
+        <h2>Campaign Characters (<?= count($players); ?>)</h2>
+
         <?php if (count($players) > 0): ?>
             <div class="characters-table">
                 <div class="table-header">
@@ -89,7 +89,7 @@ require __DIR__ . '/partials/head.php';
             </div>
         <?php else: ?>
             <div class="empty-state">
-                <p>Ei hahmoja kampanjassa</p>
+                <p>No characters in campaign</p>
             </div>
         <?php endif; ?>
     </div>
