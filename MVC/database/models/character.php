@@ -86,10 +86,41 @@ class Character {
     public function joinCampaign($character_id, $campaign_id) {
         $sql = "UPDATE characters SET campaign_id = :campaign_id WHERE character_id = :character_id";
         $stmt = $this->pdo->prepare($sql);
-        return $stmt->execute([
+        $result = $stmt->execute([
             ':campaign_id' => $campaign_id,
             ':character_id' => $character_id
         ]);
+
+        if ($result) {
+            $this->pdo->exec("
+                CREATE TABLE IF NOT EXISTS campaign_members (
+                    member_id INT AUTO_INCREMENT PRIMARY KEY,
+                    campaign_id INT NOT NULL,
+                    user_id INT NOT NULL,
+                    role ENUM('Player', 'Game Master') NOT NULL DEFAULT 'Player',
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    UNIQUE KEY unique_campaign_user (campaign_id, user_id),
+                    KEY idx_campaign_user (campaign_id, user_id),
+                    KEY idx_campaign_role (campaign_id, role),
+                    FOREIGN KEY (campaign_id) REFERENCES campaigns(campaign_id) ON DELETE CASCADE,
+                    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+                )
+            ");
+
+            $character = $this->getById($character_id);
+            if ($character && !empty($character['player_id'])) {
+                $memberSql = "INSERT INTO campaign_members (campaign_id, user_id, role)
+                              VALUES (:campaign_id, :user_id, 'Player')
+                              ON DUPLICATE KEY UPDATE role = VALUES(role)";
+                $memberStmt = $this->pdo->prepare($memberSql);
+                $memberStmt->execute([
+                    ':campaign_id' => $campaign_id,
+                    ':user_id' => $character['player_id'],
+                ]);
+            }
+        }
+
+        return $result;
     }
 
     // Apufunktiot lomakkeiden alasvetovalikoille

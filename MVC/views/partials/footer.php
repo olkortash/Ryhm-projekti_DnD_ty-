@@ -4,7 +4,7 @@
 
     <span>MASTERS (Rico, Jyri, Taika, Pasi)</span> <!-- Left side -->
 
-    <p>Campaign dashboard · Built for storytellers</p> <!-- Right side -->
+    <p>MASTERS · Built for storytellers</p> <!-- Right side -->
 
 </footer>
 
