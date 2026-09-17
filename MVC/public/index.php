@@ -1,6 +1,32 @@
 <?php
 
+$sessionTimeoutSeconds = 900;
+ini_set('session.gc_maxlifetime', (string) $sessionTimeoutSeconds);
+
+session_set_cookie_params([
+    'lifetime' => $sessionTimeoutSeconds,
+    'path' => '/',
+    'secure' => false,
+    'httponly' => true,
+    'samesite' => 'Lax',
+]);
+
 session_start();
+
+if (isset($_SESSION['user_id'])) {
+    if (!isset($_SESSION['last_activity'])) {
+        $_SESSION['last_activity'] = time();
+    }
+
+    if ((time() - $_SESSION['last_activity']) > $sessionTimeoutSeconds) {
+        session_unset();
+        session_destroy();
+        header('Location: index.php?action=login&timeout=1');
+        exit;
+    }
+
+    $_SESSION['last_activity'] = time();
+}
 
 require_once __DIR__ . '/../database/connection.php';
 
@@ -77,6 +103,14 @@ switch ($action) {
         require_once __DIR__ . '/../controllers/campaignController.php';
         (new CampaignController($pdo))->delete();
         break;        
+    case 'campaign_session_save':
+        require_once __DIR__ . '/../controllers/campaignController.php';
+        (new CampaignController($pdo))->saveSession();
+        break;
+    case 'campaign_members_update':
+        require_once __DIR__ . '/../controllers/campaignController.php';
+        (new CampaignController($pdo))->updateMembers();
+        break;
     default:
         echo "404 - Sivua ei löytynyt";
         break;
