@@ -196,7 +196,7 @@ a {
 .eyebrow {
     margin: 0 0 14px;
     color: var(--gold);
-    font-size: 11px;
+    font-size: 12px;
     letter-spacing: 0.24em;
     text-transform: uppercase;
 }
@@ -799,9 +799,12 @@ a {
 
 .dashboard-card h3 {
     margin: 0 0 8px;
-    font-size: clamp(16px, 2vw, 20px);
+    font-size: clamp(16px, 1vw, 32px);
+    font-family: "Finger Paint", sans-serif;
+    font-weight: 400;
+    font-style: normal;
     text-transform: uppercase;
-    letter-spacing: 0.01em;
+    letter-spacing: 0.05em;
     line-height: 1.2;
 }
 
