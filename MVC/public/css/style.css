@@ -1485,6 +1485,7 @@ a {
     grid-template-columns: 42px minmax(80px, 1fr) 42px;
     gap: 8px;
     align-items: center;
+    margin-bottom: 15px;
 }
 
 .stat-button {
