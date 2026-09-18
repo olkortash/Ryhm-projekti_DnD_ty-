@@ -71,27 +71,27 @@ require __DIR__ . '/partials/head.php';
                         <span>Points remaining</span>
                         <strong id="pointsLeft">40</strong>
                     </div>
+                        <div class="form-group">
+                        <label>Hit Points (HP)</label>
+                        <div class="stat-stepper">
+                            <button type="button" class="stat-button" data-target="hp_max" data-action="decrease" aria-label="Decrease hit points">−</button>
+                            <input type="number" name="hp_max" value="15" min="15" max="26" class="stat-input hp-input" data-stat="hp_max" required>
+                            <button type="button" class="stat-button" data-target="hp_max" data-action="increase" aria-label="Increase hit points">+</button>
+                        </div>
                     <div class="form-group">
                         <label>Agility (AGI)</label>
                         <div class="stat-stepper">
                             <button type="button" class="stat-button" data-stat="agi" data-action="decrease" aria-label="Decrease agility">−</button>
-                            <input type="number" name="agi" value="0" min="0" max="40" class="stat-input" data-stat="agi" required>
+                            <input type="number" name="agi" value="1" min="1" max="26" class="stat-input" data-stat="agi" required>
                             <button type="button" class="stat-button" data-stat="agi" data-action="increase" aria-label="Increase agility">+</button>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label>Hit Points (HP)</label>
-                        <div class="stat-stepper">
-                            <button type="button" class="stat-button" data-target="hp_max" data-action="decrease" aria-label="Decrease hit points">−</button>
-                            <input type="number" name="hp_max" value="0" min="0" max="40" class="stat-input hp-input" data-stat="hp_max" required>
-                            <button type="button" class="stat-button" data-target="hp_max" data-action="increase" aria-label="Increase hit points">+</button>
-                        </div>
                     </div>
                     <div class="form-group">
                         <label>Strength (STR)</label>
                         <div class="stat-stepper">
                             <button type="button" class="stat-button" data-stat="str" data-action="decrease" aria-label="Decrease strength">−</button>
-                            <input type="number" name="str" value="0" min="0" max="40" class="stat-input" data-stat="str" required>
+                            <input type="number" name="str" value="1" min="1" max="26" class="stat-input" data-stat="str" required>
                             <button type="button" class="stat-button" data-stat="str" data-action="increase" aria-label="Increase strength">+</button>
                         </div>
                     </div>
@@ -99,7 +99,7 @@ require __DIR__ . '/partials/head.php';
                         <label>Dexterity (DEX)</label>
                         <div class="stat-stepper">
                             <button type="button" class="stat-button" data-stat="dex" data-action="decrease" aria-label="Decrease dexterity">−</button>
-                            <input type="number" name="dex" value="0" min="0" max="40" class="stat-input" data-stat="dex" required>
+                            <input type="number" name="dex" value="1" min="1" max="26" class="stat-input" data-stat="dex" required>
                             <button type="button" class="stat-button" data-stat="dex" data-action="increase" aria-label="Increase dexterity">+</button>
                         </div>
                     </div>
@@ -107,7 +107,7 @@ require __DIR__ . '/partials/head.php';
                         <label>Wisdom (WIS)</label>
                         <div class="stat-stepper">
                             <button type="button" class="stat-button" data-stat="wis" data-action="decrease" aria-label="Decrease wisdom">−</button>
-                            <input type="number" name="wis" value="0" min="0" max="40" class="stat-input" data-stat="wis" required>
+                            <input type="number" name="wis" value="1" min="1" max="26" class="stat-input" data-stat="wis" required>
                             <button type="button" class="stat-button" data-stat="wis" data-action="increase" aria-label="Increase wisdom">+</button>
                         </div>
                     </div>
@@ -115,7 +115,7 @@ require __DIR__ . '/partials/head.php';
                         <label>Charm (CHA)</label>
                         <div class="stat-stepper">
                             <button type="button" class="stat-button" data-stat="cha" data-action="decrease" aria-label="Decrease charm">−</button>
-                            <input type="number" name="cha" value="0" min="0" max="40" class="stat-input" data-stat="cha" required>
+                            <input type="number" name="cha" value="1" min="1" max="26" class="stat-input" data-stat="cha" required>
                             <button type="button" class="stat-button" data-stat="cha" data-action="increase" aria-label="Increase charm">+</button>
                         </div>
                     </div>
@@ -123,7 +123,7 @@ require __DIR__ . '/partials/head.php';
                         <label>Constitution (CON)</label>
                         <div class="stat-stepper">
                             <button type="button" class="stat-button" data-stat="con" data-action="decrease" aria-label="Decrease constitution">−</button>
-                            <input type="number" name="con" value="0" min="0" max="40" class="stat-input" data-stat="con" required>
+                            <input type="number" name="con" value="1" min="1" max="26" class="stat-input" data-stat="con" required>
                             <button type="button" class="stat-button" data-stat="con" data-action="increase" aria-label="Increase constitution">+</button>
                         </div>
                     </div>
@@ -131,7 +131,7 @@ require __DIR__ . '/partials/head.php';
                         <label>Intelligence (INT)</label>
                         <div class="stat-stepper">
                             <button type="button" class="stat-button" data-stat="int" data-action="decrease" aria-label="Decrease intelligence">−</button>
-                            <input type="number" name="int" value="0" min="0" max="40" class="stat-input" data-stat="int" required>
+                            <input type="number" name="int" value="1" min="1" max="26" class="stat-input" data-stat="int" required>
                             <button type="button" class="stat-button" data-stat="int" data-action="increase" aria-label="Increase intelligence">+</button>
                         </div>
                     </div>

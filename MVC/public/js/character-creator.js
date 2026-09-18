@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const hpInput = document.querySelector('input[name="hp_max"]');
     const statInputs = document.querySelectorAll('.stat-input');
     const pointsLeftEl = document.getElementById('pointsLeft');
-    const MaxPoints = 40;
+    const MaxPoints = 47;
 
     function getUsedPoints() {
         let used = 0;
@@ -128,6 +128,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const currentValue = Number(input.value) || 0;
             const min = Number(input.min) || 0;
             const max = Number(input.max) || MaxPoints;
+
 
             if (action === 'decrease') {
                 if (currentValue <= min) return;
