@@ -14,12 +14,36 @@ require __DIR__ . '/partials/head.php';
 
     <div class="character-profile-layout">
         <section class="character-portrait-panel" aria-label="Character profile image">
-            <div class="character-portrait-placeholder" role="img" aria-label="Profile image placeholder">
-                <span aria-hidden="true">✦</span>
-                <p>Profile image</p>
-                <small>Coming soon</small>
-            </div>
-            <p class="portrait-note">A portrait can be selected or uploaded when creating the character.</p>
+            <?php if (!empty($character['character_img_id'])): ?>
+                <div class="character-portrait-frame">
+                    <img
+                        src="index.php?action=character_image&amp;id=<?= (int) $character['character_id']; ?>"
+                        alt="Profile portrait of <?= htmlspecialchars($character['character_name']); ?>"
+                    >
+                </div>
+            <?php else: ?>
+                <div class="character-portrait-placeholder" role="img" aria-label="Character profile image placeholder">
+                    <span aria-hidden="true">✦</span>
+                    <p>Profile image</p>
+                    <small>No image yet</small>
+                </div>
+            <?php endif; ?>
+
+            <form class="character-image-form" action="index.php?action=character_update_image" method="POST" enctype="multipart/form-data">
+                <input type="hidden" name="character_id" value="<?= (int) $character['character_id']; ?>">
+                <label for="replace-character-image"><?= !empty($character['character_img_id']) ? 'Replace image' : 'Upload image'; ?></label>
+                <input id="replace-character-image" type="file" name="character_image" accept="image/jpeg,image/png,image/webp,image/gif">
+                <?php if (!empty($character['character_img_id'])): ?>
+                    <label class="image-remove-option">
+                        <input type="checkbox" name="remove_image" value="1">
+                        Remove current image
+                    </label>
+                <?php endif; ?>
+                <?php if (($_GET['error'] ?? '') === 'image'): ?>
+                    <p class="form-error">Please choose a valid image up to 5 MB in size.</p>
+                <?php endif; ?>
+                <button type="submit" class="btn btn-secondary">Save image</button>
+            </form>
         </section>
 
         <section class="character-details-panel" aria-label="Character details">

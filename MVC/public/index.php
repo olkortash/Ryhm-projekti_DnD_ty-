@@ -81,6 +81,14 @@ switch ($action) {
         require_once __DIR__ . '/../controllers/characterController.php';
         (new CharacterController($pdo))->view();
         break;
+    case 'character_image':
+        require_once __DIR__ . '/../controllers/characterController.php';
+        (new CharacterController($pdo))->image();
+        break;
+    case 'character_update_image':
+        require_once __DIR__ . '/../controllers/characterController.php';
+        (new CharacterController($pdo))->updateImage();
+        break;
     case 'character_update_hp':
         require_once __DIR__ . '/../controllers/characterController.php';
         (new CharacterController($pdo))->updateHp();

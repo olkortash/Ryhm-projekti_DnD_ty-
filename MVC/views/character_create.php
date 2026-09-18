@@ -24,7 +24,7 @@ require __DIR__ . '/partials/head.php';
         <h1>Create Character</h1>
     </div>
 
-    <form action="index.php?action=character_create" method="POST">
+    <form action="index.php?action=character_create" method="POST" enctype="multipart/form-data">
         <div class="creator-layout">
             <!-- Left: Form -->
             <div class="creator-form">
@@ -34,6 +34,18 @@ require __DIR__ . '/partials/head.php';
                     <div class="form-group">
                         <input type="text" name="character_name" placeholder="T.Halme" required>
                     </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>Profile Image</h3>
+                    <div class="form-group">
+                        <label for="character-image">Upload a portrait (optional)</label>
+                        <input id="character-image" type="file" name="character_image" accept="image/jpeg,image/png,image/webp,image/gif">
+                        <small class="form-help">JPG, PNG, WEBP, or GIF. Maximum size 5 MB.</small>
+                    </div>
+                    <?php if (!empty($error)): ?>
+                        <p class="form-error"><?= htmlspecialchars($error); ?></p>
+                    <?php endif; ?>
                 </div>
 
                 <div class="form-section">
