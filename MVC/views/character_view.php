@@ -30,8 +30,43 @@ require __DIR__ . '/partials/head.php';
                 <div class="character-stat"><span class="stat-label">Campaign</span><strong><?= $character['campaign_name'] ? htmlspecialchars($character['campaign_name']) : 'No campaign'; ?></strong></div>
             </div>
 
+            <div class="character-ability-section">
+                <p class="eyebrow">ABILITY SCORES</p>
+                <div class="ability-score-grid">
+                    <div class="ability-score">
+                        <span>AGI</span>
+                        <strong><?= htmlspecialchars($character['agi'] ?? 0); ?></strong>
+                    </div>
+                    <div class="ability-score">
+                        <span>STR</span>
+                        <strong><?= htmlspecialchars($character['str'] ?? 0); ?></strong>
+                    </div>
+                    <div class="ability-score">
+                        <span>DEX</span>
+                        <strong><?= htmlspecialchars($character['dex'] ?? 0); ?></strong>
+                    </div>
+                    <div class="ability-score">
+                        <span>WIS</span>
+                        <strong><?= htmlspecialchars($character['wis'] ?? 0); ?></strong>
+                    </div>
+                    <div class="ability-score">
+                        <span>CHA</span>
+                        <strong><?= htmlspecialchars($character['cha'] ?? 0); ?></strong>
+                    </div>
+                    <div class="ability-score">
+                        <span>CON</span>
+                        <strong><?= htmlspecialchars($character['con'] ?? 0); ?></strong>
+                    </div>
+                    <div class="ability-score">
+                        <span>INT</span>
+                        <strong><?= htmlspecialchars($character['int'] ?? 0); ?></strong>
+                    </div>
+                </div>
+            </div>
+
             <div class="character-action-section">
                 <p class="eyebrow">PLAYING STATUS</p>
+
                 <h2>Hit Points</h2>
                 <form class="character-hp-form" action="index.php?action=character_update_hp" method="POST">
                     <input type="hidden" name="character_id" value="<?= $character['character_id']; ?>">

@@ -1268,6 +1268,42 @@ a {
     text-transform: uppercase;
 }
 
+.character-ability-section {
+    margin-top: 28px;
+    padding-bottom: 28px;
+    border-bottom: 1px solid rgba(213, 169, 30, 0.2);
+}
+
+.ability-score-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 8px;
+    margin-top: 14px;
+}
+
+.ability-score {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 72px;
+    border: 1px solid rgba(213, 169, 30, 0.25);
+    background: rgba(255, 255, 255, 0.015);
+}
+
+.ability-score span {
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: #8d7ba8;
+    margin-bottom: 7px;
+}
+
+.ability-score strong {
+    font-family: Georgia, serif;
+    font-size: 24px;
+    color: #f3eadc;
+}
+
 .hp-input-row {
     display: flex;
     align-items: center;
