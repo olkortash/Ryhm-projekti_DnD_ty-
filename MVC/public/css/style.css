@@ -88,7 +88,7 @@ a {
 
 .text-link {
     color: var(--muted);
-    font-size: 13px;
+
 }
 
 .text-link:hover {
@@ -799,7 +799,6 @@ a {
 
 .dashboard-card h3 {
     margin: 0 0 8px;
-    font-size: clamp(16px, 1vw, 32px);
     font-family: "Finger Paint", sans-serif;
     font-weight: 400;
     font-style: normal;
@@ -1443,9 +1442,9 @@ a {
     background: rgba(9, 8, 13, 0.92);
     border: 1px solid rgba(213, 169, 30, 0.24);
     color: var(--cream);
-    font-size: 14px;
+    font-size: 13px;
     border-radius: 4px;
-    font-family: inherit;
+
 }
 
 .form-group input:focus,
@@ -1469,9 +1468,8 @@ a {
     padding: 10px 12px;
     border: 1px solid rgba(213, 169, 30, 0.3);
     border-radius: 4px;
-    background: rgba(22, 17, 28, 0.8);
-    color: var(--muted);
-    font-size: 12px;
+    background: rgba(45, 38, 53, 0.8);
+    color: var(--gold);
     letter-spacing: 0.08em;
     text-transform: uppercase;
 }
@@ -1799,6 +1797,8 @@ input[type="number"] {
     border-radius: 6px;
     text-align: center;
     transition: all 0.2s ease;
+    font-family: Arial, sans-serif;
+    letter-spacing: 0.05em;
     font-size: 13px;
 }
 
