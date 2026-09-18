@@ -34,21 +34,112 @@ class Character {
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function create($data) {
-        $sql = "INSERT INTO characters (player_id, campaign_id, character_name, character_class_id, character_race_id, character_job_id, level, hp_current, hp_max)
-                VALUES (:player_id, :campaign_id, :character_name, :character_class_id, :character_race_id, :character_job_id, :level, :hp_current, :hp_max)";
+    public function create($data, $image = null) {
+        $this->pdo->beginTransaction();
+
+        try {
+            $sql = "INSERT INTO characters (player_id, campaign_id, character_name, character_class_id, character_race_id, character_job_id, level, hp_current, hp_max)
+                    VALUES (:player_id, :campaign_id, :character_name, :character_class_id, :character_race_id, :character_job_id, :level, :hp_current, :hp_max)";
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute([
+                ':player_id' => $data['player_id'],
+                ':campaign_id' => $data['campaign_id'] ?? null,
+                ':character_name' => $data['character_name'],
+                ':character_class_id' => $data['character_class_id'],
+                ':character_race_id' => $data['character_race_id'],
+                ':character_job_id' => $data['character_job_id'],
+                ':level' => $data['level'] ?? 1,
+                ':hp_current' => $data['hp_max'],
+                ':hp_max' => $data['hp_max']
+            ]);
+
+            if ($image) {
+                $imageId = $this->insertImage($image);
+                $update = $this->pdo->prepare(
+                    'UPDATE characters SET character_img_id = :image_id WHERE character_id = :character_id'
+                );
+                $update->execute([
+                    ':image_id' => $imageId,
+                    ':character_id' => $this->pdo->lastInsertId(),
+                ]);
+            }
+
+            $this->pdo->commit();
+            return true;
+        } catch (Throwable $exception) {
+            $this->pdo->rollBack();
+            return false;
+        }
+    }
+
+    public function updateImage($character_id, $player_id, $image = null) {
+        $oldImageId = null;
+        $this->pdo->beginTransaction();
+
+        try {
+            $find = $this->pdo->prepare(
+                'SELECT character_img_id FROM characters WHERE character_id = :character_id AND player_id = :player_id FOR UPDATE'
+            );
+            $find->execute([
+                ':character_id' => $character_id,
+                ':player_id' => $player_id,
+            ]);
+            $character = $find->fetch(PDO::FETCH_ASSOC);
+
+            if (!$character) {
+                $this->pdo->rollBack();
+                return false;
+            }
+
+            $oldImageId = $character['character_img_id'];
+            $newImageId = $image ? $this->insertImage($image) : null;
+            $update = $this->pdo->prepare(
+                'UPDATE characters SET character_img_id = :image_id WHERE character_id = :character_id AND player_id = :player_id'
+            );
+            $update->execute([
+                ':image_id' => $newImageId,
+                ':character_id' => $character_id,
+                ':player_id' => $player_id,
+            ]);
+
+            if ($oldImageId) {
+                $this->deleteImage($oldImageId);
+            }
+
+            $this->pdo->commit();
+            return true;
+        } catch (Throwable $exception) {
+            $this->pdo->rollBack();
+            return false;
+        }
+    }
+
+    public function getImageByCharacterId($character_id, $player_id) {
+        $sql = 'SELECT ci.image_data, ci.mime_type
+                FROM character_images ci
+                INNER JOIN characters c ON c.character_img_id = ci.image_id
+                WHERE c.character_id = :character_id AND c.player_id = :player_id';
         $stmt = $this->pdo->prepare($sql);
-        return $stmt->execute([
-            ':player_id' => $data['player_id'],
-            ':campaign_id' => $data['campaign_id'] ?? null,
-            ':character_name' => $data['character_name'],
-            ':character_class_id' => $data['character_class_id'],
-            ':character_race_id' => $data['character_race_id'],
-            ':character_job_id' => $data['character_job_id'],
-            ':level' => $data['level'] ?? 1,
-            ':hp_current' => $data['hp_max'],
-            ':hp_max' => $data['hp_max']
+        $stmt->execute([
+            ':character_id' => $character_id,
+            ':player_id' => $player_id,
         ]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    private function insertImage($image) {
+        $stmt = $this->pdo->prepare(
+            'INSERT INTO character_images (image_data, mime_type) VALUES (:image_data, :mime_type)'
+        );
+        $stmt->bindValue(':image_data', $image['data'], PDO::PARAM_LOB);
+        $stmt->bindValue(':mime_type', $image['mime_type'], PDO::PARAM_STR);
+        $stmt->execute();
+        return $this->pdo->lastInsertId();
+    }
+
+    private function deleteImage($image_id) {
+        $stmt = $this->pdo->prepare('DELETE FROM character_images WHERE image_id = :image_id');
+        $stmt->execute([':image_id' => $image_id]);
     }
 
     public function updateHp($character_id, $hp_current) {

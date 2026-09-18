@@ -1185,6 +1185,22 @@ a {
     color: var(--gold);
 }
 
+.character-portrait-frame {
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    border: 1px solid rgba(213, 169, 30, 0.28);
+    background: #0d0b13;
+}
+
+.character-portrait-frame img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    filter: saturate(0.82) contrast(1.05);
+}
+
 .character-portrait-placeholder span {
     font-size: 34px;
 }
@@ -1200,6 +1216,58 @@ a {
 .portrait-note {
     color: var(--muted);
     font-size: 12px;
+}
+
+.character-image-form {
+    display: grid;
+    gap: 10px;
+    margin-top: 18px;
+}
+
+.character-image-form label {
+    color: var(--cream);
+    font-size: 12px;
+    letter-spacing: 0.05em;
+}
+
+.character-image-form input[type="file"] {
+    width: 100%;
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.character-image-form input[type="file"]::file-selector-button {
+    margin-right: 8px;
+    padding: 8px 10px;
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    color: var(--cream);
+    background: rgba(22, 16, 28, 0.9);
+    cursor: pointer;
+}
+
+.image-remove-option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--muted) !important;
+    letter-spacing: 0 !important;
+}
+
+.form-help,
+.form-error {
+    display: block;
+    margin: 7px 0 0;
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+.form-help {
+    color: var(--muted);
+}
+
+.form-error {
+    color: #e6b1bd;
 }
 
 .character-portrait-placeholder small {
