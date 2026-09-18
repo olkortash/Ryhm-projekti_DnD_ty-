@@ -45,7 +45,7 @@ require __DIR__ . '/partials/head.php';
 
                 <div class="form-actions">
                     <button type="submit" class="btn btn-primary">Save Changes</button>
-                    <button type="submit" name="delete_campaign" value="1" formaction="index.php?action=campaign_delete&redirect=dashboard" class="btn btn-danger">Delete Campaign</button>
+                    <button type="submit" name="delete_campaign" value="1" formaction="index.php?action=campaign_delete&redirect=dashboard" class="btn btn-danger" onclick="return confirm('Haluatko varmasti poistaa tämän kampanjan? Tämä toiminto on peruuttamaton.');">Delete Campaign</button>
                 </div>
             </form>
             </div>

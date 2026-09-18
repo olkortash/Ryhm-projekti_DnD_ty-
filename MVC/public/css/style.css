@@ -1569,7 +1569,7 @@ input[type="number"] {
 
 .info-card {
     background: var(--panel);
-    border: 1px solid var(--line);
+    /* border: 1px solid var(--line); */
     padding: 20px;
     border-radius: 8px;
 }
@@ -1654,6 +1654,7 @@ input[type="number"] {
     border: 1px solid var(--line);
     padding: 20px;
     border-radius: 8px;
+    margin-bottom: 40px;
 }
 
 .characters-section h2 {
@@ -1985,11 +1986,13 @@ input[type="number"] {
 .role-gm {
     background: rgba(213, 169, 30, 0.18);
     border-color: rgba(213, 169, 30, 0.35);
+    padding: 5px 10px;
 }
 
 .role-player {
     background: rgba(120, 180, 255, 0.12);
     border-color: rgba(120, 180, 255, 0.25);
+    padding: 5px 10px;
 }
 
 .member-add-form {
