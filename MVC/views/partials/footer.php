@@ -2,9 +2,12 @@
 
 <footer class="footer">
 
-    <span>MASTERS (Rico, Jyri, Taika, Pasi)</span> <!-- Left side -->
+    <span>MASTERS (Rico, Jyri, Taika, Pasi)</span>
 
-    <p>MASTERS · Built for storytellers</p> <!-- Right side -->
+    <nav class="footer-links" aria-label="Footer navigation">
+        <a href="index.php?action=help">Help &amp; guide</a>
+        <a href="index.php?action=sitemap">Sitemap</a>
+    </nav>
 
 </footer>
 

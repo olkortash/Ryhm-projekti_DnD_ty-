@@ -47,6 +47,12 @@ switch ($action) {
         require_once __DIR__ . '/../controllers/authController.php';
         (new AuthController($pdo))->landing();
         break;
+    case 'help':
+        require __DIR__ . '/../views/help.php';
+        break;
+    case 'sitemap':
+        require __DIR__ . '/../views/sitemap.php';
+        break;
     case 'login':
         require_once __DIR__ . '/../controllers/authController.php';
         (new AuthController($pdo))->login();
