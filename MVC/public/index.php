@@ -1,10 +1,11 @@
 <?php
 
-$sessionTimeoutSeconds = 900;
+$sessionTimeoutSeconds = 3600;
 ini_set('session.gc_maxlifetime', (string) $sessionTimeoutSeconds);
+ini_set('session.cookie_lifetime', '0');
 
 session_set_cookie_params([
-    'lifetime' => $sessionTimeoutSeconds,
+    'lifetime' => 0,
     'path' => '/',
     'secure' => false,
     'httponly' => true,
@@ -14,18 +15,25 @@ session_set_cookie_params([
 session_start();
 
 if (isset($_SESSION['user_id'])) {
+    $now = time();
+
     if (!isset($_SESSION['last_activity'])) {
-        $_SESSION['last_activity'] = time();
+        $_SESSION['last_activity'] = $now;
     }
 
-    if ((time() - $_SESSION['last_activity']) > $sessionTimeoutSeconds) {
+    if (($now - $_SESSION['last_activity']) > $sessionTimeoutSeconds) {
         session_unset();
         session_destroy();
+
+        if (isset($_COOKIE[session_name()])) {
+            setcookie(session_name(), '', time() - 3600, '/');
+        }
+
         header('Location: index.php?action=login&timeout=1');
         exit;
     }
 
-    $_SESSION['last_activity'] = time();
+    $_SESSION['last_activity'] = $now;
 }
 
 require_once __DIR__ . '/../database/connection.php';
