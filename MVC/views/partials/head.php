@@ -62,6 +62,7 @@ $pageTitle = $pageTitle ?? 'Masters';
 
 </header>
 
+
 <?php if (!empty($_SESSION['flash'])): ?>
     <?php $flash = $_SESSION['flash']; unset($_SESSION['flash']); ?>
     <div class="flash-message flash-<?= e($flash['type'] ?? 'info'); ?>" role="status">
