@@ -134,6 +134,6 @@ switch ($action) {
         (new CampaignController($pdo))->updateMembers();
         break;
     default:
-        echo "404 - Sivua ei löytynyt";
+        require '../views/404_view.php';
         break;
 }
