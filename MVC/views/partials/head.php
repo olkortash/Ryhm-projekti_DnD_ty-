@@ -61,13 +61,3 @@ $pageTitle = $pageTitle ?? 'Masters';
     </div>
 
 </header>
-<<<<<<< HEAD
-=======
-
-<?php if (!empty($_SESSION['flash'])): ?>
-    <?php $flash = $_SESSION['flash']; unset($_SESSION['flash']); ?>
-    <div class="flash-message flash-<?= e($flash['type'] ?? 'info'); ?>" role="status">
-        <?= e($flash['message'] ?? ''); ?>
-    </div>
-<?php endif; ?>
->>>>>>> ed8022b655d37e9b096be1318706178b5cd67f29
