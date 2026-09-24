@@ -308,8 +308,9 @@ a {
 }
 
 .compact {
-    min-height: 40px;
-    padding-inline: 18px;
+    margin-top: 10px;
+    min-height: 30px;
+    padding-inline: 13px;
 }
 
 .campaign-list {
@@ -954,8 +955,8 @@ a {
 
 .dashboard-card h3 {
     margin: 0 0 8px;
-    font-family: "Finger Paint", sans-serif;
-    font-weight: 400;
+
+    font-weight: 800;
     font-style: normal;
     text-transform: uppercase;
     letter-spacing: 0.05em;
@@ -1286,6 +1287,37 @@ a {
     gap: 28px;
 }
 
+.character-icon-sprite {
+    position: absolute;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+}
+
+.profile-icon,
+.ability-icon {
+    width: 18px;
+    height: 18px;
+    flex: 0 0 18px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.7;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.character-stat .stat-label,
+.character-action-section h2 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.character-stat .profile-icon,
+.profile-icon-heading {
+    color: var(--gold);
+}
+
 .character-stat-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -1354,9 +1386,16 @@ a {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    min-height: 72px;
+    min-height: 94px;
     border: 1px solid rgba(213, 169, 30, 0.25);
     background: rgba(255, 255, 255, 0.015);
+}
+
+.ability-icon {
+    width: 22px;
+    height: 22px;
+    margin-bottom: 7px;
+    color: var(--gold);
 }
 
 .ability-score span {
@@ -1466,6 +1505,10 @@ a {
 
     .character-profile-layout {
         grid-template-columns: 1fr;
+    }
+
+    .ability-score-grid {
+        grid-template-columns: repeat(4, 1fr);
     }
 
     .character-portrait-panel {
@@ -1635,6 +1678,10 @@ a {
         grid-template-columns: 1fr;
     }
 
+    .ability-score-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
     .hp-input-row {
         flex-wrap: wrap;
     }
@@ -1649,6 +1696,19 @@ a {
     max-width: 1200px;
     margin: 40px auto;
     padding: 0 20px;
+}
+
+.character-creator .summary-panel .stat-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+.character-creator .summary-panel .summary-icon {
+    display: block;
+    width: 18px;
+    height: 18px;
+    flex: 0 0 18px;
+    color: #e5b925;
 }
 
 .creator-header {
@@ -1987,6 +2047,18 @@ input[type="number"] {
 .col-character {
     color: var(--cream);
     font-size: 13px;
+}
+
+.character-profile-link {
+    color: var(--gold);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.character-profile-link:hover,
+.character-profile-link:focus-visible {
+    color: var(--cream);
+    text-decoration: underline;
 }
 
 .col-race {

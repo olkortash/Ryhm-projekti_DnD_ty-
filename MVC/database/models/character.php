@@ -9,8 +9,9 @@ class Character {
     }
 
     public function getByPlayerId($player_id) {
-        $sql = "SELECT c.*, cl.class_name, r.race_name, j.job_name, cmp.campaign_name 
+        $sql = "SELECT c.*, u.username AS creator_username, cl.class_name, r.race_name, j.job_name, cmp.campaign_name
                 FROM characters c
+                JOIN users u ON c.player_id = u.user_id
                 LEFT JOIN classes cl ON c.character_class_id = cl.class_id
                 LEFT JOIN races r ON c.character_race_id = r.race_id
                 LEFT JOIN jobs j ON c.character_job_id = j.job_id
@@ -22,8 +23,9 @@ class Character {
     }
 
     public function getById($character_id) {
-        $sql = "SELECT c.*, cl.class_name, r.race_name, j.job_name, cmp.campaign_name 
+        $sql = "SELECT c.*, u.username AS creator_username, cl.class_name, r.race_name, j.job_name, cmp.campaign_name
                 FROM characters c
+                JOIN users u ON c.player_id = u.user_id
                 LEFT JOIN classes cl ON c.character_class_id = cl.class_id
                 LEFT JOIN races r ON c.character_race_id = r.race_id
                 LEFT JOIN jobs j ON c.character_job_id = j.job_id
@@ -38,8 +40,8 @@ class Character {
         $this->pdo->beginTransaction();
 
         try {
-            $sql = "INSERT INTO characters (player_id, campaign_id, character_name, character_class_id, character_race_id, character_job_id, level, hp_current, hp_max)
-                    VALUES (:player_id, :campaign_id, :character_name, :character_class_id, :character_race_id, :character_job_id, :level, :hp_current, :hp_max)";
+                    $sql = "INSERT INTO characters (player_id, campaign_id, character_name, character_class_id, character_race_id, character_job_id, level, hp_current, hp_max, agility, strength, dexterity, wisdom, charisma, constitution, intelligence)
+                        VALUES (:player_id, :campaign_id, :character_name, :character_class_id, :character_race_id, :character_job_id, :level, :hp_current, :hp_max, :agi, :str, :dex, :wis, :cha, :con, :int)";
             $stmt = $this->pdo->prepare($sql);
             $stmt->execute([
                 ':player_id' => $data['player_id'],
@@ -50,8 +52,19 @@ class Character {
                 ':character_job_id' => $data['character_job_id'],
                 ':level' => $data['level'] ?? 1,
                 ':hp_current' => $data['hp_max'],
-                ':hp_max' => $data['hp_max']
+                ':hp_max' => $data['hp_max'],
+                ':agi' => $data['agi'],
+                ':str' => $data['str'],
+                ':dex' => $data['dex'],
+                ':wis' => $data['wis'],
+                ':cha' => $data['cha'],
+                ':con' => $data['con'],
+                ':int' => $data['int']
             ]);
+
+            // Store the character ID before inserting the image, because that
+            // INSERT changes the value returned by PDO::lastInsertId().
+            $characterId = $this->pdo->lastInsertId();
 
             if ($image) {
                 $imageId = $this->insertImage($image);
@@ -60,8 +73,12 @@ class Character {
                 );
                 $update->execute([
                     ':image_id' => $imageId,
-                    ':character_id' => $this->pdo->lastInsertId(),
+                    ':character_id' => $characterId,
                 ]);
+
+                if ($update->rowCount() !== 1) {
+                    throw new RuntimeException('Character image could not be linked to the new character.');
+                }
             }
 
             $this->pdo->commit();
@@ -114,16 +131,13 @@ class Character {
         }
     }
 
-    public function getImageByCharacterId($character_id, $player_id) {
+    public function getImageByCharacterId($character_id) {
         $sql = 'SELECT ci.image_data, ci.mime_type
                 FROM character_images ci
                 INNER JOIN characters c ON c.character_img_id = ci.image_id
-                WHERE c.character_id = :character_id AND c.player_id = :player_id';
+                WHERE c.character_id = :character_id';
         $stmt = $this->pdo->prepare($sql);
-        $stmt->execute([
-            ':character_id' => $character_id,
-            ':player_id' => $player_id,
-        ]);
+        $stmt->execute([':character_id' => $character_id]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
@@ -142,12 +156,15 @@ class Character {
         $stmt->execute([':image_id' => $image_id]);
     }
 
-    public function updateHp($character_id, $hp_current) {
-        $sql = "UPDATE characters SET hp_current = :hp_current WHERE character_id = :character_id";
+    public function updateHp($character_id, $player_id, $hp_current) {
+        $sql = "UPDATE characters
+                SET hp_current = LEAST(GREATEST(:hp_current, 0), hp_max)
+                WHERE character_id = :character_id AND player_id = :player_id";
         $stmt = $this->pdo->prepare($sql);
         return $stmt->execute([
             ':hp_current' => $hp_current,
-            ':character_id' => $character_id
+            ':character_id' => $character_id,
+            ':player_id' => $player_id
         ]);
     }
 
@@ -174,15 +191,20 @@ class Character {
         ]);
     }
 
-    public function joinCampaign($character_id, $campaign_id) {
-        $sql = "UPDATE characters SET campaign_id = :campaign_id WHERE character_id = :character_id";
+    public function joinCampaign($character_id, $player_id, $campaign_id) {
+        $sql = "UPDATE characters SET campaign_id = :campaign_id
+                WHERE character_id = :character_id
+                  AND player_id = :player_id
+                  AND campaign_id IS NULL";
         $stmt = $this->pdo->prepare($sql);
         $result = $stmt->execute([
             ':campaign_id' => $campaign_id,
-            ':character_id' => $character_id
+            ':character_id' => $character_id,
+            ':player_id' => $player_id
         ]);
 
-        if ($result) {
+        $characterWasJoined = $result && $stmt->rowCount() === 1;
+        if ($characterWasJoined) {
             $this->pdo->exec("
                 CREATE TABLE IF NOT EXISTS campaign_members (
                     member_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -211,20 +233,82 @@ class Character {
             }
         }
 
-        return $result;
+        return $characterWasJoined;
     }
 
     public function unlinkFromCampaignByOwner($character_id, $player_id) {
-        $sql = "UPDATE characters
-                SET campaign_id = NULL
-                WHERE character_id = :character_id
-                  AND player_id = :player_id
-                  AND campaign_id IS NOT NULL";
-        $stmt = $this->pdo->prepare($sql);
-        return $stmt->execute([
-            ':character_id' => $character_id,
-            ':player_id' => $player_id
-        ]);
+        $this->pdo->beginTransaction();
+
+        try {
+            $find = $this->pdo->prepare(
+                "SELECT campaign_id
+                 FROM characters
+                 WHERE character_id = :character_id
+                   AND player_id = :player_id
+                   AND campaign_id IS NOT NULL
+                 LIMIT 1"
+            );
+            $find->execute([
+                ':character_id' => $character_id,
+                ':player_id' => $player_id,
+            ]);
+            $character = $find->fetch(PDO::FETCH_ASSOC);
+
+            if (!$character) {
+                $this->pdo->rollBack();
+                return false;
+            }
+
+            $campaignId = (int)$character['campaign_id'];
+            $unlink = $this->pdo->prepare(
+                "UPDATE characters
+                 SET campaign_id = NULL
+                 WHERE character_id = :character_id
+                   AND player_id = :player_id
+                   AND campaign_id = :campaign_id"
+            );
+            $unlink->execute([
+                ':character_id' => $character_id,
+                ':player_id' => $player_id,
+                ':campaign_id' => $campaignId,
+            ]);
+
+            $remaining = $this->pdo->prepare(
+                "SELECT 1
+                 FROM characters
+                 WHERE player_id = :player_id AND campaign_id = :campaign_id
+                 LIMIT 1"
+            );
+            $remaining->execute([
+                ':player_id' => $player_id,
+                ':campaign_id' => $campaignId,
+            ]);
+
+            if (!$remaining->fetch()) {
+                $removeMember = $this->pdo->prepare(
+                    "DELETE FROM campaign_members
+                     WHERE campaign_id = :campaign_id
+                       AND user_id = :user_id
+                       AND NOT EXISTS (
+                           SELECT 1
+                           FROM campaigns
+                           WHERE campaign_id = :owner_campaign_id AND gm_id = :owner_id
+                       )"
+                );
+                $removeMember->execute([
+                    ':campaign_id' => $campaignId,
+                    ':user_id' => $player_id,
+                    ':owner_campaign_id' => $campaignId,
+                    ':owner_id' => $player_id,
+                ]);
+            }
+
+            $this->pdo->commit();
+            return true;
+        } catch (Throwable $exception) {
+            $this->pdo->rollBack();
+            return false;
+        }
     }
 
     public function unlinkFromCampaignByGm($character_id, $campaign_id, $gm_id) {

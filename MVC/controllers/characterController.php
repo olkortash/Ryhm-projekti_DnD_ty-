@@ -26,13 +26,20 @@ class CharacterController {
 
             $data = [
                 'player_id' => $_SESSION['user_id'],
-                'campaign_id' => !empty($_POST['campaign_id']) ? $_POST['campaign_id'] : null,
+                'campaign_id' => null,
                 'character_name' => trim($_POST['character_name']),
                 'character_class_id' => $_POST['character_class_id'],
                 'character_race_id' => $_POST['character_race_id'],
                 'character_job_id' => $_POST['character_job_id'],
                 'level' => $_POST['level'] ?? 1,
-                'hp_max' => $_POST['hp_max']
+                'hp_max' => $_POST['hp_max'],
+                'agi' => $_POST['agi'],
+                'str' => $_POST['str'],
+                'dex' => $_POST['dex'],
+                'wis' => $_POST['wis'],
+                'cha' => $_POST['cha'],
+                'con' => $_POST['con'],
+                'int' => $_POST['int']
             ];
 
             if ($image['error'] === null && $this->characterModel->create($data, $image['file'])) {
@@ -61,6 +68,7 @@ class CharacterController {
             exit;
         }
 
+        $isOwner = (int) $character['player_id'] === (int) $_SESSION['user_id'];
         require __DIR__ . '/../views/character_view.php';
     }
 
@@ -71,10 +79,7 @@ class CharacterController {
         }
 
         $characterId = (int) ($_GET['id'] ?? 0);
-        $image = $this->characterModel->getImageByCharacterId(
-            $characterId,
-            (int) $_SESSION['user_id']
-        );
+        $image = $this->characterModel->getImageByCharacterId($characterId);
 
         if (!$image) {
             http_response_code(404);
@@ -147,14 +152,18 @@ class CharacterController {
     }
 
     public function updateHp() {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $characterId = $_POST['character_id'];
-            $newHp = $_POST['hp_current'];
-            
-            $this->characterModel->updateHp($characterId, $newHp);
-            header("Location: index.php?action=character_view&id=" . $characterId);
+        if (!isset($_SESSION['user_id'])) {
+            header('Location: index.php?action=login');
             exit;
         }
+
+        $characterId = (int) ($_POST['character_id'] ?? 0);
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['hp_current']) && is_numeric($_POST['hp_current'])) {
+            $this->characterModel->updateHp($characterId, (int) $_SESSION['user_id'], (int) $_POST['hp_current']);
+        }
+
+        header('Location: index.php?action=character_view&id=' . $characterId);
+        exit;
     }
 
     public function delete() {
@@ -173,13 +182,21 @@ class CharacterController {
     }
 
     public function joinCampaign() {
+        if (!isset($_SESSION['user_id'])) {
+            header('Location: index.php?action=login');
+            exit;
+        }
+
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $inviteCode = trim($_POST['invite_code']);
-            $characterId = $_POST['character_id'];
+            $inviteCode = trim($_POST['invite_code'] ?? '');
+            $characterId = (int) ($_POST['character_id'] ?? 0);
 
             $campaign = $this->campaignModel->getByInviteCode($inviteCode);
-            if ($campaign) {
-                $this->characterModel->joinCampaign($characterId, $campaign['campaign_id']);
+            if ($campaign && $this->characterModel->joinCampaign(
+                $characterId,
+                (int) $_SESSION['user_id'],
+                (int) $campaign['campaign_id']
+            )) {
                 header("Location: index.php?action=character_view&id=" . $characterId);
                 exit;
             } else {
