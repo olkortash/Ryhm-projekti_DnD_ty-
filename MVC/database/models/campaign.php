@@ -102,6 +102,88 @@ class Campaign {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public function getAvailableCharactersForPlayer($campaign_id, $player_id) {
+        $sql = "SELECT character_id, character_name
+                FROM characters
+                WHERE player_id = :player_id AND campaign_id IS NULL
+                ORDER BY character_name ASC";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([
+            ':player_id' => $player_id,
+        ]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function isMember($campaign_id, $user_id) {
+        $sql = "SELECT 1
+                FROM characters
+                WHERE campaign_id = :campaign_id AND player_id = :user_id
+                LIMIT 1";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([
+            ':campaign_id' => $campaign_id,
+            ':user_id' => $user_id,
+        ]);
+        return (bool)$stmt->fetchColumn();
+    }
+
+    public function joinPublicCampaign($campaign_id, $player_id, $character_id) {
+        $this->ensureCampaignMemberTableExists();
+
+        $campaign = $this->getById($campaign_id);
+        if (!$campaign || (int)$campaign['gm_id'] === (int)$player_id) {
+            return false;
+        }
+
+        $this->pdo->beginTransaction();
+
+        try {
+            $characterStmt = $this->pdo->prepare(
+                "SELECT character_id FROM characters
+                 WHERE character_id = :character_id
+                   AND player_id = :player_id
+                   AND campaign_id IS NULL
+                 LIMIT 1"
+            );
+            $characterStmt->execute([
+                ':character_id' => $character_id,
+                ':player_id' => $player_id,
+            ]);
+
+            if (!$characterStmt->fetch()) {
+                $this->pdo->rollBack();
+                return false;
+            }
+
+            $characterUpdate = $this->pdo->prepare(
+                "UPDATE characters SET campaign_id = :campaign_id
+                 WHERE character_id = :character_id
+                   AND player_id = :player_id
+                   AND campaign_id IS NULL"
+            );
+            $characterUpdate->execute([
+                ':campaign_id' => $campaign_id,
+                ':character_id' => $character_id,
+                ':player_id' => $player_id,
+            ]);
+
+            $memberSql = "INSERT INTO campaign_members (campaign_id, user_id, role)
+                          VALUES (:campaign_id, :user_id, 'Player')
+                          ON DUPLICATE KEY UPDATE role = VALUES(role)";
+            $memberStmt = $this->pdo->prepare($memberSql);
+            $memberStmt->execute([
+                ':campaign_id' => $campaign_id,
+                ':user_id' => $player_id,
+            ]);
+
+            $this->pdo->commit();
+            return true;
+        } catch (Throwable $exception) {
+            $this->pdo->rollBack();
+            return false;
+        }
+    }
+
     public function addMember($campaign_id, $gm_id, $user_id, $role, $character_id = 0) {
         $this->ensureCampaignMemberTableExists();
 

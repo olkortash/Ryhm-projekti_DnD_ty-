@@ -215,16 +215,78 @@ class Character {
     }
 
     public function unlinkFromCampaignByOwner($character_id, $player_id) {
-        $sql = "UPDATE characters
-                SET campaign_id = NULL
-                WHERE character_id = :character_id
-                  AND player_id = :player_id
-                  AND campaign_id IS NOT NULL";
-        $stmt = $this->pdo->prepare($sql);
-        return $stmt->execute([
-            ':character_id' => $character_id,
-            ':player_id' => $player_id
-        ]);
+        $this->pdo->beginTransaction();
+
+        try {
+            $find = $this->pdo->prepare(
+                "SELECT campaign_id
+                 FROM characters
+                 WHERE character_id = :character_id
+                   AND player_id = :player_id
+                   AND campaign_id IS NOT NULL
+                 LIMIT 1"
+            );
+            $find->execute([
+                ':character_id' => $character_id,
+                ':player_id' => $player_id,
+            ]);
+            $character = $find->fetch(PDO::FETCH_ASSOC);
+
+            if (!$character) {
+                $this->pdo->rollBack();
+                return false;
+            }
+
+            $campaignId = (int)$character['campaign_id'];
+            $unlink = $this->pdo->prepare(
+                "UPDATE characters
+                 SET campaign_id = NULL
+                 WHERE character_id = :character_id
+                   AND player_id = :player_id
+                   AND campaign_id = :campaign_id"
+            );
+            $unlink->execute([
+                ':character_id' => $character_id,
+                ':player_id' => $player_id,
+                ':campaign_id' => $campaignId,
+            ]);
+
+            $remaining = $this->pdo->prepare(
+                "SELECT 1
+                 FROM characters
+                 WHERE player_id = :player_id AND campaign_id = :campaign_id
+                 LIMIT 1"
+            );
+            $remaining->execute([
+                ':player_id' => $player_id,
+                ':campaign_id' => $campaignId,
+            ]);
+
+            if (!$remaining->fetch()) {
+                $removeMember = $this->pdo->prepare(
+                    "DELETE FROM campaign_members
+                     WHERE campaign_id = :campaign_id
+                       AND user_id = :user_id
+                       AND NOT EXISTS (
+                           SELECT 1
+                           FROM campaigns
+                           WHERE campaign_id = :owner_campaign_id AND gm_id = :owner_id
+                       )"
+                );
+                $removeMember->execute([
+                    ':campaign_id' => $campaignId,
+                    ':user_id' => $player_id,
+                    ':owner_campaign_id' => $campaignId,
+                    ':owner_id' => $player_id,
+                ]);
+            }
+
+            $this->pdo->commit();
+            return true;
+        } catch (Throwable $exception) {
+            $this->pdo->rollBack();
+            return false;
+        }
     }
 
     public function unlinkFromCampaignByGm($character_id, $campaign_id, $gm_id) {
