@@ -156,6 +156,7 @@ require __DIR__ . '/partials/head.php';
                 <div class="table-header">
                     <div class="col-player">Player</div>
                     <div class="col-character">Character</div>
+                    <div class="col-dice">Roll</div>
                     <div class="col-race">Race / Class</div>
                     <div class="col-hp">HP</div>
                 </div>
@@ -175,6 +176,12 @@ require __DIR__ . '/partials/head.php';
                                 </form>
                             <?php endif; ?>
                         </div>
+                        <div class="col-dice">
+                            <div class="dice-roller">
+                                <button type="button" class="d20-button" onclick="rollD20(this)">Roll</button>
+                                <span class="d20-result">-</span>
+                            </div>
+                        </div>
                         <div class="col-race">
                             <span class="race-badge"><?= $p['race_name']; ?></span>
                             <span class="class-badge"><?= $p['class_name']; ?></span>
@@ -185,6 +192,7 @@ require __DIR__ . '/partials/head.php';
                                 <span class="hp-text"><?= $p['hp_current']; ?> / <?= $p['hp_max']; ?></span>
                             </div>
                         </div>
+                        
                     </div>
                 <?php endforeach; ?>
             </div>

@@ -11,7 +11,7 @@
 
 </footer>
 
-
+<script src="js/character-creator.js"></script>
 
 </body>
 

@@ -2397,3 +2397,72 @@ input[type="number"] {
     border-color: red;
     transition: 2s;
 }
+
+.col-dice {
+    min-width: 140px;
+}
+
+.dice-roller {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.d20-button {
+    border: 1px solid rgba(213, 169, 30, 0.3);
+    border-radius: 8px;
+    padding: 8px 12px;
+    background:rgba(213, 169, 30, 0.15);
+    color: var(--gold);
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.15s ease, background 0.15s ease;
+}
+
+.d20-button:hover {
+    background: #5d4b8b;
+    transform: translateY(-1px);
+}
+
+.d20-button:active {
+    transform: translateY(1px);
+}
+
+.d20-result {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 6px;
+    background:rgba(213, 169, 30, 0.15);
+    color: var(--gold);
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.d20-result.dice-rolling {
+    animation: dice-roll 0.3s ease;
+}
+
+@keyframes dice-roll {
+    0% {
+        transform: rotate(0deg) scale(1);
+    }
+
+    25% {
+        transform: rotate(90deg) scale(1.1);
+    }
+
+    50% {
+        transform: rotate(180deg) scale(1.2);
+    }
+
+    75% {
+        transform: rotate(270deg) scale(1.5);
+    }
+
+    100% {
+        transform: rotate(360deg) scale(1);
+    }
+}

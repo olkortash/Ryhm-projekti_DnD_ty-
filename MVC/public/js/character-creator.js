@@ -321,6 +321,31 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    document.addEventListener('click', function(event) {
+        const button = event.target.closest('.d20-button');
+
+        if (!button) return;
+
+        const diceRoller = button.closest('.dice-roller');
+
+        if (!diceRoller) return;
+
+        const resultElement =
+            diceRoller.querySelector('.d20-result');
+
+        if (!resultElement) return;
+
+        const result = Math.floor(Math.random() * 20) + 1;
+
+        resultElement.textContent = result;
+
+        resultElement.classList.remove('dice-rolling');
+
+        void resultElement.offsetWidth;
+
+        resultElement.classList.add('dice-rolling');
+    });
+
     updatePointsDisplay();
     updateSummary();
 });
