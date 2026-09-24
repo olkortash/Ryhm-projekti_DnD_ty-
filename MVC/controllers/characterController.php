@@ -166,6 +166,66 @@ class CharacterController {
         exit;
     }
 
+    public function updateAbilities() {
+        if (!isset($_SESSION['user_id'])) {
+            header('Location: index.php?action=login');
+            exit;
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: index.php?action=dashboard');
+            exit;
+        }
+
+        $characterId = (int) ($_POST['character_id'] ?? 0);
+        $abilityMap = [
+            'agi' => 'agility',
+            'str' => 'strength',
+            'dex' => 'dexterity',
+            'wis' => 'wisdom',
+            'cha' => 'charisma',
+            'con' => 'constitution',
+            'int' => 'intelligence',
+        ];
+
+        $updates = [];
+        foreach ($abilityMap as $input => $column) {
+            $value = $_POST[$input] ?? null;
+            if ($value === null || !is_numeric($value)) {
+                continue;
+            }
+            $updates[$column] = max(0, min((int) $value, 99));
+        }
+
+        if ($updates !== []) {
+            $this->characterModel->updateAbilities($characterId, (int) $_SESSION['user_id'], $updates);
+        }
+
+        header('Location: index.php?action=character_view&id=' . $characterId);
+        exit;
+    }
+
+    public function updateAdditionalInfo() {
+        if (!isset($_SESSION['user_id'])) {
+            header('Location: index.php?action=login');
+            exit;
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: index.php?action=dashboard');
+            exit;
+        }
+
+        $characterId = (int) ($_POST['character_id'] ?? 0);
+        $equipment = trim((string) ($_POST['equipment'] ?? ''));
+        $skills = trim((string) ($_POST['skills'] ?? ''));
+
+        $this->characterModel->updateAdditionalInfo($characterId, (int) $_SESSION['user_id'], $equipment, $skills);
+
+        header('Location: index.php?action=character_view&id=' . $characterId);
+        exit;
+    }
+
     public function delete() {
         if (!isset($_SESSION['user_id'])) {
             header('Location: index.php?action=login');

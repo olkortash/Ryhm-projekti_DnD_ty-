@@ -93,6 +93,14 @@ switch ($action) {
         require_once __DIR__ . '/../controllers/characterController.php';
         (new CharacterController($pdo))->updateHp();
         break;
+    case 'character_update_abilities':
+        require_once __DIR__ . '/../controllers/characterController.php';
+        (new CharacterController($pdo))->updateAbilities();
+        break;
+    case 'character_update_details':
+        require_once __DIR__ . '/../controllers/characterController.php';
+        (new CharacterController($pdo))->updateAdditionalInfo();
+        break;
     case 'character_delete':
         require_once __DIR__ . '/../controllers/characterController.php';
         (new CharacterController($pdo))->delete();
