@@ -78,37 +78,37 @@ require __DIR__ . '/partials/head.php';
                     <div class="ability-score">
                         <svg class="ability-icon" aria-hidden="true"><use href="#profile-icon-agi"/></svg>
                         <span>AGI</span>
-                        <strong><?= htmlspecialchars($character['agi'] ?? 0); ?></strong>
+                        <strong><?= htmlspecialchars($character['agility'] ?? 0); ?></strong>
                     </div>
                     <div class="ability-score">
                         <svg class="ability-icon" aria-hidden="true"><use href="#profile-icon-str"/></svg>
                         <span>STR</span>
-                        <strong><?= htmlspecialchars($character['str'] ?? 0); ?></strong>
+                        <strong><?= htmlspecialchars($character['strength'] ?? 0); ?></strong>
                     </div>
                     <div class="ability-score">
                         <svg class="ability-icon" aria-hidden="true"><use href="#profile-icon-dex"/></svg>
                         <span>DEX</span>
-                        <strong><?= htmlspecialchars($character['dex'] ?? 0); ?></strong>
+                        <strong><?= htmlspecialchars($character['dexterity'] ?? 0); ?></strong>
                     </div>
                     <div class="ability-score">
                         <svg class="ability-icon" aria-hidden="true"><use href="#profile-icon-wis"/></svg>
                         <span>WIS</span>
-                        <strong><?= htmlspecialchars($character['wis'] ?? 0); ?></strong>
+                        <strong><?= htmlspecialchars($character['wisdom'] ?? 0); ?></strong>
                     </div>
                     <div class="ability-score">
                         <svg class="ability-icon" aria-hidden="true"><use href="#profile-icon-cha"/></svg>
                         <span>CHA</span>
-                        <strong><?= htmlspecialchars($character['cha'] ?? 0); ?></strong>
+                        <strong><?= htmlspecialchars($character['charisma'] ?? 0); ?></strong>
                     </div>
                     <div class="ability-score">
                         <svg class="ability-icon" aria-hidden="true"><use href="#profile-icon-con"/></svg>
                         <span>CON</span>
-                        <strong><?= htmlspecialchars($character['con'] ?? 0); ?></strong>
+                        <strong><?= htmlspecialchars($character['constitution'] ?? 0); ?></strong>
                     </div>
                     <div class="ability-score">
                         <svg class="ability-icon" aria-hidden="true"><use href="#profile-icon-int"/></svg>
                         <span>INT</span>
-                        <strong><?= htmlspecialchars($character['int'] ?? 0); ?></strong>
+                        <strong><?= htmlspecialchars($character['intelligence'] ?? 0); ?></strong>
                     </div>
                 </div>
             </div>
