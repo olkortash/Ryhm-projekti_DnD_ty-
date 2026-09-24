@@ -96,11 +96,13 @@ require __DIR__ . '/partials/head.php';
                 <input type="hidden" name="campaign_id" value="<?= (int)$campaign['campaign_id']; ?>">
 
                 <div class="form-group">
-                    <label>Add player to campaign</label>
-                    <select name="user_id" required>
-                        <option value="">Select a player</option>
-                        <?php foreach ($availableUsers as $user): ?>
-                            <option value="<?= (int)$user['user_id']; ?>"><?= htmlspecialchars($user['username']); ?></option>
+                    <label>Player character</label>
+                    <select name="character_id" required>
+                        <option value="">Select a character</option>
+                        <?php foreach ($availableCharacters as $character): ?>
+                            <option value="<?= (int)$character['character_id']; ?>">
+                                <?= htmlspecialchars($character['username'] . ' - ' . $character['character_name']); ?>
+                            </option>
                         <?php endforeach; ?>
                     </select>
                 </div>
