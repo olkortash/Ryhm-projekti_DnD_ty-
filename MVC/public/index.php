@@ -134,6 +134,6 @@ switch ($action) {
         (new CampaignController($pdo))->updateMembers();
         break;
     default:
-        require '../views/404_view.php';
+        require '../views/404_view.html';
         break;
 }
