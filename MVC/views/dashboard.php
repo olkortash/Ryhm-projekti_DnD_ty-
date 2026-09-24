@@ -1,5 +1,5 @@
 <?php 
-$pageTitle = "Dashboard - Roolipelisovellus";
+$pageTitle = "Dashboard - Roleplay App";
 require __DIR__ . '/partials/head.php'; 
 ?>
 

@@ -1,5 +1,5 @@
 <?php 
-$pageTitle = "Hahmon Tiedot - Roolipelisovellus";
+$pageTitle = "Character information - Roleplay App";
 require __DIR__ . '/partials/head.php'; 
 ?>
 

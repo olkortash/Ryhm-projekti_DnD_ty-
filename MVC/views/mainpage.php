@@ -1,6 +1,6 @@
 <?php
 
-$pageTitle = "Main page - Roolipelisovellus";
+$pageTitle = "Main page - Roleplay App";
 
 require __DIR__ . '/partials/head.php';
 
