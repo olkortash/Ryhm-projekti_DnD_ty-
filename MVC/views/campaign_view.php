@@ -1,5 +1,5 @@
 <?php 
-$pageTitle = "Kampanjan Hallinta - Roolipelisovellus";
+$pageTitle = "Campaign management - Roleplay App";
 require __DIR__ . '/partials/head.php'; 
 ?>
 
@@ -82,6 +82,67 @@ require __DIR__ . '/partials/head.php';
                 <?php endif; ?>
             </div>
         <?php endif; ?>
+    </div>
+
+    <?php if ($canViewPrivate): ?>
+    <div class="campaign-info-section">
+        <div class="info-card">
+            <h3>Campaign announcements</h3>
+
+            <?php if ($isGm): ?>
+                <form action="index.php?action=campaign_announcement_save" method="POST" class="campaign-form">
+                    <input type="hidden" name="campaign_id" value="<?= (int)$campaign['campaign_id']; ?>">
+                    <div class="form-group">
+                        <label for="announcement-title">Title</label>
+                        <input id="announcement-title" type="text" name="announcement_title" maxlength="255" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="announcement-body">Message</label>
+                        <textarea id="announcement-body" name="announcement_body" rows="4" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Publish announcement</button>
+                </form>
+            <?php endif; ?>
+
+            <?php if (empty($announcements)): ?>
+                <p class="empty-state">No announcements yet.</p>
+            <?php else: ?>
+                <div class="announcement-list">
+                    <?php foreach ($announcements as $announcement): ?>
+                        <article class="announcement-card">
+                            <div class="session-header">
+                                <h4><?= e($announcement['title']); ?></h4>
+                                <small><?= e($announcement['author_name']); ?> · <?= e($announcement['created_at']); ?></small>
+                            </div>
+                            <p><?= nl2br(e($announcement['body'])); ?></p>
+                            <?php if ($isGm): ?>
+                                <details>
+                                    <summary>Edit announcement</summary>
+                                    <form action="index.php?action=campaign_announcement_save" method="POST" class="campaign-form">
+                                        <input type="hidden" name="campaign_id" value="<?= (int)$campaign['campaign_id']; ?>">
+                                        <input type="hidden" name="announcement_id" value="<?= (int)$announcement['announcement_id']; ?>">
+                                        <div class="form-group">
+                                            <label>Title</label>
+                                            <input type="text" name="announcement_title" maxlength="255" value="<?= e($announcement['title']); ?>" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Message</label>
+                                            <textarea name="announcement_body" rows="4" required><?= e($announcement['body']); ?></textarea>
+                                        </div>
+                                        <button type="submit" class="btn btn-secondary">Save changes</button>
+                                    </form>
+                                    <form action="index.php?action=campaign_announcement_delete" method="POST" onsubmit="return confirm('Delete this announcement?');">
+                                        <input type="hidden" name="campaign_id" value="<?= (int)$campaign['campaign_id']; ?>">
+                                        <input type="hidden" name="announcement_id" value="<?= (int)$announcement['announcement_id']; ?>">
+                                        <button type="submit" class="btn btn-danger compact">Delete announcement</button>
+                                    </form>
+                                </details>
+                            <?php endif; ?>
+                        </article>
+                    <?php endforeach; ?>
+                </div>
+            <?php endif; ?>
+        </div>
     </div>
 
     <div class="characters-section">
@@ -277,6 +338,7 @@ require __DIR__ . '/partials/head.php';
             <?php endforeach; ?>
         <?php endif; ?>
     </div>
+    <?php endif; ?>
 </div>
 
 <?php require __DIR__ . '/partials/footer.php'; ?>

@@ -31,6 +31,7 @@ class ProfileController {
         $userId = $_SESSION['user_id'];
         $characters = $this->characterModel->getByPlayerId($userId);
         $createdCampaigns = $this->campaignModel->getByGmId($userId);
+        $notificationCount = $this->campaignModel->getUnreadNotificationCount($userId);
         $joinedCampaignIds = [];
 
         foreach ($characters as $character) {

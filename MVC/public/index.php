@@ -137,6 +137,26 @@ switch ($action) {
         require_once __DIR__ . '/../controllers/campaignController.php';
         (new CampaignController($pdo))->updateMembers();
         break;
+    case 'campaign_announcement_save':
+        require_once __DIR__ . '/../controllers/campaignController.php';
+        (new CampaignController($pdo))->createAnnouncement();
+        break;
+    case 'campaign_announcement_delete':
+        require_once __DIR__ . '/../controllers/campaignController.php';
+        (new CampaignController($pdo))->deleteAnnouncement();
+        break;
+    case 'notifications':
+        require_once __DIR__ . '/../controllers/campaignController.php';
+        (new CampaignController($pdo))->notifications();
+        break;
+    case 'notification_read':
+        require_once __DIR__ . '/../controllers/campaignController.php';
+        (new CampaignController($pdo))->markNotificationRead();
+        break;
+    case 'notifications_read_all':
+        require_once __DIR__ . '/../controllers/campaignController.php';
+        (new CampaignController($pdo))->markAllNotificationsRead();
+        break;
     default:
         require '../views/404_view.html';
         break;

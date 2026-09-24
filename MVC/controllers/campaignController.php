@@ -8,6 +8,10 @@ class CampaignController {
         $this->campaignModel = new Campaign($pdo);
     }
 
+    private function flash($type, $message) {
+        $_SESSION['flash'] = ['type' => $type, 'message' => $message];
+    }
+
     public function create() {
         if (!isset($_SESSION['user_id'])) {
             header('Location: index.php?action=login');
@@ -39,14 +43,17 @@ class CampaignController {
             exit;
         }
 
-        $isGm = $campaign['gm_id'] == $_SESSION['user_id'];
-        $players = $this->campaignModel->getCharactersInCampaign($campaignId);
-        $campaignMembers = $this->campaignModel->getMembers($campaignId);
-        $availableUsers = $this->campaignModel->getAvailableUsers($campaignId);
-        $availableCharacters = $this->campaignModel->getAvailableCharacters($campaignId);
-        $alreadyJoined = $this->campaignModel->isMember($campaignId, $_SESSION['user_id']);
+        $isGm = (int)$campaign['gm_id'] === (int)$_SESSION['user_id'];
+        $canViewPrivate = $isGm || $this->campaignModel->isCampaignMember($campaignId, $_SESSION['user_id']);
+        $players = $canViewPrivate ? $this->campaignModel->getCharactersInCampaign($campaignId) : [];
+        $campaignMembers = $canViewPrivate ? $this->campaignModel->getMembers($campaignId) : [];
+        $availableUsers = $isGm ? $this->campaignModel->getAvailableUsers($campaignId) : [];
+        $availableCharacters = $isGm ? $this->campaignModel->getAvailableCharacters($campaignId) : [];
+        $alreadyJoined = $canViewPrivate;
         $joinableCharacters = $this->campaignModel->getAvailableCharactersForPlayer($campaignId, $_SESSION['user_id']);
-        $sessionNotes = $this->campaignModel->getSessionNotes($campaignId);
+        $sessionNotes = $canViewPrivate ? $this->campaignModel->getSessionNotes($campaignId) : [];
+        $announcements = $canViewPrivate ? $this->campaignModel->getAnnouncements($campaignId) : [];
+        $notificationCount = $this->campaignModel->getUnreadNotificationCount($_SESSION['user_id']);
         require __DIR__ . '/../views/campaign_view.php';
     }
 
@@ -131,7 +138,7 @@ class CampaignController {
             exit;
         }
 
-        $this->campaignModel->saveSessionNote(
+        $sessionId = $this->campaignModel->saveSessionNote(
             $campaignId,
             $_SESSION['user_id'],
             $sessionDate,
@@ -139,6 +146,12 @@ class CampaignController {
             $summary,
             $attendees
         );
+
+        if ($sessionId) {
+            $this->flash('success', 'Session note saved and campaign members notified.');
+        } else {
+            $this->flash('error', 'Session note could not be saved.');
+        }
 
         header('Location: index.php?action=campaign_view&id=' . $campaignId);
         exit;
@@ -181,5 +194,93 @@ class CampaignController {
             header("Location: index.php?action=" . $redirect);
             exit;
         }
+    }
+
+    public function createAnnouncement() {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !isset($_SESSION['user_id'])) {
+            header('Location: index.php?action=login');
+            exit;
+        }
+
+        $campaignId = (int)($_POST['campaign_id'] ?? 0);
+        $title = trim((string)($_POST['announcement_title'] ?? ''));
+        $body = trim((string)($_POST['announcement_body'] ?? ''));
+        $announcementId = (int)($_POST['announcement_id'] ?? 0);
+
+        if ($title === '' || $body === '' || mb_strlen($title) > 255) {
+            $this->flash('error', 'Announcement title and message are required.');
+        } elseif ($announcementId > 0) {
+            $updated = $this->campaignModel->updateAnnouncement(
+                $announcementId,
+                $_SESSION['user_id'],
+                $title,
+                $body
+            );
+            $this->flash($updated ? 'success' : 'error', $updated ? 'Announcement updated.' : 'Announcement could not be updated.');
+        } else {
+            $created = $this->campaignModel->createAnnouncement(
+                $campaignId,
+                $_SESSION['user_id'],
+                $title,
+                $body
+            );
+            $this->flash($created ? 'success' : 'error', $created ? 'Announcement published.' : 'Announcement could not be published.');
+        }
+
+        header('Location: index.php?action=campaign_view&id=' . $campaignId);
+        exit;
+    }
+
+    public function deleteAnnouncement() {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !isset($_SESSION['user_id'])) {
+            header('Location: index.php?action=login');
+            exit;
+        }
+
+        $campaignId = (int)($_POST['campaign_id'] ?? 0);
+        $deleted = $this->campaignModel->deleteAnnouncement(
+            (int)($_POST['announcement_id'] ?? 0),
+            $_SESSION['user_id']
+        );
+        $this->flash($deleted ? 'success' : 'error', $deleted ? 'Announcement deleted.' : 'Announcement could not be deleted.');
+        header('Location: index.php?action=campaign_view&id=' . $campaignId);
+        exit;
+    }
+
+    public function notifications() {
+        if (!isset($_SESSION['user_id'])) {
+            header('Location: index.php?action=login');
+            exit;
+        }
+
+        $notifications = $this->campaignModel->getNotifications($_SESSION['user_id']);
+        $notificationCount = $this->campaignModel->getUnreadNotificationCount($_SESSION['user_id']);
+        require __DIR__ . '/../views/notifications.php';
+    }
+
+    public function markNotificationRead() {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !isset($_SESSION['user_id'])) {
+            header('Location: index.php?action=login');
+            exit;
+        }
+
+        $this->campaignModel->markNotificationRead(
+            (int)($_POST['notification_id'] ?? 0),
+            $_SESSION['user_id']
+        );
+        header('Location: index.php?action=notifications');
+        exit;
+    }
+
+    public function markAllNotificationsRead() {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !isset($_SESSION['user_id'])) {
+            header('Location: index.php?action=login');
+            exit;
+        }
+
+        $this->campaignModel->markAllNotificationsRead($_SESSION['user_id']);
+        $this->flash('success', 'All notifications marked as read.');
+        header('Location: index.php?action=notifications');
+        exit;
     }
 }
