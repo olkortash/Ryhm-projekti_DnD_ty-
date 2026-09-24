@@ -1651,6 +1651,19 @@ a {
     padding: 0 20px;
 }
 
+.character-creator .summary-panel .stat-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+.character-creator .summary-panel .summary-icon {
+    display: block;
+    width: 18px;
+    height: 18px;
+    flex: 0 0 18px;
+    color: #e5b925;
+}
+
 .creator-header {
     display: flex;
     justify-content: space-between;
@@ -2297,3 +2310,4 @@ input[type="number"] {
         justify-content: flex-start;
     }
 }
+

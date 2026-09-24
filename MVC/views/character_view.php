@@ -29,6 +29,7 @@ require __DIR__ . '/partials/head.php';
                 </div>
             <?php endif; ?>
 
+            
             <form class="character-image-form" action="index.php?action=character_update_image" method="POST" enctype="multipart/form-data">
                 <input type="hidden" name="character_id" value="<?= (int) $character['character_id']; ?>">
                 <label for="replace-character-image"><?= !empty($character['character_img_id']) ? 'Replace image' : 'Upload image'; ?></label>
@@ -45,7 +46,8 @@ require __DIR__ . '/partials/head.php';
                 <button type="submit" class="btn btn-secondary">Save image</button>
             </form>
         </section>
-
+                   
+        
         <section class="character-details-panel" aria-label="Character details">
             <div class="character-stat-grid">
                 <div class="character-stat"><span class="stat-label">Race</span><strong><?= htmlspecialchars($character['race_name']); ?></strong></div>
