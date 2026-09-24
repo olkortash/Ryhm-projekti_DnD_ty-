@@ -1990,6 +1990,18 @@ input[type="number"] {
     font-size: 13px;
 }
 
+.character-profile-link {
+    color: var(--gold);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.character-profile-link:hover,
+.character-profile-link:focus-visible {
+    color: var(--cream);
+    text-decoration: underline;
+}
+
 .col-race {
     display: flex;
     gap: 8px;

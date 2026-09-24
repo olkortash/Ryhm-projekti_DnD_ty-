@@ -29,6 +29,7 @@ require __DIR__ . '/partials/head.php';
                 </div>
             <?php endif; ?>
 
+            <?php if ($isOwner): ?>
             <form class="character-image-form" action="index.php?action=character_update_image" method="POST" enctype="multipart/form-data">
                 <input type="hidden" name="character_id" value="<?= (int) $character['character_id']; ?>">
                 <label for="replace-character-image"><?= !empty($character['character_img_id']) ? 'Replace image' : 'Upload image'; ?></label>
@@ -44,6 +45,7 @@ require __DIR__ . '/partials/head.php';
                 <?php endif; ?>
                 <button type="submit" class="btn btn-secondary">Save image</button>
             </form>
+            <?php endif; ?>
         </section>
 
         <section class="character-details-panel" aria-label="Character details">
@@ -52,6 +54,7 @@ require __DIR__ . '/partials/head.php';
                 <div class="character-stat"><span class="stat-label">Class</span><strong><?= htmlspecialchars($character['class_name']); ?></strong></div>
                 <div class="character-stat"><span class="stat-label">Job</span><strong><?= htmlspecialchars($character['job_name']); ?></strong></div>
                 <div class="character-stat"><span class="stat-label">Campaign</span><strong><?= $character['campaign_name'] ? htmlspecialchars($character['campaign_name']) : 'No campaign'; ?></strong></div>
+                <div class="character-stat"><span class="stat-label">Created by</span><strong><?= htmlspecialchars($character['creator_username']); ?></strong></div>
             </div>
 
             <div class="character-ability-section">
@@ -92,6 +95,7 @@ require __DIR__ . '/partials/head.php';
                 <p class="eyebrow">PLAYING STATUS</p>
 
                 <h2>Hit Points</h2>
+                <?php if ($isOwner): ?>
                 <form class="character-hp-form" action="index.php?action=character_update_hp" method="POST">
                     <input type="hidden" name="character_id" value="<?= $character['character_id']; ?>">
                     <label for="hp-current">Current HP</label>
@@ -101,9 +105,12 @@ require __DIR__ . '/partials/head.php';
                         <button type="submit" class="btn btn-primary">Update HP</button>
                     </div>
                 </form>
+                <?php else: ?>
+                    <p><?= (int) $character['hp_current']; ?> / <?= (int) $character['hp_max']; ?></p>
+                <?php endif; ?>
             </div>
 
-            <?php if (!$character['campaign_id']): ?>
+            <?php if ($isOwner && !$character['campaign_id']): ?>
                 <div class="character-action-section">
                     <p class="eyebrow">CAMPAIGN</p>
                     <h2>Join a campaign</h2>
@@ -118,12 +125,14 @@ require __DIR__ . '/partials/head.php';
                 </div>
             <?php endif; ?>
 
+            <?php if ($isOwner): ?>
             <div class="character-danger-zone">
                 <form action="index.php?action=character_delete" method="POST" onsubmit="return confirm('Haluatko varmasti poistaa tämän hahmon? Tätä toimintoa ei voi perua.');">
                     <input type="hidden" name="character_id" value="<?= $character['character_id']; ?>">
                     <button type="submit" class="btn btn-danger">Delete character</button>
                 </form>
             </div>
+            <?php endif; ?>
         </section>
     </div>
 </main>

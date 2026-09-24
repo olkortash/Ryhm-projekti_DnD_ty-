@@ -138,7 +138,9 @@ require __DIR__ . '/partials/head.php';
                     <div class="table-row">
                         <div class="col-player"><?= htmlspecialchars($p['player_name']); ?></div>
                         <div class="col-character">
-                            <?= htmlspecialchars($p['character_name']); ?>
+                            <a class="character-profile-link" href="index.php?action=character_view&amp;id=<?= (int)$p['character_id']; ?>">
+                                <?= htmlspecialchars($p['character_name']); ?>
+                            </a>
                             <?php if ($isGm): ?>
                                 <form action="index.php?action=campaign_remove_character" method="POST" onsubmit="return confirm('Remove this character from the campaign?');">
                                     <input type="hidden" name="character_id" value="<?= $p['character_id']; ?>">
