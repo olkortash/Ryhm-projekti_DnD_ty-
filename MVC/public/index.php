@@ -117,6 +117,10 @@ switch ($action) {
         require_once __DIR__ . '/../controllers/campaignController.php';
         (new CampaignController($pdo))->view();
         break;
+    case 'campaign_join_public':
+        require_once __DIR__ . '/../controllers/campaignController.php';
+        (new CampaignController($pdo))->joinPublic();
+        break;
     case 'campaign_update':
         require_once __DIR__ . '/../controllers/campaignController.php';
         (new CampaignController($pdo))->update();

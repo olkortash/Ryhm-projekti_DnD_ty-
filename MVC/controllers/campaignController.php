@@ -44,8 +44,29 @@ class CampaignController {
         $campaignMembers = $this->campaignModel->getMembers($campaignId);
         $availableUsers = $this->campaignModel->getAvailableUsers($campaignId);
         $availableCharacters = $this->campaignModel->getAvailableCharacters($campaignId);
+        $alreadyJoined = $this->campaignModel->isMember($campaignId, $_SESSION['user_id']);
+        $joinableCharacters = $this->campaignModel->getAvailableCharactersForPlayer($campaignId, $_SESSION['user_id']);
         $sessionNotes = $this->campaignModel->getSessionNotes($campaignId);
         require __DIR__ . '/../views/campaign_view.php';
+    }
+
+    public function joinPublic() {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: index.php?action=landing');
+            exit;
+        }
+
+        if (!isset($_SESSION['user_id'])) {
+            header('Location: index.php?action=login');
+            exit;
+        }
+
+        $campaignId = (int)($_POST['campaign_id'] ?? 0);
+        $characterId = (int)($_POST['character_id'] ?? 0);
+        $this->campaignModel->joinPublicCampaign($campaignId, $_SESSION['user_id'], $characterId);
+
+        header('Location: index.php?action=campaign_view&id=' . $campaignId);
+        exit;
     }
 
     public function updateMembers() {

@@ -21,8 +21,13 @@ require __DIR__ . '/partials/head.php';
                     <span><?= htmlspecialchars($campaign['campaign_name']); ?></span>
                 </div>
                 <div class="info-item">
-                    <label>Invite Code</label>
-                    <code class="invite-code"><?= $campaign['invite_code']; ?></code>
+                    <?php if ($isGm): ?>
+                        <label>Invite Code</label>
+                        <code class="invite-code"><?= htmlspecialchars($campaign['invite_code']); ?></code>
+                    <?php else: ?>
+                        <label>Access</label>
+                        <span>Public campaign</span>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
@@ -52,8 +57,29 @@ require __DIR__ . '/partials/head.php';
         <?php else: ?>
             <div class="info-card campaign-join-note">
                 <h3>Join Campaign</h3>
-                <p>Add your character to this campaign using the invite code on the character details page.</p>
-                <a href="index.php?action=dashboard" class="btn btn-secondary">View my characters</a>
+                <?php if ($alreadyJoined): ?>
+                    <p>Already joined</p>
+                <?php elseif (!empty($joinableCharacters)): ?>
+                    <p>Select a character to join this public campaign.</p>
+                    <form action="index.php?action=campaign_join_public" method="POST" class="campaign-form">
+                        <input type="hidden" name="campaign_id" value="<?= (int)$campaign['campaign_id']; ?>">
+                        <div class="form-group">
+                            <label for="join-character">Character</label>
+                            <select id="join-character" name="character_id" required>
+                                <option value="">Select a character</option>
+                                <?php foreach ($joinableCharacters as $character): ?>
+                                    <option value="<?= (int)$character['character_id']; ?>">
+                                        <?= htmlspecialchars($character['character_name']); ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Join campaign</button>
+                    </form>
+                <?php else: ?>
+                    <p>You do not have an available character to join with.</p>
+                    <a href="index.php?action=dashboard" class="btn btn-secondary">View my characters</a>
+                <?php endif; ?>
             </div>
         <?php endif; ?>
     </div>
@@ -61,37 +87,37 @@ require __DIR__ . '/partials/head.php';
     <div class="characters-section">
         <h2>Campaign members</h2>
 
-        <?php if ($isGm): ?>
-            <div class="campaign-member-list">
-                <?php foreach ($campaignMembers as $member): ?>
-                    <div class="member-row">
-                        <div class="member-info">
-                            <strong><?= htmlspecialchars($member['username']); ?></strong>
-                            <span class="role-badge <?= $member['role'] === 'Game Master' ? 'role-gm' : 'role-player'; ?>"><?= htmlspecialchars($member['role']); ?></span>
-                        </div>
-
-                        <?php if ((int)$member['user_id'] !== (int)$campaign['gm_id']): ?>
-                            <form action="index.php?action=campaign_members_update" method="POST" class="member-form">
-                                <input type="hidden" name="campaign_id" value="<?= (int)$campaign['campaign_id']; ?>">
-                                <input type="hidden" name="user_id" value="<?= (int)$member['user_id']; ?>">
-
-                                <select name="member_role">
-                                    <option value="Player" <?= $member['role'] === 'Player' ? 'selected' : ''; ?>>Player</option>
-                                    <option value="Game Master" <?= $member['role'] === 'Game Master' ? 'selected' : ''; ?>>Game Master</option>
-                                </select>
-
-                                <div class="member-actions">
-                                    <button type="submit" name="update_member_role" value="1" class="btn btn-primary">Save role</button>
-                                    <button type="submit" name="remove_member" value="1" class="btn btn-danger" onclick="return confirm('Remove this player from campaign?');">Remove</button>
-                                </div>
-                            </form>
-                        <?php else: ?>
-                            <span class="member-owner-note">Campaign creator</span>
-                        <?php endif; ?>
+        <div class="campaign-member-list">
+            <?php foreach ($campaignMembers as $member): ?>
+                <div class="member-row">
+                    <div class="member-info">
+                        <strong><?= htmlspecialchars($member['username']); ?></strong>
+                        <span class="role-badge <?= $member['role'] === 'Game Master' ? 'role-gm' : 'role-player'; ?>"><?= htmlspecialchars($member['role']); ?></span>
                     </div>
-                <?php endforeach; ?>
-            </div>
 
+                    <?php if ($isGm && (int)$member['user_id'] !== (int)$campaign['gm_id']): ?>
+                        <form action="index.php?action=campaign_members_update" method="POST" class="member-form">
+                            <input type="hidden" name="campaign_id" value="<?= (int)$campaign['campaign_id']; ?>">
+                            <input type="hidden" name="user_id" value="<?= (int)$member['user_id']; ?>">
+
+                            <select name="member_role">
+                                <option value="Player" <?= $member['role'] === 'Player' ? 'selected' : ''; ?>>Player</option>
+                                <option value="Game Master" <?= $member['role'] === 'Game Master' ? 'selected' : ''; ?>>Game Master</option>
+                            </select>
+
+                            <div class="member-actions">
+                                <button type="submit" name="update_member_role" value="1" class="btn btn-primary">Save role</button>
+                                <button type="submit" name="remove_member" value="1" class="btn btn-danger" onclick="return confirm('Remove this player from campaign?');">Remove</button>
+                            </div>
+                        </form>
+                    <?php elseif ($isGm): ?>
+                        <span class="member-owner-note">Campaign creator</span>
+                    <?php endif; ?>
+                </div>
+            <?php endforeach; ?>
+        </div>
+
+        <?php if ($isGm): ?>
             <form action="index.php?action=campaign_members_update" method="POST" class="campaign-form member-add-form">
                 <input type="hidden" name="campaign_id" value="<?= (int)$campaign['campaign_id']; ?>">
 
