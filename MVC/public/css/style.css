@@ -308,8 +308,9 @@ a {
 }
 
 .compact {
-    min-height: 40px;
-    padding-inline: 18px;
+    margin-top: 10px;
+    min-height: 30px;
+    padding-inline: 13px;
 }
 
 .campaign-list {
@@ -954,8 +955,8 @@ a {
 
 .dashboard-card h3 {
     margin: 0 0 8px;
-    font-family: "Finger Paint", sans-serif;
-    font-weight: 400;
+
+    font-weight: 800;
     font-style: normal;
     text-transform: uppercase;
     letter-spacing: 0.05em;
