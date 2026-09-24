@@ -2121,6 +2121,74 @@ input[type="number"] {
     font-style: italic;
 }
 
+.flash-message {
+    width: min(1160px, 89%);
+    margin: 18px auto 0;
+    padding: 12px 16px;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    color: var(--cream);
+    background: rgba(22, 16, 28, 0.92);
+}
+
+.flash-success {
+    border-color: rgba(46, 193, 85, 0.55);
+}
+
+.flash-error {
+    border-color: rgba(197, 107, 131, 0.7);
+}
+
+.announcement-list,
+.notification-list {
+    display: grid;
+    gap: 14px;
+    margin-top: 20px;
+}
+
+.announcement-card,
+.notification-card {
+    padding: 16px;
+    border: 1px solid var(--line-soft);
+    border-radius: 5px;
+    background: rgba(8, 7, 12, 0.35);
+}
+
+.announcement-card h4,
+.notification-card h2 {
+    margin: 0;
+    color: var(--cream);
+}
+
+.announcement-card p,
+.notification-card p {
+    line-height: 1.6;
+}
+
+.notification-card {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.notification-unread {
+    border-color: rgba(213, 169, 30, 0.7);
+    background: rgba(213, 169, 30, 0.08);
+}
+
+.notification-status {
+    color: var(--muted);
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+@media (max-width: 600px) {
+    .notification-card {
+        flex-direction: column;
+    }
+}
+
 @media (max-width: 768px) {
     .campaign-info-section {
         grid-template-columns: 1fr;
