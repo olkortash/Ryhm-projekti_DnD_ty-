@@ -1,5 +1,5 @@
 <?php
-$pageTitle = 'Profile - Roolipelisovellus';
+$pageTitle = 'Profile - Roleplay App';
 require __DIR__ . '/partials/head.php';
 
 // Format the creation date

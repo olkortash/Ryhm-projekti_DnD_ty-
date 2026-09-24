@@ -158,6 +158,6 @@ switch ($action) {
         (new CampaignController($pdo))->markAllNotificationsRead();
         break;
     default:
-        require '../views/404_view.php';
+        require '../views/404_view.html';
         break;
 }
