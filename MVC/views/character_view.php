@@ -1,8 +1,7 @@
 <?php 
-$pageTitle = "Hahmon Tiedot - Roolipelisovellus";
+$pageTitle = "Character information - Roleplay App";
 require __DIR__ . '/partials/head.php'; 
 ?>
-
 
 <main class="character-page">
     <svg class="character-icon-sprite" aria-hidden="true" focusable="false">
@@ -62,7 +61,8 @@ require __DIR__ . '/partials/head.php';
             </form>
             <?php endif; ?>
         </section>
-
+                   
+        
         <section class="character-details-panel" aria-label="Character details">
             <div class="character-stat-grid">
                 <div class="character-stat"><span class="stat-label"><svg class="profile-icon" aria-hidden="true"><use href="#profile-icon-race"/></svg>Race</span><strong><?= htmlspecialchars($character['race_name']); ?></strong></div>

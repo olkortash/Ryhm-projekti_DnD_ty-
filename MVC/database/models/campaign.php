@@ -59,6 +59,216 @@ class Campaign {
         }
     }
 
+    private function ensureCommunicationTablesExist() {
+        $this->ensureSessionTrackingTablesExist();
+
+        $this->pdo->exec("CREATE TABLE IF NOT EXISTS campaign_announcements (
+            announcement_id INT AUTO_INCREMENT PRIMARY KEY,
+            campaign_id INT NOT NULL,
+            author_user_id INT NOT NULL,
+            title VARCHAR(255) NOT NULL,
+            body TEXT NOT NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            KEY idx_announcements_campaign (campaign_id, created_at),
+            FOREIGN KEY (campaign_id) REFERENCES campaigns(campaign_id) ON DELETE CASCADE,
+            FOREIGN KEY (author_user_id) REFERENCES users(user_id) ON DELETE CASCADE
+        )");
+
+        $this->pdo->exec("CREATE TABLE IF NOT EXISTS notifications (
+            notification_id INT AUTO_INCREMENT PRIMARY KEY,
+            user_id INT NOT NULL,
+            campaign_id INT NULL,
+            type VARCHAR(64) NOT NULL,
+            title VARCHAR(255) NOT NULL,
+            body TEXT NOT NULL,
+            announcement_id INT NULL,
+            session_id INT NULL,
+            actor_user_id INT NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            read_at TIMESTAMP NULL DEFAULT NULL,
+            KEY idx_notifications_user (user_id, read_at, created_at),
+            KEY idx_notifications_campaign (campaign_id, created_at),
+            FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+            FOREIGN KEY (campaign_id) REFERENCES campaigns(campaign_id) ON DELETE SET NULL,
+            FOREIGN KEY (announcement_id) REFERENCES campaign_announcements(announcement_id) ON DELETE SET NULL,
+            FOREIGN KEY (session_id) REFERENCES campaign_sessions(session_id) ON DELETE SET NULL,
+            FOREIGN KEY (actor_user_id) REFERENCES users(user_id) ON DELETE SET NULL
+        )");
+    }
+
+    public function isCampaignMember($campaign_id, $user_id) {
+        $this->ensureCampaignMemberTableExists();
+
+        $sql = "SELECT 1 FROM campaigns c
+                LEFT JOIN campaign_members cm
+                                        ON cm.campaign_id = c.campaign_id AND cm.user_id = :member_user_id
+                WHERE c.campaign_id = :campaign_id
+                                    AND (c.gm_id = :gm_user_id OR cm.user_id IS NOT NULL)
+                LIMIT 1";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([
+            ':campaign_id' => (int)$campaign_id,
+                        ':member_user_id' => (int)$user_id,
+                        ':gm_user_id' => (int)$user_id,
+        ]);
+        return (bool)$stmt->fetchColumn();
+    }
+
+    public function getAnnouncements($campaign_id) {
+        $this->ensureCommunicationTablesExist();
+
+        $sql = "SELECT ca.*, u.username AS author_name
+                FROM campaign_announcements ca
+                JOIN users u ON u.user_id = ca.author_user_id
+                WHERE ca.campaign_id = :campaign_id
+                ORDER BY ca.created_at DESC";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([':campaign_id' => (int)$campaign_id]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function createAnnouncement($campaign_id, $gm_id, $title, $body) {
+        $campaign = $this->getById($campaign_id);
+        if (!$campaign || (int)$campaign['gm_id'] !== (int)$gm_id) {
+            return false;
+        }
+
+        $this->ensureCommunicationTablesExist();
+        $stmt = $this->pdo->prepare(
+            'INSERT INTO campaign_announcements (campaign_id, author_user_id, title, body)
+             VALUES (:campaign_id, :author_user_id, :title, :body)'
+        );
+        $stmt->execute([
+            ':campaign_id' => (int)$campaign_id,
+            ':author_user_id' => (int)$gm_id,
+            ':title' => $title,
+            ':body' => $body,
+        ]);
+
+        $announcementId = (int)$this->pdo->lastInsertId();
+        $this->createNotificationsForMembers(
+            $campaign_id,
+            (int)$gm_id,
+            'campaign_announcement_created',
+            $title,
+            $body,
+            ['announcement_id' => $announcementId]
+        );
+        return $announcementId;
+    }
+
+    public function updateAnnouncement($announcement_id, $gm_id, $title, $body) {
+        $this->ensureCommunicationTablesExist();
+        $stmt = $this->pdo->prepare(
+            'UPDATE campaign_announcements ca
+             JOIN campaigns c ON c.campaign_id = ca.campaign_id
+             SET ca.title = :title, ca.body = :body
+             WHERE ca.announcement_id = :announcement_id AND c.gm_id = :gm_id'
+        );
+        return $stmt->execute([
+            ':title' => $title,
+            ':body' => $body,
+            ':announcement_id' => (int)$announcement_id,
+            ':gm_id' => (int)$gm_id,
+        ]);
+    }
+
+    public function deleteAnnouncement($announcement_id, $gm_id) {
+        $this->ensureCommunicationTablesExist();
+        $stmt = $this->pdo->prepare(
+            'DELETE ca FROM campaign_announcements ca
+             JOIN campaigns c ON c.campaign_id = ca.campaign_id
+             WHERE ca.announcement_id = :announcement_id AND c.gm_id = :gm_id'
+        );
+        return $stmt->execute([
+            ':announcement_id' => (int)$announcement_id,
+            ':gm_id' => (int)$gm_id,
+        ]);
+    }
+
+    private function createNotificationsForMembers($campaign_id, $excludedUserId, $type, $title, $body, $references = []) {
+        $this->ensureCommunicationTablesExist();
+        $this->ensureCampaignMemberTableExists();
+
+        $stmt = $this->pdo->prepare(
+            'SELECT DISTINCT user_id FROM campaign_members
+             WHERE campaign_id = :campaign_id AND user_id <> :excluded_user_id'
+        );
+        $stmt->execute([
+            ':campaign_id' => (int)$campaign_id,
+            ':excluded_user_id' => (int)$excludedUserId,
+        ]);
+
+        foreach ($stmt->fetchAll(PDO::FETCH_COLUMN) as $userId) {
+            $this->createNotification($userId, $campaign_id, $type, $title, $body, $references, $excludedUserId);
+        }
+    }
+
+    public function createNotification($user_id, $campaign_id, $type, $title, $body, $references = [], $actor_user_id = null) {
+        $this->ensureCommunicationTablesExist();
+        $stmt = $this->pdo->prepare(
+            'INSERT INTO notifications
+             (user_id, campaign_id, type, title, body, announcement_id, session_id, actor_user_id)
+             VALUES (:user_id, :campaign_id, :type, :title, :body, :announcement_id, :session_id, :actor_user_id)'
+        );
+        return $stmt->execute([
+            ':user_id' => (int)$user_id,
+            ':campaign_id' => $campaign_id !== null ? (int)$campaign_id : null,
+            ':type' => $type,
+            ':title' => $title,
+            ':body' => $body,
+            ':announcement_id' => isset($references['announcement_id']) ? (int)$references['announcement_id'] : null,
+            ':session_id' => isset($references['session_id']) ? (int)$references['session_id'] : null,
+            ':actor_user_id' => $actor_user_id !== null ? (int)$actor_user_id : null,
+        ]);
+    }
+
+    public function getNotifications($user_id, $limit = 50) {
+        $this->ensureCommunicationTablesExist();
+        $limit = max(1, min(100, (int)$limit));
+        $stmt = $this->pdo->prepare(
+            "SELECT n.*, c.campaign_name
+             FROM notifications n
+             LEFT JOIN campaigns c ON c.campaign_id = n.campaign_id
+             WHERE n.user_id = :user_id
+             ORDER BY n.created_at DESC
+             LIMIT $limit"
+        );
+        $stmt->execute([':user_id' => (int)$user_id]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getUnreadNotificationCount($user_id) {
+        $this->ensureCommunicationTablesExist();
+        $stmt = $this->pdo->prepare(
+            'SELECT COUNT(*) FROM notifications WHERE user_id = :user_id AND read_at IS NULL'
+        );
+        $stmt->execute([':user_id' => (int)$user_id]);
+        return (int)$stmt->fetchColumn();
+    }
+
+    public function markNotificationRead($notification_id, $user_id) {
+        $this->ensureCommunicationTablesExist();
+        $stmt = $this->pdo->prepare(
+            'UPDATE notifications SET read_at = CURRENT_TIMESTAMP
+             WHERE notification_id = :notification_id AND user_id = :user_id'
+        );
+        return $stmt->execute([
+            ':notification_id' => (int)$notification_id,
+            ':user_id' => (int)$user_id,
+        ]);
+    }
+
+    public function markAllNotificationsRead($user_id) {
+        $this->ensureCommunicationTablesExist();
+        $stmt = $this->pdo->prepare(
+            'UPDATE notifications SET read_at = CURRENT_TIMESTAMP
+             WHERE user_id = :user_id AND read_at IS NULL'
+        );
+        return $stmt->execute([':user_id' => (int)$user_id]);
+    }
+
     public function getMembers($campaign_id) {
         $this->ensureCampaignMemberTableExists();
 
@@ -115,16 +325,7 @@ class Campaign {
     }
 
     public function isMember($campaign_id, $user_id) {
-        $sql = "SELECT 1
-                FROM characters
-                WHERE campaign_id = :campaign_id AND player_id = :user_id
-                LIMIT 1";
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->execute([
-            ':campaign_id' => $campaign_id,
-            ':user_id' => $user_id,
-        ]);
-        return (bool)$stmt->fetchColumn();
+        return $this->isCampaignMember($campaign_id, $user_id);
     }
 
     public function joinPublicCampaign($campaign_id, $player_id, $character_id) {
@@ -177,6 +378,15 @@ class Campaign {
             ]);
 
             $this->pdo->commit();
+            $this->createNotification(
+                $campaign['gm_id'],
+                $campaign_id,
+                'campaign_member_joined',
+                'New player joined the campaign',
+                'A player joined your campaign with a character.',
+                [],
+                $player_id
+            );
             return true;
         } catch (Throwable $exception) {
             $this->pdo->rollBack();
@@ -264,6 +474,15 @@ class Campaign {
             }
 
             $this->pdo->commit();
+            $this->createNotification(
+                $user_id,
+                $campaign_id,
+                'campaign_member_added',
+                'You were added to a campaign',
+                'The Game Master added you to a campaign.',
+                [],
+                $gm_id
+            );
             return true;
         } catch (Throwable $exception) {
             $this->pdo->rollBack();
@@ -318,10 +537,24 @@ class Campaign {
 
         $sql = "DELETE FROM campaign_members WHERE campaign_id = :campaign_id AND user_id = :user_id";
         $stmt = $this->pdo->prepare($sql);
-        return $stmt->execute([
+        $result = $stmt->execute([
             ':campaign_id' => $campaign_id,
             ':user_id' => $user_id,
         ]);
+
+        if ($result && $stmt->rowCount() === 1) {
+            $this->createNotification(
+                $user_id,
+                $campaign_id,
+                'campaign_member_removed',
+                'You were removed from a campaign',
+                'The Game Master removed you from the campaign.',
+                [],
+                $gm_id
+            );
+        }
+
+        return $result;
     }
 
     public function getSessionNotes($campaign_id) {
@@ -355,6 +588,22 @@ class Campaign {
             $title = 'Session ' . date('d.m.Y', strtotime($sessionDate));
         }
 
+        $attendeeUserIds = array_map('intval', (array)$attendeeUserIds);
+        $attendeeUserIds = array_unique(array_filter($attendeeUserIds, fn($id) => $id > 0));
+        if (!empty($attendeeUserIds)) {
+            $this->ensureCampaignMemberTableExists();
+            $placeholders = implode(',', array_fill(0, count($attendeeUserIds), '?'));
+            $memberStmt = $this->pdo->prepare(
+                "SELECT user_id FROM campaign_members
+                 WHERE campaign_id = ? AND user_id IN ($placeholders)"
+            );
+            $memberStmt->execute(array_merge([(int)$campaign_id], $attendeeUserIds));
+            $validAttendeeIds = array_map('intval', $memberStmt->fetchAll(PDO::FETCH_COLUMN));
+            if (count($validAttendeeIds) !== count($attendeeUserIds)) {
+                return false;
+            }
+        }
+
         $sql = "INSERT INTO campaign_sessions (campaign_id, session_date, title, summary)
                 VALUES (:campaign_id, :session_date, :title, :summary)";
         $stmt = $this->pdo->prepare($sql);
@@ -366,8 +615,6 @@ class Campaign {
         ]);
 
         $sessionId = $this->pdo->lastInsertId();
-        $attendeeUserIds = array_map('intval', (array)$attendeeUserIds);
-        $attendeeUserIds = array_unique(array_filter($attendeeUserIds, fn($id) => $id > 0));
 
         if (!empty($attendeeUserIds)) {
             $insertSql = "INSERT INTO campaign_session_attendees (session_id, user_id, attended)
@@ -382,7 +629,16 @@ class Campaign {
             }
         }
 
-        return true;
+        $this->createNotificationsForMembers(
+            $campaign_id,
+            $gm_id,
+            'campaign_session_note_created',
+            $title,
+            $summary ?: 'A new session note was added to the campaign.',
+            ['session_id' => (int)$sessionId]
+        );
+
+        return (int)$sessionId;
     }
 
     public function getByGmId($gm_id) {

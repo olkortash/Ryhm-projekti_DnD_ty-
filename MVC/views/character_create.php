@@ -1,23 +1,7 @@
 <?php 
-$pageTitle = "Luo uusi hahmo - Roolipelisovellus";
+$pageTitle = "Create new character - Roleplay App";
 require __DIR__ . '/partials/head.php'; 
 ?>
-
-<style>
-/* Self-contained Summary icons; no external image or icon library required. */
-.character-creator .summary-panel .stat-label {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-}
-.character-creator .summary-panel .summary-icon {
-    display: block;
-    width: 18px;
-    height: 18px;
-    flex: 0 0 18px;
-    color: #e5b925;
-}
-</style>
 
 <div class="character-creator">
     <div class="creator-header">
@@ -26,9 +10,7 @@ require __DIR__ . '/partials/head.php';
 
     <form action="index.php?action=character_create" method="POST" enctype="multipart/form-data">
         <div class="creator-layout">
-            <!-- Left: Form -->
             <div class="creator-form">
-                <!-- Character Name -->
                 <div class="form-section">
                     <h3>Character Name</h3>
                     <div class="form-group">
@@ -62,7 +44,6 @@ require __DIR__ . '/partials/head.php';
                     </div>
                 </div>
 
-                <!-- Class Selection -->
                 <div class="form-section">
                     <h3>Class</h3>
                     <div class="options-grid" id="classGrid">

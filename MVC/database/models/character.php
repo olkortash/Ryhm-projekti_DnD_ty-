@@ -62,6 +62,10 @@ class Character {
                 ':int' => $data['int']
             ]);
 
+            // Store the character ID before inserting the image, because that
+            // INSERT changes the value returned by PDO::lastInsertId().
+            $characterId = $this->pdo->lastInsertId();
+
             if ($image) {
                 $imageId = $this->insertImage($image);
                 $update = $this->pdo->prepare(
@@ -69,8 +73,12 @@ class Character {
                 );
                 $update->execute([
                     ':image_id' => $imageId,
-                    ':character_id' => $this->pdo->lastInsertId(),
+                    ':character_id' => $characterId,
                 ]);
+
+                if ($update->rowCount() !== 1) {
+                    throw new RuntimeException('Character image could not be linked to the new character.');
+                }
             }
 
             $this->pdo->commit();

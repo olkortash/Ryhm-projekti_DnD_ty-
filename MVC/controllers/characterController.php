@@ -257,6 +257,15 @@ class CharacterController {
                 (int) $_SESSION['user_id'],
                 (int) $campaign['campaign_id']
             )) {
+                $this->campaignModel->createNotification(
+                    $campaign['gm_id'],
+                    $campaign['campaign_id'],
+                    'campaign_member_joined',
+                    'New player joined the campaign',
+                    'A player joined your campaign with an invite code.',
+                    [],
+                    $_SESSION['user_id']
+                );
                 header("Location: index.php?action=character_view&id=" . $characterId);
                 exit;
             } else {
@@ -294,11 +303,23 @@ class CharacterController {
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && $campaign
             && (int) $campaign['gm_id'] === (int) $_SESSION['user_id']) {
-            $this->characterModel->unlinkFromCampaignByGm(
+            $character = $this->characterModel->getById($characterId);
+            $removed = $this->characterModel->unlinkFromCampaignByGm(
                 $characterId,
                 $campaignId,
                 $_SESSION['user_id']
             );
+            if ($removed && $character && (int)$character['campaign_id'] === (int)$campaignId) {
+                $this->campaignModel->createNotification(
+                    $character['player_id'],
+                    $campaignId,
+                    'campaign_member_removed',
+                    'Your character was removed from a campaign',
+                    'The Game Master removed your character from the campaign.',
+                    [],
+                    $_SESSION['user_id']
+                );
+            }
         }
 
         header('Location: index.php?action=campaign_view&id=' . urlencode($campaignId));

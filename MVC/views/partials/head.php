@@ -50,6 +50,7 @@ $pageTitle = $pageTitle ?? 'Masters';
 
         <?php if (isset($_SESSION['user_id'])): ?>
             <a href="index.php?action=dashboard" class="text-link">Dashboard</a>
+            <a href="index.php?action=notifications" class="text-link">Notifications<?php if (isset($notificationCount) && $notificationCount > 0): ?> (<?= (int)$notificationCount; ?>)<?php endif; ?></a>
             <a href="index.php?action=profile" class="text-link">Profile</a>
             <a href="index.php?action=logout" class="text-link">Log out</a>
         <?php else: ?>
@@ -60,3 +61,13 @@ $pageTitle = $pageTitle ?? 'Masters';
     </div>
 
 </header>
+<<<<<<< HEAD
+=======
+
+<?php if (!empty($_SESSION['flash'])): ?>
+    <?php $flash = $_SESSION['flash']; unset($_SESSION['flash']); ?>
+    <div class="flash-message flash-<?= e($flash['type'] ?? 'info'); ?>" role="status">
+        <?= e($flash['message'] ?? ''); ?>
+    </div>
+<?php endif; ?>
+>>>>>>> ed8022b655d37e9b096be1318706178b5cd67f29

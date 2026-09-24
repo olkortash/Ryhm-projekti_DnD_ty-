@@ -20,6 +20,7 @@ class DashboardController {
         $userId = $_SESSION['user_id'];
         $characters = $this->characterModel->getByPlayerId($userId);
         $gmCampaigns = $this->campaignModel->getByGmId($userId);
+        $notificationCount = $this->campaignModel->getUnreadNotificationCount($userId);
 
         require __DIR__ . '/../views/dashboard.php';
     }
