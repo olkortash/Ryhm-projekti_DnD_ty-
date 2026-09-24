@@ -168,6 +168,43 @@ class Character {
         ]);
     }
 
+    public function updateAbilities($character_id, $player_id, $abilities) {
+        $setClauses = [];
+        $params = [
+            ':character_id' => $character_id,
+            ':player_id' => $player_id,
+        ];
+
+        foreach ($abilities as $column => $value) {
+            $setClauses[] = $column . ' = :' . $column;
+            $params[':' . $column] = $value;
+        }
+
+        if ($setClauses === []) {
+            return false;
+        }
+
+        $sql = 'UPDATE characters
+                SET ' . implode(', ', $setClauses) . '
+                WHERE character_id = :character_id AND player_id = :player_id';
+        $stmt = $this->pdo->prepare($sql);
+        return $stmt->execute($params);
+    }
+
+    public function updateAdditionalInfo($character_id, $player_id, $equipment, $skills) {
+        $sql = "UPDATE characters
+                SET equipment = :equipment,
+                    additional_skills = :additional_skills
+                WHERE character_id = :character_id AND player_id = :player_id";
+        $stmt = $this->pdo->prepare($sql);
+        return $stmt->execute([
+            ':equipment' => $equipment,
+            ':additional_skills' => $skills,
+            ':character_id' => $character_id,
+            ':player_id' => $player_id,
+        ]);
+    }
+
     public function updateDetails($character_id, $data) {
         $sql = "UPDATE characters 
                 SET character_name = :character_name, level = :level, hp_max = :hp_max, hp_current = :hp_current

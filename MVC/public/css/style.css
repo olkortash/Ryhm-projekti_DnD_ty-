@@ -1411,6 +1411,71 @@ a {
     color: #f3eadc;
 }
 
+.ability-score-edit-grid {
+    margin-top: 18px;
+    margin-bottom: 12px;
+}
+
+.ability-score-field {
+    display: grid;
+    gap: 6px;
+    padding: 10px 8px;
+    border: 1px solid rgba(213, 169, 30, 0.25);
+    background: rgba(255, 255, 255, 0.015);
+}
+
+.ability-score-field span {
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: #8d7ba8;
+}
+
+.ability-score-field input,
+.character-hp-form textarea {
+    width: 100%;
+    min-height: 44px;
+    padding: 9px 11px;
+    color: var(--cream);
+    background: rgba(8, 7, 12, 0.82);
+    border: 1px solid rgba(117, 98, 143, 0.44);
+    border-radius: 4px;
+    font: inherit;
+    box-sizing: border-box;
+}
+
+.character-hp-form textarea {
+    min-height: 110px;
+    resize: vertical;
+}
+
+.ability-score-field input:focus,
+.character-hp-form textarea:focus {
+    border-color: var(--gold);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(213, 169, 30, 0.12);
+}
+
+.character-note-box {
+    padding: 14px 16px;
+    border: 1px solid rgba(213, 169, 30, 0.25);
+    background: rgba(255, 255, 255, 0.015);
+}
+
+.character-note-box h3 {
+    margin: 0 0 8px;
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #8d7ba8;
+}
+
+.character-note-box p {
+    margin: 0;
+    white-space: pre-wrap;
+    color: var(--cream);
+    line-height: 1.6;
+}
+
 .hp-input-row {
     display: flex;
     align-items: center;

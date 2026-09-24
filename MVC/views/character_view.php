@@ -111,6 +111,66 @@ require __DIR__ . '/partials/head.php';
                         <strong><?= htmlspecialchars($character['intelligence'] ?? 0); ?></strong>
                     </div>
                 </div>
+
+                <?php if ($isOwner): ?>
+                <form class="character-hp-form" action="index.php?action=character_update_abilities" method="POST">
+                    <input type="hidden" name="character_id" value="<?= (int) $character['character_id']; ?>">
+                    <div class="ability-score-grid ability-score-edit-grid">
+                        <label class="ability-score-field">
+                            <span>AGI</span>
+                            <input type="number" name="agi" value="<?= (int) ($character['agility'] ?? 0); ?>" min="0" max="99">
+                        </label>
+                        <label class="ability-score-field">
+                            <span>STR</span>
+                            <input type="number" name="str" value="<?= (int) ($character['strength'] ?? 0); ?>" min="0" max="99">
+                        </label>
+                        <label class="ability-score-field">
+                            <span>DEX</span>
+                            <input type="number" name="dex" value="<?= (int) ($character['dexterity'] ?? 0); ?>" min="0" max="99">
+                        </label>
+                        <label class="ability-score-field">
+                            <span>WIS</span>
+                            <input type="number" name="wis" value="<?= (int) ($character['wisdom'] ?? 0); ?>" min="0" max="99">
+                        </label>
+                        <label class="ability-score-field">
+                            <span>CHA</span>
+                            <input type="number" name="cha" value="<?= (int) ($character['charisma'] ?? 0); ?>" min="0" max="99">
+                        </label>
+                        <label class="ability-score-field">
+                            <span>CON</span>
+                            <input type="number" name="con" value="<?= (int) ($character['constitution'] ?? 0); ?>" min="0" max="99">
+                        </label>
+                        <label class="ability-score-field">
+                            <span>INT</span>
+                            <input type="number" name="int" value="<?= (int) ($character['intelligence'] ?? 0); ?>" min="0" max="99">
+                        </label>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Update ability scores</button>
+                </form>
+                <?php endif; ?>
+            </div>
+
+            <div class="character-action-section">
+                <p class="eyebrow">EQUIPMENT & SPECIAL SKILLS</p>
+                <?php if ($isOwner): ?>
+                <form class="character-hp-form" action="index.php?action=character_update_details" method="POST">
+                    <input type="hidden" name="character_id" value="<?= (int) $character['character_id']; ?>">
+                    <label for="equipment-text">Equipment</label>
+                    <textarea id="equipment-text" name="equipment" rows="5" placeholder="List equipment and items acquired during the campaign..."><?= htmlspecialchars($character['equipment'] ?? ''); ?></textarea>
+                    <label for="skills-text">Additional skills</label>
+                    <textarea id="skills-text" name="skills" rows="5" placeholder="Add learned abilities, talents, or custom skills..."><?= htmlspecialchars($character['additional_skills'] ?? ''); ?></textarea>
+                    <button type="submit" class="btn btn-secondary">Save equipment and skills</button>
+                </form>
+                <?php else: ?>
+                    <div class="character-note-box">
+                        <h3>Equipment</h3>
+                        <p><?= nl2br(htmlspecialchars($character['equipment'] ?? 'No equipment listed yet.')); ?></p>
+                    </div>
+                    <div class="character-note-box">
+                        <h3>Additional skills</h3>
+                        <p><?= nl2br(htmlspecialchars($character['additional_skills'] ?? 'No additional skills listed yet.')); ?></p>
+                    </div>
+                <?php endif; ?>
             </div>
 
             <div class="character-action-section">
