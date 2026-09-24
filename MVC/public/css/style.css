@@ -2390,9 +2390,10 @@ input[type="number"] {
     transition: 2s;
 }
 #fof-textarea:hover {
+    cursor: no-drop;
     background-color: gainsboro;
     padding: 3em 3em;
-    border-radius: 25px;
+    border-radius: 26px;
     border-color: red;
     transition: 2s;
 }
