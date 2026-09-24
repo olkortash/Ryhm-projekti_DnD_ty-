@@ -40,8 +40,8 @@ class Character {
         $this->pdo->beginTransaction();
 
         try {
-            $sql = "INSERT INTO characters (player_id, campaign_id, character_name, character_class_id, character_race_id, character_job_id, level, hp_current, hp_max)
-                    VALUES (:player_id, :campaign_id, :character_name, :character_class_id, :character_race_id, :character_job_id, :level, :hp_current, :hp_max)";
+                    $sql = "INSERT INTO characters (player_id, campaign_id, character_name, character_class_id, character_race_id, character_job_id, level, hp_current, hp_max, agility, strength, dexterity, wisdom, charisma, constitution, intelligence)
+                        VALUES (:player_id, :campaign_id, :character_name, :character_class_id, :character_race_id, :character_job_id, :level, :hp_current, :hp_max, :agi, :str, :dex, :wis, :cha, :con, :int)";
             $stmt = $this->pdo->prepare($sql);
             $stmt->execute([
                 ':player_id' => $data['player_id'],
@@ -52,7 +52,14 @@ class Character {
                 ':character_job_id' => $data['character_job_id'],
                 ':level' => $data['level'] ?? 1,
                 ':hp_current' => $data['hp_max'],
-                ':hp_max' => $data['hp_max']
+                ':hp_max' => $data['hp_max'],
+                ':agi' => $data['agi'],
+                ':str' => $data['str'],
+                ':dex' => $data['dex'],
+                ':wis' => $data['wis'],
+                ':cha' => $data['cha'],
+                ':con' => $data['con'],
+                ':int' => $data['int']
             ]);
 
             if ($image) {

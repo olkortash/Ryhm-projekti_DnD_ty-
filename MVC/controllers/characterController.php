@@ -32,7 +32,14 @@ class CharacterController {
                 'character_race_id' => $_POST['character_race_id'],
                 'character_job_id' => $_POST['character_job_id'],
                 'level' => $_POST['level'] ?? 1,
-                'hp_max' => $_POST['hp_max']
+                'hp_max' => $_POST['hp_max'],
+                'agi' => $_POST['agi'],
+                'str' => $_POST['str'],
+                'dex' => $_POST['dex'],
+                'wis' => $_POST['wis'],
+                'cha' => $_POST['cha'],
+                'con' => $_POST['con'],
+                'int' => $_POST['int']
             ];
 
             if ($image['error'] === null && $this->characterModel->create($data, $image['file'])) {
