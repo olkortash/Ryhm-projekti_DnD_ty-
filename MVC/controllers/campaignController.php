@@ -43,6 +43,7 @@ class CampaignController {
         $players = $this->campaignModel->getCharactersInCampaign($campaignId);
         $campaignMembers = $this->campaignModel->getMembers($campaignId);
         $availableUsers = $this->campaignModel->getAvailableUsers($campaignId);
+        $availableCharacters = $this->campaignModel->getAvailableCharacters($campaignId);
         $sessionNotes = $this->campaignModel->getSessionNotes($campaignId);
         require __DIR__ . '/../views/campaign_view.php';
     }
@@ -66,9 +67,9 @@ class CampaignController {
         }
 
         if (isset($_POST['add_member'])) {
-            $userId = (int)($_POST['user_id'] ?? 0);
+            $characterId = (int)($_POST['character_id'] ?? 0);
             $role = $_POST['member_role'] ?? 'Player';
-            $this->campaignModel->addMember($campaignId, $_SESSION['user_id'], $userId, $role);
+            $this->campaignModel->addMember($campaignId, $_SESSION['user_id'], 0, $role, $characterId);
         }
 
         if (isset($_POST['update_member_role'])) {
