@@ -1,4 +1,8 @@
 <?php
+/*
+ * Ilmoitussivu: CampaignController välittää käyttäjän $notifications-listan.
+ * read_at === null merkitsee lukematonta ilmoitusta; kuittaukset lähetetään POST-lomakkeilla.
+ */
 $pageTitle = 'Notifications - Roolipelisovellus';
 require __DIR__ . '/partials/head.php';
 ?>

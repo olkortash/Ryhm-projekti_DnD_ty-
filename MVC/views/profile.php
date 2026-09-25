@@ -1,21 +1,24 @@
 <?php
+/*
+ * Profiili: ProfileController välittää $user-tiedot ja kolme yhteenvetolukua.
+ * $joinedCampaignCount laskee hahmojen eri kampanjat, ei hahmojen lukumäärää.
+ */
 $pageTitle = 'Profile - Roleplay App';
 require __DIR__ . '/partials/head.php';
 
-// Format the creation date
-$memberSince = !empty($user['created_at']) 
-    ? date('F d, Y', strtotime($user['created_at'])) 
+// Muotoillaan tilin luontipäivä; puuttuvalle arvolle käytetään oletustekstiä.
+$memberSince = !empty($user['created_at'])
+    ? date('F d, Y', strtotime($user['created_at']))
     : 'Unknown';
 ?>
 
 <div class="dashboard">
-
     <div class="dashboard-hero">
         <h1><?= e($user['username']) ?></h1>
         <p>Account Information</p>
     </div>
 
-    <!-- Account Details Section -->
+    <?php // Käyttäjätilin perustiedot. ?>
     <section class="dashboard-section">
         <div class="section-head">
             <div>
@@ -67,9 +70,6 @@ $memberSince = !empty($user['created_at'])
             </div>
         </div>
     </section>
-
-
-
 </div>
 
 <?php require __DIR__ . '/partials/footer.php'; ?>

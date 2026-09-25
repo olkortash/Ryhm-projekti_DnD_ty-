@@ -1,16 +1,19 @@
-<?php 
+<?php
+/*
+ * Hallintapaneeli: DashboardController välittää omat hahmot ($characters)
+ * ja käyttäjän luomat kampanjat ($gmCampaigns). Tyhjille listoille näytetään aloitusohje.
+ */
 $pageTitle = "Dashboard - Roleplay App";
-require __DIR__ . '/partials/head.php'; 
+require __DIR__ . '/partials/head.php';
 ?>
 
 <div class="dashboard">
-
     <div class="dashboard-hero">
         <h1>Welcome, <?= htmlspecialchars($_SESSION['username']); ?>!</h1>
         <p>Manage your characters and campaigns in one place</p>
     </div>
 
-    <!-- Characters Section -->
+    <?php // Omat hahmot ja niiden kampanjalinkit. ?>
     <section class="dashboard-section">
         <div class="section-head">
             <div>
@@ -33,8 +36,8 @@ require __DIR__ . '/partials/head.php';
                                 </a>
                             </h3>
                             <p class="dashboard-card-meta">
-                                Lvl <?= $char['level']; ?> • 
-                                <?= $char['race_name']; ?> • 
+                                Lvl <?= $char['level']; ?> •
+                                <?= $char['race_name']; ?> •
                                 <?= $char['class_name']; ?>
                             </p>
                             <p class="dashboard-card-campaign">
@@ -70,14 +73,17 @@ require __DIR__ . '/partials/head.php';
         <?php endif; ?>
     </section>
 
-    <!-- Campaigns Section (Game Master) -->
+    <?php // Käyttäjän luomat kampanjat; painikkeet avaavat saman piilotetun luontilomakkeen. ?>
     <section class="dashboard-section">
         <div class="section-head">
             <div>
                 <p class="eyebrow">GAME MASTER</p>
                 <h2>Campaigns</h2>
             </div>
-            <button class="btn btn-primary compact" onclick="document.getElementById('campaign-form').style.display = document.getElementById('campaign-form').style.display === 'none' ? 'block' : 'none'">
+            <button
+                class="btn btn-primary compact"
+                onclick="document.getElementById('campaign-form').style.display = document.getElementById('campaign-form').style.display === 'none' ? 'block' : 'none'"
+            >
                 <span aria-hidden="true">+</span>New Campaign
             </button>
         </div>
@@ -85,10 +91,10 @@ require __DIR__ . '/partials/head.php';
         <form id="campaign-form" class="dashboard-form auth-form" action="index.php?action=campaign_create" method="POST" style="display: none; margin-bottom: 24px;">
             <label>Campaign Name</label>
             <input type="text" name="campaign_name" placeholder="E.g. Kingdoms at War" required>
-            
+
             <label>Description</label>
             <input type="text" name="description" placeholder="Brief description of your campaign">
-            
+
             <button type="submit" class="btn btn-primary auth-submit">Create Campaign</button>
         </form>
 
@@ -126,7 +132,6 @@ require __DIR__ . '/partials/head.php';
             </div>
         <?php endif; ?>
     </section>
-
 </div>
 
 <?php require __DIR__ . '/partials/footer.php'; ?>

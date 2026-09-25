@@ -1,6 +1,11 @@
-<?php 
+<?php
+/*
+ * Hahmon luonti: CharacterController välittää $races-, $classes- ja $jobs-valinnat
+ * sekä mahdollisen $error-viestin. Lomake lähettää myös valinnaisen kuvatiedoston.
+ * character-creator.js käyttää name-, id- ja data-attribuutteja pistejakoon ja yhteenvetoon.
+ */
 $pageTitle = "Create new character - Roleplay App";
-require __DIR__ . '/partials/head.php'; 
+require __DIR__ . '/partials/head.php';
 ?>
 
 <div class="character-creator">
@@ -35,9 +40,13 @@ require __DIR__ . '/partials/head.php';
                     <div class="options-grid" id="raceGrid">
                         <?php foreach ($races as $race): ?>
                             <label class="option-card">
-                                <input type="radio" name="character_race_id" value="<?= $race['race_id']; ?>" 
-                                       data-race="<?= htmlspecialchars($race['race_name']); ?>"
-                                       <?= ($race['race_id'] == 1 ? 'checked' : ''); ?>>
+                                <input
+                                    type="radio"
+                                    name="character_race_id"
+                                    value="<?= $race['race_id']; ?>"
+                                    data-race="<?= htmlspecialchars($race['race_name']); ?>"
+                                    <?= ($race['race_id'] == 1 ? 'checked' : ''); ?>
+                                >
                                 <div class="option-label"><?= htmlspecialchars($race['race_name']); ?></div>
                             </label>
                         <?php endforeach; ?>
@@ -49,15 +58,18 @@ require __DIR__ . '/partials/head.php';
                     <div class="options-grid" id="classGrid">
                         <?php foreach ($classes as $cls): ?>
                             <label class="option-card">
-                                <input type="radio" name="character_class_id" value="<?= $cls['class_id']; ?>" 
-                                       data-class="<?= htmlspecialchars($cls['class_name']); ?>" 
-                                       <?= ($cls['class_id'] == 1 ? 'checked' : ''); ?>>
+                                <input
+                                    type="radio"
+                                    name="character_class_id"
+                                    value="<?= $cls['class_id']; ?>"
+                                    data-class="<?= htmlspecialchars($cls['class_name']); ?>"
+                                    <?= ($cls['class_id'] == 1 ? 'checked' : ''); ?>
+                                >
                                 <div class="option-label"><?= htmlspecialchars($cls['class_name']); ?></div>
                             </label>
                         <?php endforeach; ?>
                     </div>
                 </div>
-
 
                 <div class="form-section">
                     <h3>Job</h3>
@@ -65,8 +77,7 @@ require __DIR__ . '/partials/head.php';
                         <select name="character_job_id" required id="jobSelect" class="dark-select">
                             <option value="">Choose a profession...</option>
                             <?php foreach ($jobs as $job): ?>
-                                <option value="<?= $job['job_id']; ?>" 
-                                        data-job="<?= htmlspecialchars($job['job_name']); ?>">
+                                <option value="<?= $job['job_id']; ?>" data-job="<?= htmlspecialchars($job['job_name']); ?>">
                                     <?= htmlspecialchars($job['job_name']); ?>
                                 </option>
                             <?php endforeach; ?>
@@ -76,25 +87,26 @@ require __DIR__ . '/partials/head.php';
 
                 <div class="form-section">
                     <h3>Stats</h3>
+                    <?php // JavaScript laskee jäljellä olevat pisteet stat-input-kentistä ja päivittää pointsLeft-arvon. ?>
                     <div class="stats-points">
                         <span>Points remaining</span>
                         <strong id="pointsLeft">40</strong>
                     </div>
-                        <div class="form-group">
+                    <div class="form-group">
                         <label>Hit Points (HP)</label>
                         <div class="stat-stepper">
                             <button type="button" class="stat-button" data-target="hp_max" data-action="decrease" aria-label="Decrease hit points">−</button>
                             <input type="number" name="hp_max" value="15" min="15" max="25" class="stat-input hp-input" data-stat="hp_max" required>
                             <button type="button" class="stat-button" data-target="hp_max" data-action="increase" aria-label="Increase hit points">+</button>
                         </div>
-                    <div class="form-group">
-                        <label>Agility (AGI)</label>
-                        <div class="stat-stepper">
-                            <button type="button" class="stat-button" data-stat="agi" data-action="decrease" aria-label="Decrease agility">−</button>
-                            <input type="number" name="agi" value="1" min="1" max="25" class="stat-input" data-stat="agi" required>
-                            <button type="button" class="stat-button" data-stat="agi" data-action="increase" aria-label="Increase agility">+</button>
+                        <div class="form-group">
+                            <label>Agility (AGI)</label>
+                            <div class="stat-stepper">
+                                <button type="button" class="stat-button" data-stat="agi" data-action="decrease" aria-label="Decrease agility">−</button>
+                                <input type="number" name="agi" value="1" min="1" max="25" class="stat-input" data-stat="agi" required>
+                                <button type="button" class="stat-button" data-stat="agi" data-action="increase" aria-label="Increase agility">+</button>
+                            </div>
                         </div>
-                    </div>
                     </div>
                     <div class="form-group">
                         <label>Strength (STR)</label>
@@ -112,7 +124,7 @@ require __DIR__ . '/partials/head.php';
                             <button type="button" class="stat-button" data-stat="dex" data-action="increase" aria-label="Increase dexterity">+</button>
                         </div>
                     </div>
-                     <div class="form-group">
+                    <div class="form-group">
                         <label>Wisdom (WIS)</label>
                         <div class="stat-stepper">
                             <button type="button" class="stat-button" data-stat="wis" data-action="decrease" aria-label="Decrease wisdom">−</button>
@@ -120,7 +132,7 @@ require __DIR__ . '/partials/head.php';
                             <button type="button" class="stat-button" data-stat="wis" data-action="increase" aria-label="Increase wisdom">+</button>
                         </div>
                     </div>
-                     <div class="form-group">
+                    <div class="form-group">
                         <label>Charm (CHA)</label>
                         <div class="stat-stepper">
                             <button type="button" class="stat-button" data-stat="cha" data-action="decrease" aria-label="Decrease charm">−</button>
@@ -128,7 +140,7 @@ require __DIR__ . '/partials/head.php';
                             <button type="button" class="stat-button" data-stat="cha" data-action="increase" aria-label="Increase charm">+</button>
                         </div>
                     </div>
-                     <div class="form-group">
+                    <div class="form-group">
                         <label>Constitution (CON)</label>
                         <div class="stat-stepper">
                             <button type="button" class="stat-button" data-stat="con" data-action="decrease" aria-label="Decrease constitution">−</button>
@@ -136,7 +148,7 @@ require __DIR__ . '/partials/head.php';
                             <button type="button" class="stat-button" data-stat="con" data-action="increase" aria-label="Increase constitution">+</button>
                         </div>
                     </div>
-                     <div class="form-group">
+                    <div class="form-group">
                         <label>Intelligence (INT)</label>
                         <div class="stat-stepper">
                             <button type="button" class="stat-button" data-stat="int" data-action="decrease" aria-label="Decrease intelligence">−</button>
@@ -154,6 +166,7 @@ require __DIR__ . '/partials/head.php';
                 </div>
             </div>
 
+            <?php // Yhteenveto päivittyy selaimessa kenttien muuttuessa; nämä arvot eivät ole erillisiä lomakekenttiä. ?>
             <div class="summary-panel">
                 <h3>Summary</h3>
                 <div class="summary-name" id="summaryName">Unnamed</div>
@@ -186,12 +199,12 @@ require __DIR__ . '/partials/head.php';
                     </div>
                     <div class="stat-row">
                         <span class="stat-label"><svg class="summary-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M7 12V6a2 2 0 0 1 4 0v5-7a2 2 0 0 1 4 0v7-5a2 2 0 0 1 4 0v7l-2 4v4H8v-4l-4-5V9a2 2 0 0 1 3 0m0 4h6v3"/></svg>Strength</span>
-                        <span class="stat-value" id="statSTR">0</span> 
+                        <span class="stat-value" id="statSTR">0</span>
                     </div>
                     <div class="stat-row">
                         <span class="stat-label"><svg class="summary-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M8 13V6a1.5 1.5 0 0 1 3 0v6-8a1.5 1.5 0 0 1 3 0v8-6a1.5 1.5 0 0 1 3 0v7-4a1.5 1.5 0 0 1 3 0v6a8 8 0 0 1-15 4l-3-6a1.5 1.5 0 0 1 2.5-1.5L8 15"/></svg>Dexterity</span>
                         <span class="stat-value" id="statDEX">0</span>
-                    </div> 
+                    </div>
                     <div class="stat-row">
                         <span class="stat-label"><svg class="summary-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg>Wisdom</span>
                         <span class="stat-value" id="statWIS">0</span>
@@ -203,7 +216,7 @@ require __DIR__ . '/partials/head.php';
                     <div class="stat-row">
                         <span class="stat-label"><svg class="summary-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m12 3 8 3v6c0 5-5 8-8 10-3-2-8-5-8-10V6l8-3Z"/></svg>Constitution</span>
                         <span class="stat-value" id="statCON">0</span>
-                    </div> 
+                    </div>
                     <div class="stat-row">
                         <span class="stat-label"><svg class="summary-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 6C9 3 5 3 2 4v16c3-1 7-1 10 2 3-3 7-3 10-2V4c-3-1-7-1-10 2Zm0 0v16"/></svg>Intelligence</span>
                         <span class="stat-value" id="statINT">0</span>

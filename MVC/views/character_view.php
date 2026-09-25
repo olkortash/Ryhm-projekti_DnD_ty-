@@ -1,9 +1,14 @@
-<?php 
+<?php
+/*
+ * Hahmoprofiili: CharacterController välittää $character-tiedot ja $isOwner-lipun.
+ * Omistaja näkee muokkauslomakkeet; muille näytetään vastaavat tiedot lukutilassa.
+ */
 $pageTitle = "Character information - Roleplay App";
-require __DIR__ . '/partials/head.php'; 
+require __DIR__ . '/partials/head.php';
 ?>
 
 <main class="character-page">
+    <?php // SVG-symbolit määritellään kerran; alempien kuvakkeiden use-elementit viittaavat niiden tunnisteisiin. ?>
     <svg class="character-icon-sprite" aria-hidden="true" focusable="false">
         <symbol id="profile-icon-race" viewBox="0 0 24 24"><path d="M6 9 2 6l1 7 4 2m11-6 4-3-1 7-4 2M6 10c0-8 12-8 12 0v4c0 8-12 8-12 0Z"/><path d="M8 11h1m6 0h1m-6 6h4"/></symbol>
         <symbol id="profile-icon-class" viewBox="0 0 24 24"><path d="m7 17 4-14 6 4-4 1 4 9M7 17c-7 1-7 4 5 4s12-3 5-4M8 14h8"/></symbol>
@@ -43,26 +48,26 @@ require __DIR__ . '/partials/head.php';
                 </div>
             <?php endif; ?>
 
+            <?php // Kuvan lähetys ja poisto ovat omistajan toimintoja; multipart/form-data välittää tiedoston. ?>
             <?php if ($isOwner): ?>
-            <form class="character-image-form" action="index.php?action=character_update_image" method="POST" enctype="multipart/form-data">
-                <input type="hidden" name="character_id" value="<?= (int) $character['character_id']; ?>">
-                <label for="replace-character-image"><?= !empty($character['character_img_id']) ? 'Replace image' : 'Upload image'; ?></label>
-                <input id="replace-character-image" type="file" name="character_image" accept="image/jpeg,image/png,image/webp,image/gif">
-                <?php if (!empty($character['character_img_id'])): ?>
-                    <label class="image-remove-option">
-                        <input type="checkbox" name="remove_image" value="1">
-                        Remove current image
-                    </label>
-                <?php endif; ?>
-                <?php if (($_GET['error'] ?? '') === 'image'): ?>
-                    <p class="form-error">Please choose a valid image up to 5 MB in size.</p>
-                <?php endif; ?>
-                <button type="submit" class="btn btn-secondary">Save image</button>
-            </form>
+                <form class="character-image-form" action="index.php?action=character_update_image" method="POST" enctype="multipart/form-data">
+                    <input type="hidden" name="character_id" value="<?= (int) $character['character_id']; ?>">
+                    <label for="replace-character-image"><?= !empty($character['character_img_id']) ? 'Replace image' : 'Upload image'; ?></label>
+                    <input id="replace-character-image" type="file" name="character_image" accept="image/jpeg,image/png,image/webp,image/gif">
+                    <?php if (!empty($character['character_img_id'])): ?>
+                        <label class="image-remove-option">
+                            <input type="checkbox" name="remove_image" value="1">
+                            Remove current image
+                        </label>
+                    <?php endif; ?>
+                    <?php if (($_GET['error'] ?? '') === 'image'): ?>
+                        <p class="form-error">Please choose a valid image up to 5 MB in size.</p>
+                    <?php endif; ?>
+                    <button type="submit" class="btn btn-secondary">Save image</button>
+                </form>
             <?php endif; ?>
         </section>
-                   
-        
+
         <section class="character-details-panel" aria-label="Character details">
             <div class="character-stat-grid">
                 <div class="character-stat"><span class="stat-label"><svg class="profile-icon" aria-hidden="true"><use href="#profile-icon-race"/></svg>Race</span><strong><?= htmlspecialchars($character['race_name']); ?></strong></div>
@@ -113,54 +118,54 @@ require __DIR__ . '/partials/head.php';
                 </div>
 
                 <?php if ($isOwner): ?>
-                <form class="character-hp-form" action="index.php?action=character_update_abilities" method="POST">
-                    <input type="hidden" name="character_id" value="<?= (int) $character['character_id']; ?>">
-                    <div class="ability-score-grid ability-score-edit-grid">
-                        <label class="ability-score-field">
-                            <span>AGI</span>
-                            <input type="number" name="agi" value="<?= (int) ($character['agility'] ?? 0); ?>" min="0" max="99">
-                        </label>
-                        <label class="ability-score-field">
-                            <span>STR</span>
-                            <input type="number" name="str" value="<?= (int) ($character['strength'] ?? 0); ?>" min="0" max="99">
-                        </label>
-                        <label class="ability-score-field">
-                            <span>DEX</span>
-                            <input type="number" name="dex" value="<?= (int) ($character['dexterity'] ?? 0); ?>" min="0" max="99">
-                        </label>
-                        <label class="ability-score-field">
-                            <span>WIS</span>
-                            <input type="number" name="wis" value="<?= (int) ($character['wisdom'] ?? 0); ?>" min="0" max="99">
-                        </label>
-                        <label class="ability-score-field">
-                            <span>CHA</span>
-                            <input type="number" name="cha" value="<?= (int) ($character['charisma'] ?? 0); ?>" min="0" max="99">
-                        </label>
-                        <label class="ability-score-field">
-                            <span>CON</span>
-                            <input type="number" name="con" value="<?= (int) ($character['constitution'] ?? 0); ?>" min="0" max="99">
-                        </label>
-                        <label class="ability-score-field">
-                            <span>INT</span>
-                            <input type="number" name="int" value="<?= (int) ($character['intelligence'] ?? 0); ?>" min="0" max="99">
-                        </label>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Update ability scores</button>
-                </form>
+                    <form class="character-hp-form" action="index.php?action=character_update_abilities" method="POST">
+                        <input type="hidden" name="character_id" value="<?= (int) $character['character_id']; ?>">
+                        <div class="ability-score-grid ability-score-edit-grid">
+                            <label class="ability-score-field">
+                                <span>AGI</span>
+                                <input type="number" name="agi" value="<?= (int) ($character['agility'] ?? 0); ?>" min="0" max="99">
+                            </label>
+                            <label class="ability-score-field">
+                                <span>STR</span>
+                                <input type="number" name="str" value="<?= (int) ($character['strength'] ?? 0); ?>" min="0" max="99">
+                            </label>
+                            <label class="ability-score-field">
+                                <span>DEX</span>
+                                <input type="number" name="dex" value="<?= (int) ($character['dexterity'] ?? 0); ?>" min="0" max="99">
+                            </label>
+                            <label class="ability-score-field">
+                                <span>WIS</span>
+                                <input type="number" name="wis" value="<?= (int) ($character['wisdom'] ?? 0); ?>" min="0" max="99">
+                            </label>
+                            <label class="ability-score-field">
+                                <span>CHA</span>
+                                <input type="number" name="cha" value="<?= (int) ($character['charisma'] ?? 0); ?>" min="0" max="99">
+                            </label>
+                            <label class="ability-score-field">
+                                <span>CON</span>
+                                <input type="number" name="con" value="<?= (int) ($character['constitution'] ?? 0); ?>" min="0" max="99">
+                            </label>
+                            <label class="ability-score-field">
+                                <span>INT</span>
+                                <input type="number" name="int" value="<?= (int) ($character['intelligence'] ?? 0); ?>" min="0" max="99">
+                            </label>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Update ability scores</button>
+                    </form>
                 <?php endif; ?>
             </div>
 
             <div class="character-action-section">
                 <p class="eyebrow">EQUIPMENT & SPECIAL SKILLS</p>
                 <?php if ($isOwner): ?>
-                <form class="character-hp-form" action="index.php?action=character_update_details" method="POST">
-                    <input type="hidden" name="character_id" value="<?= (int) $character['character_id']; ?>">
-                    <label for="equipment-text">Equipment</label>
-                    <textarea id="equipment-text" name="equipment" rows="5" placeholder="List equipment and items acquired during the campaign..."><?= htmlspecialchars($character['equipment'] ?? ''); ?></textarea>
-                    <label for="skills-text">Additional skills</label>
-                    <textarea id="skills-text" name="skills" rows="5" placeholder="Add learned abilities, talents, or custom skills..."><?= htmlspecialchars($character['additional_skills'] ?? ''); ?></textarea>
-                    <button type="submit" class="btn btn-secondary">Save equipment and skills</button>
-                </form>
+                    <form class="character-hp-form" action="index.php?action=character_update_details" method="POST">
+                        <input type="hidden" name="character_id" value="<?= (int) $character['character_id']; ?>">
+                        <label for="equipment-text">Equipment</label>
+                        <textarea id="equipment-text" name="equipment" rows="5" placeholder="List equipment and items acquired during the campaign..."><?= htmlspecialchars($character['equipment'] ?? ''); ?></textarea>
+                        <label for="skills-text">Additional skills</label>
+                        <textarea id="skills-text" name="skills" rows="5" placeholder="Add learned abilities, talents, or custom skills..."><?= htmlspecialchars($character['additional_skills'] ?? ''); ?></textarea>
+                        <button type="submit" class="btn btn-secondary">Save equipment and skills</button>
+                    </form>
                 <?php else: ?>
                     <div class="character-note-box">
                         <h3>Equipment</h3>
@@ -178,20 +183,21 @@ require __DIR__ . '/partials/head.php';
 
                 <h2><svg class="profile-icon profile-icon-heading" aria-hidden="true"><use href="#profile-icon-hp"/></svg>Hit Points</h2>
                 <?php if ($isOwner): ?>
-                <form class="character-hp-form" action="index.php?action=character_update_hp" method="POST">
-                    <input type="hidden" name="character_id" value="<?= $character['character_id']; ?>">
-                    <label for="hp-current">Current HP</label>
-                    <div class="hp-input-row">
-                        <input id="hp-current" type="number" name="hp_current" value="<?= $character['hp_current']; ?>" min="0" max="<?= $character['hp_max']; ?>">
-                        <span>/ <?= $character['hp_max']; ?></span>
-                        <button type="submit" class="btn btn-primary">Update HP</button>
-                    </div>
-                </form>
+                    <form class="character-hp-form" action="index.php?action=character_update_hp" method="POST">
+                        <input type="hidden" name="character_id" value="<?= $character['character_id']; ?>">
+                        <label for="hp-current">Current HP</label>
+                        <div class="hp-input-row">
+                            <input id="hp-current" type="number" name="hp_current" value="<?= $character['hp_current']; ?>" min="0" max="<?= $character['hp_max']; ?>">
+                            <span>/ <?= $character['hp_max']; ?></span>
+                            <button type="submit" class="btn btn-primary">Update HP</button>
+                        </div>
+                    </form>
                 <?php else: ?>
                     <p><?= (int) $character['hp_current']; ?> / <?= (int) $character['hp_max']; ?></p>
                 <?php endif; ?>
             </div>
 
+            <?php // Kutsukoodilla liittyminen tarjotaan omistajalle vain, kun hahmolla ei vielä ole kampanjaa. ?>
             <?php if ($isOwner && !$character['campaign_id']): ?>
                 <div class="character-action-section">
                     <p class="eyebrow">CAMPAIGN</p>
@@ -208,17 +214,19 @@ require __DIR__ . '/partials/head.php';
             <?php endif; ?>
 
             <?php if ($isOwner): ?>
-            <div class="character-danger-zone">
-                <form action="index.php?action=character_delete" method="POST" onsubmit="return confirm('Haluatko varmasti poistaa tämän hahmon? Tätä toimintoa ei voi perua.');">
-                    <input type="hidden" name="character_id" value="<?= $character['character_id']; ?>">
-                    <button type="submit" class="btn btn-danger">Delete character</button>
-                </form>
-            </div>
+                <div class="character-danger-zone">
+                    <form
+                        action="index.php?action=character_delete"
+                        method="POST"
+                        onsubmit="return confirm('Haluatko varmasti poistaa tämän hahmon? Tätä toimintoa ei voi perua.');"
+                    >
+                        <input type="hidden" name="character_id" value="<?= $character['character_id']; ?>">
+                        <button type="submit" class="btn btn-danger">Delete character</button>
+                    </form>
+                </div>
             <?php endif; ?>
         </section>
     </div>
 </main>
-
-
 
 <?php require __DIR__ . '/partials/footer.php'; ?>

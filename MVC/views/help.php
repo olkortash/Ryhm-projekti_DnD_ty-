@@ -1,4 +1,7 @@
 <?php
+/*
+ * Staattinen ohjesivu. Sisällysluettelon ankkurit vastaavat ohjeosioiden id-attribuutteja.
+ */
 $pageTitle = 'Help & Guide - Masters';
 require __DIR__ . '/partials/head.php';
 ?>

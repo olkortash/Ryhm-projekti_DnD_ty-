@@ -1,4 +1,7 @@
 <?php
+/*
+ * Staattinen sivukartta. Linkkien action-arvot vastaavat public/index.php-tiedoston reittejä.
+ */
 $pageTitle = 'Sitemap - Masters';
 require __DIR__ . '/partials/head.php';
 ?>
