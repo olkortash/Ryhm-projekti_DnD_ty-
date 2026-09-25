@@ -43,6 +43,21 @@ $pageTitle = $pageTitle ?? 'Masters';
         <a class="nav-link" href="index.php?action=landing#features">Resources</a> -->
     </nav>
 
+    <?php // GET-haku säilyttää hakusanan URL:ssa ja toimii myös ilman JavaScriptiä. ?>
+    <form class="header-search" action="index.php" method="GET" role="search" aria-label="Site search">
+        <input type="hidden" name="action" value="search">
+        <input
+            type="search"
+            name="q"
+            value="<?= e($searchQuery ?? ''); ?>"
+            placeholder="Users & campaigns"
+            aria-label="Search users and campaigns"
+            maxlength="100"
+            required
+        >
+        <button type="submit">Search</button>
+    </form>
+
     <div class="account-actions">
         <?php if (isset($_SESSION['user_id'])): ?>
             <a href="index.php?action=dashboard" class="text-link">Dashboard</a>

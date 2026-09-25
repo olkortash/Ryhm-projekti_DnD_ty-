@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
-    const form = document.querySelector('form');
+    // Headerissa on myös hakulomake: pistejaon tarkistus kuuluu vain hahmon luontiin.
+    const form = document.querySelector('form[action="index.php?action=character_create"]');
     const charNameInput = document.querySelector('input[name="character_name"]');
     const classRadios = document.querySelectorAll('input[name="character_class_id"]');
     const raceRadios = document.querySelectorAll('input[name="character_race_id"]');

@@ -43,6 +43,10 @@ $pdo = connectDB();
 $action = $_GET['action'] ?? 'landing';
 
 switch ($action) {
+    case 'search':
+        require_once __DIR__ . '/../controllers/searchController.php';
+        (new SearchController($pdo))->index();
+        break;
     case 'landing':
         require_once __DIR__ . '/../controllers/authController.php';
         (new AuthController($pdo))->landing();

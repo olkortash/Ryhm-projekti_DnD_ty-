@@ -43,7 +43,7 @@ a {
     padding: 0 5.5vw;
     display: flex;
     align-items: center;
-    gap: 48px;
+    gap: 24px;
     border-bottom: 1px solid var(--line-soft);
     background: rgba(8, 7, 12, 0.94);
     position: sticky;
@@ -2533,5 +2533,112 @@ input[type="number"] {
 
     100% {
         transform: rotate(360deg) scale(1);
+    }
+}
+
+/* Yhteinen hakukenttä ja käyttäjien/kampanjoiden hakutulossivu. */
+.header-search {
+    display: flex;
+    flex: 1 1 260px;
+    min-width: 220px;
+    max-width: 360px;
+    gap: 6px;
+}
+
+.header-search input {
+    width: 100%;
+    min-width: 0;
+    min-height: 38px;
+    padding: 8px 10px;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    background: var(--bg);
+    color: var(--cream);
+    font: inherit;
+    font-size: 13px;
+}
+
+.header-search input::placeholder {
+    color: var(--muted);
+}
+
+.header-search button {
+    padding: 8px 12px;
+    border: 1px solid var(--gold);
+    border-radius: 4px;
+    background: var(--gold);
+    color: var(--bg);
+    font: inherit;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.header-search button:hover {
+    background: var(--gold-bright);
+}
+
+.header-search :focus-visible {
+    outline: 2px solid var(--gold-bright);
+    outline-offset: 3px;
+}
+
+.search-page {
+    min-height: calc(100vh - 168px);
+    overflow-wrap: anywhere;
+}
+
+.search-results {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+    gap: 32px;
+}
+
+.search-result-list {
+    display: grid;
+    gap: 14px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.search-result-card {
+    min-width: 0;
+    padding: 20px;
+    border: 1px solid var(--line-soft);
+    border-radius: 7px;
+    background: var(--panel-3);
+}
+
+.search-result-card h3 {
+    margin: 0 0 12px;
+}
+
+.search-result-card p {
+    margin: 0 0 16px;
+    color: var(--muted);
+    line-height: 1.6;
+}
+
+@media (max-width: 1200px) {
+    .topbar {
+        flex-wrap: wrap;
+        padding-block: 16px;
+    }
+
+    .header-search {
+        order: 4;
+        flex-basis: 100%;
+        max-width: none;
+        min-width: 0;
+    }
+
+    .account-actions {
+        flex-wrap: wrap;
+    }
+}
+
+@media (max-width: 700px) {
+    .search-results {
+        grid-template-columns: minmax(0, 1fr);
     }
 }

@@ -659,6 +659,18 @@ class Campaign {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public function searchPublicCampaigns(string $query): array {
+        // Sama kampanjajoukko kuin etusivulla; kutsukoodeja tai jäsentietoja ei haeta.
+        $pattern = '%' . strtr($query, ['!' => '!!', '%' => '!%', '_' => '!_']) . '%';
+        $stmt = $this->pdo->prepare(
+            "SELECT campaign_id, campaign_name, description FROM campaigns
+             WHERE campaign_name LIKE :name ESCAPE '!' OR description LIKE :description ESCAPE '!'
+             ORDER BY campaign_name, campaign_id LIMIT 21"
+        );
+        $stmt->execute([':name' => $pattern, ':description' => $pattern]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     public function getById($campaign_id) {
         $sql = "SELECT * FROM campaigns WHERE campaign_id = :campaign_id";
         $stmt = $this->pdo->prepare($sql);

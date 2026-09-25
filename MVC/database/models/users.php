@@ -31,6 +31,18 @@ class User {
         return false;
     }
 
+    public function searchByUsername(string $query): array {
+        // LIKE-erikoismerkit käsitellään tavallisina hakumerkkeinä. Haku ei palauta tilin yksityisiä tietoja.
+        $pattern = '%' . strtr($query, ['!' => '!!', '%' => '!%', '_' => '!_']) . '%';
+        $stmt = $this->pdo->prepare(
+            "SELECT username FROM users
+             WHERE username LIKE :query ESCAPE '!'
+             ORDER BY username, user_id LIMIT 21"
+        );
+        $stmt->execute([':query' => $pattern]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     public function getById($user_id) {
         $sql = "SELECT user_id, username, email, created_at FROM users WHERE user_id = :user_id";
         $stmt = $this->pdo->prepare($sql);

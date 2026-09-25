@@ -10,6 +10,7 @@ osiot ja tulostetaan tiedot.
 | Tiedosto | Sisältö ja tietojen lähde |
 | --- | --- |
 | `mainpage.php` | Etusivu ja julkiset kampanjat; `AuthController`. |
+| `search.php` | Headerin GET-haun tulokset: käyttäjänimet sekä kampanjoiden nimet ja kuvaukset; `SearchController`. Enintään 20 tulosta kummastakin ryhmästä. |
 | `login.php`, `register.php` | Kirjautumis- ja rekisteröitymislomakkeet; `AuthController`. |
 | `dashboard.php` | Käyttäjän hahmot ja luomat kampanjat; `DashboardController`. |
 | `profile.php` | Tilitiedot ja yhteenvetoluvut; `ProfileController`. |
