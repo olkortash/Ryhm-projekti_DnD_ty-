@@ -39,8 +39,8 @@ $pageTitle = $pageTitle ?? 'Masters';
 
     <nav class="main-nav" aria-label="Main navigation">
         <a class="nav-link" href="index.php?action=landing#campaigns">Campaigns</a>
-        <a class="nav-link" href="index.php?action=landing#features">Tools</a>
-        <a class="nav-link" href="index.php?action=landing#features">Resources</a>
+        <!-- <a class="nav-link" href="index.php?action=landing#features">Tools</a>
+        <a class="nav-link" href="index.php?action=landing#features">Resources</a> -->
     </nav>
 
     <div class="account-actions">

@@ -21,7 +21,6 @@ osiot ja tulostetaan tiedot.
 | `404_view.html` | Itsenäinen virhesivu ja `404-sivu.js`-tekstianimaatio. |
 | `partials/head.php` | Dokumentin alku, sivun otsikko, `e()`-apufunktio, navigaatio ja flash-palaute. |
 | `partials/footer.php` | Alatunniste, yhteinen JavaScript ja dokumentin sulkevat tagit. |
-| `campaign_join.php` | Tyhjä tiedosto; nykyinen reititin ei käytä sitä. Liittymislomakkeet ovat kampanja- ja hahmosivuilla. |
 
 ## Yhteiset käytännöt
 
