@@ -53,7 +53,7 @@ require __DIR__ . '/partials/head.php';
                         </div>
                         <div class="dashboard-card-footer">
                             <a class="manage-link" href="index.php?action=character_view&id=<?= $char['character_id']; ?>">
-                                View →
+                                View Character
                             </a>
                             <?php if (!empty($char['campaign_id'])): ?>
                                 <form action="index.php?action=character_unlink_campaign" method="POST" onsubmit="return confirm('Remove this character from the campaign?');">
@@ -119,7 +119,7 @@ require __DIR__ . '/partials/head.php';
                         </div>
                         <div class="dashboard-card-footer">
                             <a class="manage-link" href="index.php?action=campaign_view&id=<?= $camp['campaign_id']; ?>">
-                                Manage →
+                                Manage Campaign →
                             </a>
                         </div>
                     </article>
