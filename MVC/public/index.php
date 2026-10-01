@@ -145,6 +145,10 @@ switch ($action) {
         require_once __DIR__ . '/../controllers/campaignController.php';
         (new CampaignController($pdo))->saveSession();
         break;
+    case 'campaign_level_up':
+        require_once __DIR__ . '/../controllers/campaignController.php';
+        (new CampaignController($pdo))->levelUpCharacter();
+        break;
     case 'campaign_members_update':
         require_once __DIR__ . '/../controllers/campaignController.php';
         (new CampaignController($pdo))->updateMembers();

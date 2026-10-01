@@ -18,7 +18,7 @@ class AuthController {
 
     public function login() {
         if (isset($_GET['timeout']) && $_GET['timeout'] === '1') {
-            $error = "Istuntosi on vanhentunut, koska et ole ollut aktiivinen. Kirjaudu sisään uudelleen.";
+            $error = "Are you still there? Please log in again.";
         }
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -34,7 +34,7 @@ class AuthController {
                 header('Location: index.php?action=dashboard');
                 exit;
             } else {
-                $error = "Virheellinen käyttäjätunnus tai salasana.";
+                $error = "Invalid username or password.";
                 require __DIR__ . '/../views/login.php';
             }
         } else {
@@ -61,7 +61,7 @@ class AuthController {
                 header('Location: index.php?action=dashboard');
                 exit;
             } else {
-                $error = "Rekisteröinti epäonnistui.";
+                $error = "Registration failed.";
                 require __DIR__ . '/../views/register.php';
             }
         } else {

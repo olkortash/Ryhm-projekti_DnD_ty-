@@ -8,6 +8,7 @@
     --muted: #9586aa;
     --purple: #75628f;
     --panel-3: rgba(22, 16, 28, 0.88);
+    --panel: rgba(22, 16, 28, 0.78);
     --line: rgba(213, 169, 30, 0.18);
     --line-soft: rgba(255, 255, 255, 0.07);
     --shadow: 0 18px 45px rgba(0, 0, 0, 0.35);
@@ -853,6 +854,7 @@ a {
 }
 
 .form-error {
+    font-family: Arial, sans-serif;
     padding: 10px 12px;
     color: #e6b1bd;
     background: rgba(102, 29, 57, 0.2);
@@ -1244,7 +1246,7 @@ a {
 .form-help,
 .form-error {
     display: block;
-    margin: 7px 0 0;
+    margin: 7px 0 7px;
     font-size: 12px;
     line-height: 1.5;
 }
@@ -1319,6 +1321,23 @@ a {
     font-weight: 400;
 }
 
+.character-created-by {
+    align-self: flex-end;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: -20px;
+    color: var(--muted);
+    font-size: 11px;
+}
+
+.character-created-by .profile-icon {
+    width: 14px;
+    height: 14px;
+    flex-basis: 14px;
+    color: var(--gold);
+}
+
 .character-action-section {
     padding-top: 2px;
 }
@@ -1391,6 +1410,10 @@ a {
 .ability-score-edit-grid {
     margin-top: 18px;
     margin-bottom: 12px;
+}
+
+.ability-points {
+    margin-top: 18px;
 }
 
 .ability-score-field {
@@ -1930,6 +1953,119 @@ input[type="number"] {
     grid-template-columns: 1fr 1fr;
     gap: 30px;
     margin-bottom: 40px;
+}
+
+.campaign-view > .campaign-info-section + .campaign-roster-section,
+.campaign-view > .campaign-roster-section + .campaign-info-section,
+.campaign-view > .campaign-roster-section + .characters-section {
+    margin-top: 28px;
+}
+
+.campaign-view > .campaign-single-section {
+    grid-template-columns: minmax(0, 1fr);
+}
+
+.campaign-section-heading {
+    margin-bottom: 20px;
+}
+
+.campaign-section-heading .eyebrow {
+    margin-bottom: 7px;
+}
+
+.campaign-section-heading h2 {
+    margin: 0;
+    color: var(--gold);
+    font-size: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.campaign-section-heading h2 span {
+    color: var(--muted);
+    font-size: 0.78em;
+}
+
+.campaign-section-heading > p:last-child {
+    margin: 8px 0 0;
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.campaign-roster .table-header,
+.campaign-roster .table-row {
+    grid-template-columns: minmax(90px, 0.9fr) minmax(120px, 1.25fr) minmax(100px, 0.85fr) minmax(82px, 0.7fr) minmax(135px, 1.2fr) minmax(105px, 1fr);
+    gap: 12px;
+}
+
+.campaign-roster-gm .table-header,
+.campaign-roster-gm .table-row {
+    grid-template-columns: minmax(90px, 0.9fr) minmax(120px, 1.25fr) minmax(100px, 0.85fr) minmax(82px, 0.7fr) minmax(135px, 1.2fr) minmax(105px, 1fr) minmax(88px, 0.7fr);
+}
+
+.campaign-roster .table-header {
+    color: var(--muted);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+}
+
+.campaign-roster .table-row {
+    min-width: 0;
+    padding: 14px 0;
+}
+
+.campaign-roster .table-row > div {
+    min-width: 0;
+}
+
+.campaign-roster .col-dice {
+    min-width: 0;
+}
+
+.campaign-roster .col-level {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    color: var(--gold);
+}
+
+.campaign-roster .col-level strong {
+    min-width: 24px;
+    font-size: 18px;
+}
+
+.campaign-roster .col-level form,
+.campaign-roster .col-actions form {
+    margin: 0;
+}
+
+.campaign-roster .col-level .btn,
+.campaign-roster .col-actions .btn {
+    margin: 0;
+    min-height: 30px;
+    padding: 5px 9px;
+    font-size: 9px;
+    letter-spacing: 0.08em;
+}
+
+.level-cap-note {
+    color: var(--muted);
+    font-family: Arial, sans-serif;
+    font-size: 9px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.campaign-roster .col-race {
+    align-items: flex-start;
+}
+
+.campaign-roster .hp-bar {
+    min-width: 80px;
 }
 
 .info-card {
@@ -2640,5 +2776,45 @@ input[type="number"] {
 @media (max-width: 700px) {
     .search-results {
         grid-template-columns: minmax(0, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .campaign-roster .table-header {
+        display: none;
+    }
+
+    .campaign-roster .table-row,
+    .campaign-roster-gm .table-row {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 16px 14px;
+        padding: 18px 0;
+    }
+
+    .campaign-roster .table-row > div::before {
+        display: block;
+        margin-bottom: 6px;
+        color: var(--muted);
+        font-family: Arial, sans-serif;
+        font-size: 9px;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        content: attr(data-label);
+    }
+
+    .campaign-roster .col-actions {
+        grid-column: 1 / -1;
+    }
+
+    .campaign-roster .col-level {
+        align-items: flex-start;
+    }
+
+    .campaign-roster .col-race {
+        flex-direction: column;
+    }
+
+    .campaign-roster .col-hp .hp-bar {
+        width: 100%;
     }
 }

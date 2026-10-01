@@ -739,4 +739,27 @@ class Campaign {
         $stmt->execute([':campaign_id' => $campaign_id]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function levelUpCharacter($campaign_id, $gm_id, $character_id) {
+        $sql = "UPDATE characters
+                SET level = level + 1
+                WHERE character_id = :character_id
+                    AND campaign_id = :campaign_id
+                    AND level >= 1
+                    AND level < 20
+                    AND EXISTS (
+                        SELECT 1 FROM campaigns
+                        WHERE campaigns.campaign_id = :authorized_campaign_id
+                            AND campaigns.gm_id = :gm_id
+                    )";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([
+            ':character_id' => (int)$character_id,
+            ':campaign_id' => (int)$campaign_id,
+            ':authorized_campaign_id' => (int)$campaign_id,
+            ':gm_id' => (int)$gm_id,
+        ]);
+
+        return $stmt->rowCount() === 1;
+    }
 }

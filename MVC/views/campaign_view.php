@@ -98,7 +98,90 @@ require __DIR__ . '/partials/head.php';
 
     <?php // Vain kampanjan jäsenet ja luoja näkevät tästä alkavat tiedotteet, jäsenet ja pelisessiot. ?>
     <?php if ($canViewPrivate): ?>
-        <div class="campaign-info-section">
+        <section class="characters-section campaign-roster-section" aria-labelledby="campaign-characters-title">
+            <div class="campaign-section-heading">
+                <p class="eyebrow">Campaign workspace</p>
+                <h2 id="campaign-characters-title">Campaign Characters <span>(<?= count($players); ?>)</span></h2>
+                <p>Review your party, roll initiative, and manage character levels.</p>
+            </div>
+
+            <?php if (count($players) > 0): ?>
+                <div class="characters-table campaign-roster <?= $isGm ? 'campaign-roster-gm' : ''; ?>">
+                    <div class="table-header" aria-hidden="true">
+                        <div>Player</div>
+                        <div>Character</div>
+                        <div>Level</div>
+                        <div>Roll</div>
+                        <div>Race / Class</div>
+                        <div>HP</div>
+                        <?php if ($isGm): ?><div>Actions</div><?php endif; ?>
+                    </div>
+
+                    <?php foreach ($players as $p): ?>
+                        <?php
+                        $hpMax = max(1, (int)($p['hp_max'] ?? 1));
+                        $hpCurrent = max(0, (int)($p['hp_current'] ?? 0));
+                        $hpPercent = min(100, ($hpCurrent / $hpMax) * 100);
+                        $level = max(1, (int)($p['level'] ?? 1));
+                        ?>
+                        <div class="table-row">
+                            <div class="col-player" data-label="Player"><?= e($p['player_name']); ?></div>
+                            <div class="col-character" data-label="Character">
+                                <a class="character-profile-link" href="index.php?action=character_view&amp;id=<?= (int)$p['character_id']; ?>">
+                                    <?= e($p['character_name']); ?>
+                                </a>
+                            </div>
+                            <div class="col-level" data-label="Level">
+                                <strong><?= $level; ?></strong>
+                                <?php if ($isGm): ?>
+                                    <?php if ($level < 20): ?>
+                                        <form action="index.php?action=campaign_level_up" method="POST">
+                                            <input type="hidden" name="csrf_token" value="<?= e($csrfToken); ?>">
+                                            <input type="hidden" name="campaign_id" value="<?= (int)$campaign['campaign_id']; ?>">
+                                            <input type="hidden" name="character_id" value="<?= (int)$p['character_id']; ?>">
+                                            <button type="submit" class="btn btn-secondary compact" aria-label="Raise <?= e($p['character_name']); ?> to level <?= $level + 1; ?>">Level up</button>
+                                        </form>
+                                    <?php else: ?>
+                                        <span class="level-cap-note">Max level</span>
+                                    <?php endif; ?>
+                                <?php endif; ?>
+                            </div>
+                            <div class="col-dice" data-label="Roll">
+                                <div class="dice-roller">
+                                    <button type="button" class="d20-button" onclick="rollD20(this)">Roll</button>
+                                    <span class="d20-result">-</span>
+                                </div>
+                            </div>
+                            <div class="col-race" data-label="Race / Class">
+                                <span class="race-badge"><?= e($p['race_name'] ?? 'Unknown'); ?></span>
+                                <span class="class-badge"><?= e($p['class_name'] ?? 'Unknown'); ?></span>
+                            </div>
+                            <div class="col-hp" data-label="HP">
+                                <div class="hp-bar">
+                                    <div class="hp-fill" style="width: <?= $hpPercent; ?>%"></div>
+                                    <span class="hp-text"><?= $hpCurrent; ?> / <?= $hpMax; ?></span>
+                                </div>
+                            </div>
+                            <?php if ($isGm): ?>
+                                <div class="col-actions" data-label="Actions">
+                                    <form action="index.php?action=campaign_remove_character" method="POST" onsubmit="return confirm('Remove this character from the campaign?');">
+                                        <input type="hidden" name="character_id" value="<?= (int)$p['character_id']; ?>">
+                                        <input type="hidden" name="campaign_id" value="<?= (int)$campaign['campaign_id']; ?>">
+                                        <button type="submit" class="btn btn-danger compact">Remove</button>
+                                    </form>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            <?php else: ?>
+                <div class="empty-state">
+                    <p>No characters in campaign</p>
+                </div>
+            <?php endif; ?>
+        </section>
+
+        <div class="campaign-info-section campaign-single-section">
             <div class="info-card">
                 <h3>Campaign announcements</h3>
 
@@ -224,62 +307,8 @@ require __DIR__ . '/partials/head.php';
             <?php endif; ?>
         </div>
 
-        <div class="characters-section">
-            <h2>Campaign Characters (<?= count($players); ?>)</h2>
-
-            <?php if (count($players) > 0): ?>
-                <div class="characters-table">
-                    <div class="table-header">
-                        <div class="col-player">Player</div>
-                        <div class="col-character">Character</div>
-                        <div class="col-dice">Roll</div>
-                        <div class="col-race">Race / Class</div>
-                        <div class="col-hp">HP</div>
-                    </div>
-
-                    <?php foreach ($players as $p): ?>
-                        <div class="table-row">
-                            <div class="col-player"><?= htmlspecialchars($p['player_name']); ?></div>
-                            <div class="col-character">
-                                <a class="character-profile-link" href="index.php?action=character_view&amp;id=<?= (int)$p['character_id']; ?>">
-                                    <?= htmlspecialchars($p['character_name']); ?>
-                                </a>
-                                <?php if ($isGm): ?>
-                                    <form action="index.php?action=campaign_remove_character" method="POST" onsubmit="return confirm('Remove this character from the campaign?');">
-                                        <input type="hidden" name="character_id" value="<?= $p['character_id']; ?>">
-                                        <input type="hidden" name="campaign_id" value="<?= $campaign['campaign_id']; ?>">
-                                        <button type="submit" class="btn btn-danger compact">Remove</button>
-                                    </form>
-                                <?php endif; ?>
-                            </div>
-                            <div class="col-dice">
-                                <div class="dice-roller">
-                                    <button type="button" class="d20-button" onclick="rollD20(this)">Roll</button>
-                                    <span class="d20-result">-</span>
-                                </div>
-                            </div>
-                            <div class="col-race">
-                                <span class="race-badge"><?= $p['race_name']; ?></span>
-                                <span class="class-badge"><?= $p['class_name']; ?></span>
-                            </div>
-                            <div class="col-hp">
-                                <div class="hp-bar">
-                                    <div class="hp-fill" style="width: <?= ($p['hp_current'] / $p['hp_max'] * 100); ?>%"></div>
-                                    <span class="hp-text"><?= $p['hp_current']; ?> / <?= $p['hp_max']; ?></span>
-                                </div>
-                            </div>
-                        </div>
-                    <?php endforeach; ?>
-                </div>
-            <?php else: ?>
-                <div class="empty-state">
-                    <p>No characters in campaign</p>
-                </div>
-            <?php endif; ?>
-        </div>
-
         <?php if ($isGm): ?>
-            <div class="campaign-info-section">
+            <div class="campaign-info-section campaign-single-section">
                 <div class="info-card">
                     <h3>Session notes and attendance</h3>
 

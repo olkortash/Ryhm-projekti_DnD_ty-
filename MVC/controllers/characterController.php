@@ -191,14 +191,24 @@ class CharacterController {
         $updates = [];
         foreach ($abilityMap as $input => $column) {
             $value = $_POST[$input] ?? null;
-            if ($value === null || !is_numeric($value)) {
-                continue;
+            if (!is_string($value) || filter_var($value, FILTER_VALIDATE_INT) === false) {
+                header('Location: index.php?action=character_view&id=' . $characterId . '&error=abilities');
+                exit;
             }
-            $updates[$column] = max(0, min((int) $value, 99));
+            $updates[$column] = (int) $value;
         }
 
-        if ($updates !== []) {
+        $character = $this->characterModel->getById($characterId);
+        $hasInvalidScore = count($updates) !== count($abilityMap)
+            || array_filter($updates, static fn($value) => $value < 1 || $value > 25) !== [];
+        $exceedsPointBudget = !$character
+            || array_sum($updates) + (int) $character['hp_max'] > 47;
+
+        if (!$hasInvalidScore && !$exceedsPointBudget) {
             $this->characterModel->updateAbilities($characterId, (int) $_SESSION['user_id'], $updates);
+        } else {
+            header('Location: index.php?action=character_view&id=' . $characterId . '&error=abilities');
+            exit;
         }
 
         header('Location: index.php?action=character_view&id=' . $characterId);

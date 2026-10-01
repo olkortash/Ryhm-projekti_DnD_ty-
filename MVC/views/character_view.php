@@ -15,6 +15,7 @@ require __DIR__ . '/partials/head.php';
         <symbol id="profile-icon-job" viewBox="0 0 24 24"><path d="m4 19 9-9 3 3-9 9-3-3ZM10 7l5-5 7 7-5 5-7-7Z"/></symbol>
         <symbol id="profile-icon-campaign" viewBox="0 0 24 24"><path d="M5 3v18M6 4h12l-3 4 3 4H6"/></symbol>
         <symbol id="profile-icon-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/></symbol>
+        <symbol id="profile-icon-level" viewBox="0 0 24 24"><path d="m5 11 7-7 7 7M5 19l7-7 7 7"/></symbol>
         <symbol id="profile-icon-hp" viewBox="0 0 24 24"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8Z"/></symbol>
         <symbol id="profile-icon-agi" viewBox="0 0 24 24"><path d="m4 5 8-1 1 9 3 3v4H4v-4l3-3-3-8ZM14 7l8-3-2 5-6 2m1 0 5-1-2 4-3 1"/></symbol>
         <symbol id="profile-icon-str" viewBox="0 0 24 24"><path d="M7 12V6a2 2 0 0 1 4 0v5-7a2 2 0 0 1 4 0v7-5a2 2 0 0 1 4 0v7l-2 4v4H8v-4l-4-5V9a2 2 0 0 1 3 0m0 4h6v3"/></symbol>
@@ -70,12 +71,13 @@ require __DIR__ . '/partials/head.php';
 
         <section class="character-details-panel" aria-label="Character details">
             <div class="character-stat-grid">
+                <div class="character-stat"><span class="stat-label"><svg class="profile-icon" aria-hidden="true"><use href="#profile-icon-level"/></svg>Level</span><strong><?= (int) $character['level']; ?></strong></div>
                 <div class="character-stat"><span class="stat-label"><svg class="profile-icon" aria-hidden="true"><use href="#profile-icon-race"/></svg>Race</span><strong><?= htmlspecialchars($character['race_name']); ?></strong></div>
                 <div class="character-stat"><span class="stat-label"><svg class="profile-icon" aria-hidden="true"><use href="#profile-icon-class"/></svg>Class</span><strong><?= htmlspecialchars($character['class_name']); ?></strong></div>
                 <div class="character-stat"><span class="stat-label"><svg class="profile-icon" aria-hidden="true"><use href="#profile-icon-job"/></svg>Job</span><strong><?= htmlspecialchars($character['job_name']); ?></strong></div>
                 <div class="character-stat"><span class="stat-label"><svg class="profile-icon" aria-hidden="true"><use href="#profile-icon-campaign"/></svg>Campaign</span><strong><?= $character['campaign_name'] ? htmlspecialchars($character['campaign_name']) : 'No campaign'; ?></strong></div>
-                <div class="character-stat"><span class="stat-label"><svg class="profile-icon" aria-hidden="true"><use href="#profile-icon-user"/></svg>Created by</span><strong><?= htmlspecialchars($character['creator_username']); ?></strong></div>
             </div>
+            <div class="character-created-by"><svg class="profile-icon" aria-hidden="true"><use href="#profile-icon-user"/></svg><span>Created by: <?= htmlspecialchars($character['creator_username']); ?></span></div>
 
             <div class="character-ability-section">
                 <p class="eyebrow">ABILITY SCORES</p>
@@ -118,36 +120,43 @@ require __DIR__ . '/partials/head.php';
                 </div>
 
                 <?php if ($isOwner): ?>
-                    <form class="character-hp-form" action="index.php?action=character_update_abilities" method="POST">
+                    <form class="character-hp-form ability-update-form" action="index.php?action=character_update_abilities" method="POST" data-max-points="47" data-hp-max="<?= (int) $character['hp_max']; ?>">
                         <input type="hidden" name="character_id" value="<?= (int) $character['character_id']; ?>">
+                        <div class="stats-points ability-points">
+                            <span>Points remaining</span>
+                            <strong class="ability-points-left"></strong>
+                        </div>
+                        <?php if (($_GET['error'] ?? '') === 'abilities'): ?>
+                            <p class="form-error">Ability scores must be whole numbers from 1 to 25 and fit within the 47-point budget together with maximum HP.</p>
+                        <?php endif; ?>
                         <div class="ability-score-grid ability-score-edit-grid">
                             <label class="ability-score-field">
                                 <span>AGI</span>
-                                <input type="number" name="agi" value="<?= (int) ($character['agility'] ?? 0); ?>" min="0" max="99">
+                                <input type="number" name="agi" value="<?= (int) ($character['agility'] ?? 1); ?>" min="1" max="25" required>
                             </label>
                             <label class="ability-score-field">
                                 <span>STR</span>
-                                <input type="number" name="str" value="<?= (int) ($character['strength'] ?? 0); ?>" min="0" max="99">
+                                <input type="number" name="str" value="<?= (int) ($character['strength'] ?? 1); ?>" min="1" max="25" required>
                             </label>
                             <label class="ability-score-field">
                                 <span>DEX</span>
-                                <input type="number" name="dex" value="<?= (int) ($character['dexterity'] ?? 0); ?>" min="0" max="99">
+                                <input type="number" name="dex" value="<?= (int) ($character['dexterity'] ?? 1); ?>" min="1" max="25" required>
                             </label>
                             <label class="ability-score-field">
                                 <span>WIS</span>
-                                <input type="number" name="wis" value="<?= (int) ($character['wisdom'] ?? 0); ?>" min="0" max="99">
+                                <input type="number" name="wis" value="<?= (int) ($character['wisdom'] ?? 1); ?>" min="1" max="25" required>
                             </label>
                             <label class="ability-score-field">
                                 <span>CHA</span>
-                                <input type="number" name="cha" value="<?= (int) ($character['charisma'] ?? 0); ?>" min="0" max="99">
+                                <input type="number" name="cha" value="<?= (int) ($character['charisma'] ?? 1); ?>" min="1" max="25" required>
                             </label>
                             <label class="ability-score-field">
                                 <span>CON</span>
-                                <input type="number" name="con" value="<?= (int) ($character['constitution'] ?? 0); ?>" min="0" max="99">
+                                <input type="number" name="con" value="<?= (int) ($character['constitution'] ?? 1); ?>" min="1" max="25" required>
                             </label>
                             <label class="ability-score-field">
                                 <span>INT</span>
-                                <input type="number" name="int" value="<?= (int) ($character['intelligence'] ?? 0); ?>" min="0" max="99">
+                                <input type="number" name="int" value="<?= (int) ($character['intelligence'] ?? 1); ?>" min="1" max="25" required>
                             </label>
                         </div>
                         <button type="submit" class="btn btn-primary">Update ability scores</button>
@@ -229,4 +238,5 @@ require __DIR__ . '/partials/head.php';
     </div>
 </main>
 
+<script src="js/character-abilities.js"></script>
 <?php require __DIR__ . '/partials/footer.php'; ?>

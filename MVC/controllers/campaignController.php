@@ -44,6 +44,10 @@ class CampaignController {
         }
 
         $isGm = (int)$campaign['gm_id'] === (int)$_SESSION['user_id'];
+        if (empty($_SESSION['campaign_level_csrf'])) {
+            $_SESSION['campaign_level_csrf'] = bin2hex(random_bytes(32));
+        }
+        $csrfToken = $_SESSION['campaign_level_csrf'];
         $canViewPrivate = $isGm || $this->campaignModel->isCampaignMember($campaignId, $_SESSION['user_id']);
         $players = $canViewPrivate ? $this->campaignModel->getCharactersInCampaign($campaignId) : [];
         $campaignMembers = $canViewPrivate ? $this->campaignModel->getMembers($campaignId) : [];
@@ -152,6 +156,52 @@ class CampaignController {
         } else {
             $this->flash('error', 'Session note could not be saved.');
         }
+
+        header('Location: index.php?action=campaign_view&id=' . $campaignId);
+        exit;
+    }
+
+    public function levelUpCharacter() {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: index.php?action=dashboard');
+            exit;
+        }
+
+        if (!isset($_SESSION['user_id'])) {
+            header('Location: index.php?action=login');
+            exit;
+        }
+
+        $campaignId = filter_var($_POST['campaign_id'] ?? null, FILTER_VALIDATE_INT);
+        $characterId = filter_var($_POST['character_id'] ?? null, FILTER_VALIDATE_INT);
+        $postedToken = $_POST['csrf_token'] ?? '';
+        $expectedToken = $_SESSION['campaign_level_csrf'] ?? '';
+
+        if (
+            !$campaignId || !$characterId ||
+            !is_string($postedToken) || !is_string($expectedToken) ||
+            $expectedToken === '' || !hash_equals($expectedToken, $postedToken)
+        ) {
+            $this->flash('error', 'Level-up request could not be verified.');
+            header('Location: index.php?action=dashboard');
+            exit;
+        }
+
+        $campaign = $this->campaignModel->getById($campaignId);
+        if (!$campaign || (int)$campaign['gm_id'] !== (int)$_SESSION['user_id']) {
+            header('Location: index.php?action=dashboard');
+            exit;
+        }
+
+        $leveledUp = $this->campaignModel->levelUpCharacter(
+            $campaignId,
+            (int)$_SESSION['user_id'],
+            $characterId
+        );
+        $this->flash(
+            $leveledUp ? 'success' : 'error',
+            $leveledUp ? 'Character level increased by one.' : 'Character could not be leveled up. It may already be level 20 or not belong to this campaign.'
+        );
 
         header('Location: index.php?action=campaign_view&id=' . $campaignId);
         exit;
