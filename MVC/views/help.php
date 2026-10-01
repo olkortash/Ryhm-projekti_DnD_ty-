@@ -52,7 +52,7 @@ require __DIR__ . '/partials/head.php';
             <section class="help-section" id="game-master-tools">
                 <p class="eyebrow">04 / GAME MASTER TOOLS</p>
                 <h2>Run the table</h2>
-                <p>Game Masters can create and edit campaigns, add or remove characters, assign member roles, level characters up to level 20, and publish campaign announcements.</p>
+                <p>The campaign creator is its only Game Master. Game Masters can edit campaigns, add or remove player characters, level characters up to level 20, and publish campaign announcements.</p>
                 <p>Session records include a date, title, summary, and attendance list. Saving announcements and session notes notifies campaign members.</p>
                 <p>Your profile shows account information and a quick summary of your characters, created campaigns, and joined campaigns.</p>
             </section>

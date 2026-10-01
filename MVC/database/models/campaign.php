@@ -272,11 +272,13 @@ class Campaign {
     public function getMembers($campaign_id) {
         $this->ensureCampaignMemberTableExists();
 
-        $sql = "SELECT cm.*, u.username, u.user_id
+        $sql = "SELECT cm.*, u.username, u.user_id,
+                       CASE WHEN u.user_id = c.gm_id THEN 'Game Master' ELSE 'Player' END AS role
                 FROM campaign_members cm
                 JOIN users u ON u.user_id = cm.user_id
+                JOIN campaigns c ON c.campaign_id = cm.campaign_id
                 WHERE cm.campaign_id = :campaign_id
-                ORDER BY cm.role = 'Game Master' DESC, u.username ASC";
+                ORDER BY u.user_id = c.gm_id DESC, u.username ASC";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([':campaign_id' => $campaign_id]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -396,7 +398,7 @@ class Campaign {
         }
     }
 
-    public function addMember($campaign_id, $gm_id, $user_id, $role, $character_id = 0) {
+    public function addMember($campaign_id, $gm_id, $user_id, $character_id = 0) {
         $this->ensureCampaignMemberTableExists();
 
         $campaign = $this->getById($campaign_id);
@@ -406,8 +408,6 @@ class Campaign {
 
         $user_id = (int)$user_id;
         $character_id = (int)$character_id;
-        $role = in_array($role, ['Player', 'Game Master'], true) ? $role : 'Player';
-
         if ($character_id > 0) {
             $characterStmt = $this->pdo->prepare(
                 "SELECT player_id FROM characters
@@ -496,38 +496,6 @@ class Campaign {
         }
 
         return true;
-    }
-
-    public function setMemberRole($campaign_id, $gm_id, $user_id, $role) {
-        $this->ensureCampaignMemberTableExists();
-
-        $campaign = $this->getById($campaign_id);
-        if (!$campaign || (int)$campaign['gm_id'] !== (int)$gm_id) {
-            return false;
-        }
-
-        $user_id = (int)$user_id;
-        $role = in_array($role, ['Player', 'Game Master'], true) ? $role : 'Player';
-
-        if ($user_id <= 0 || $user_id === (int)$campaign['gm_id']) {
-            return false;
-        }
-
-        if ($role === 'Game Master') {
-            $existingGm = $this->pdo->prepare("SELECT user_id FROM campaign_members WHERE campaign_id = :campaign_id AND role = 'Game Master' AND user_id != :user_id LIMIT 1");
-            $existingGm->execute([':campaign_id' => $campaign_id, ':user_id' => $user_id]);
-            if ($existingGm->fetch()) {
-                return false;
-            }
-        }
-
-        $sql = "UPDATE campaign_members SET role = :role WHERE campaign_id = :campaign_id AND user_id = :user_id";
-        $stmt = $this->pdo->prepare($sql);
-        return $stmt->execute([
-            ':role' => $role,
-            ':campaign_id' => $campaign_id,
-            ':user_id' => $user_id,
-        ]);
     }
 
     public function removeMember($campaign_id, $gm_id, $user_id) {

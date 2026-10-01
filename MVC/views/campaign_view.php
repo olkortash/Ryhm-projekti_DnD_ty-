@@ -266,13 +266,7 @@ require __DIR__ . '/partials/head.php';
                                 <input type="hidden" name="campaign_id" value="<?= (int)$campaign['campaign_id']; ?>">
                                 <input type="hidden" name="user_id" value="<?= (int)$member['user_id']; ?>">
 
-                                <select name="member_role">
-                                    <option value="Player" <?= $member['role'] === 'Player' ? 'selected' : ''; ?>>Player</option>
-                                    <option value="Game Master" <?= $member['role'] === 'Game Master' ? 'selected' : ''; ?>>Game Master</option>
-                                </select>
-
                                 <div class="member-actions">
-                                    <button type="submit" name="update_member_role" value="1" class="btn btn-primary">Save role</button>
                                     <button type="submit" name="remove_member" value="1" class="btn btn-danger" onclick="return confirm('Remove this player from campaign?');">Remove</button>
                                 </div>
                             </form>
