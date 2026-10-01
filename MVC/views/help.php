@@ -20,6 +20,7 @@ require __DIR__ . '/partials/head.php';
             <a href="#characters">Characters</a>
             <a href="#campaigns">Campaigns</a>
             <a href="#game-master-tools">Game Master tools</a>
+            <a href="#notifications-search">Notifications &amp; search</a>
         </aside>
 
         <div class="help-content">
@@ -37,22 +38,30 @@ require __DIR__ . '/partials/head.php';
             <section class="help-section" id="characters">
                 <p class="eyebrow">02 / CHARACTERS</p>
                 <h2>Create and manage characters</h2>
-                <p>Use <strong>Create Character</strong> to build a playable character. Add the character's name, race, class, level, and ability scores. The creator updates the ability summary as you work.</p>
-                <p>From the dashboard, open a character to review its details, update hit points during play, join a campaign, or leave a campaign.</p>
+                <p>Use <strong>Create Character</strong> to choose a name, portrait, race, class, job, hit points, and ability scores. Maximum HP and the seven ability scores share a 47-point budget; each ability must be between 1 and 25.</p>
+                <p>Open your character from the dashboard to replace its portrait, update hit points and ability scores, maintain equipment and special skills, or join a campaign with an invite code. A character can belong to one campaign at a time.</p>
             </section>
 
             <section class="help-section" id="campaigns">
                 <p class="eyebrow">03 / CAMPAIGNS</p>
                 <h2>Find or create a campaign</h2>
-                <p>Public campaigns appear on the home page. Open a campaign to see its description, members, and session notes.</p>
-                <p>To join a campaign, sign in, create or select a character, and use the campaign's invite code when prompted. Your character will then appear among the campaign members.</p>
+                <p>Campaigns appear on the home page and in search. Signed-in users can open a campaign and join it with one of their available characters. Member rosters, announcements, and session notes are visible only to campaign members and the Game Master.</p>
+                <p>You can also join from a character page with the campaign's invite code. Leave a campaign from the dashboard when you want to use that character elsewhere.</p>
             </section>
 
             <section class="help-section" id="game-master-tools">
                 <p class="eyebrow">04 / GAME MASTER TOOLS</p>
                 <h2>Run the table</h2>
-                <p>Game Masters can create campaigns from the dashboard, manage campaign members, and keep a record of each session. Add a session title, date, summary, and participants so the story remains easy to follow between games.</p>
+                <p>Game Masters can create and edit campaigns, add or remove characters, assign member roles, level characters up to level 20, and publish campaign announcements.</p>
+                <p>Session records include a date, title, summary, and attendance list. Saving announcements and session notes notifies campaign members.</p>
                 <p>Your profile shows account information and a quick summary of your characters, created campaigns, and joined campaigns.</p>
+            </section>
+
+            <section class="help-section" id="notifications-search">
+                <p class="eyebrow">05 / NOTIFICATIONS &amp; SEARCH</p>
+                <h2>Keep up with the party</h2>
+                <p>Use the header search to find users by username and campaigns by name or description. Search results never expose email addresses or invite codes.</p>
+                <p>The Notifications page collects campaign membership changes, announcements, and new session notes. Notifications can be marked read individually or all at once.</p>
             </section>
 
             <section class="help-callout">

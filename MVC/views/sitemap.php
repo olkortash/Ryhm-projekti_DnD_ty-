@@ -17,6 +17,7 @@ require __DIR__ . '/partials/head.php';
         <section class="sitemap-group">
             <p class="eyebrow">PUBLIC</p>
             <h2>Explore</h2>
+            <a href="index.php?action=search">Search users and campaigns <span aria-hidden="true">&rarr;</span></a>
             <a href="index.php?action=landing">Home and public campaigns <span aria-hidden="true">→</span></a>
             <a href="index.php?action=help">Help &amp; guide <span aria-hidden="true">→</span></a>
             <a href="index.php?action=sitemap">Sitemap <span aria-hidden="true">→</span></a>
@@ -25,6 +26,7 @@ require __DIR__ . '/partials/head.php';
         <section class="sitemap-group">
             <p class="eyebrow">ACCOUNT</p>
             <h2>Your table</h2>
+            <a href="index.php?action=notifications">Notifications <span aria-hidden="true">&rarr;</span></a>
             <a href="index.php?action=login">Sign in <span aria-hidden="true">→</span></a>
             <a href="index.php?action=register">Create an account <span aria-hidden="true">→</span></a>
             <a href="index.php?action=dashboard">Dashboard <span aria-hidden="true">→</span></a>
@@ -34,6 +36,7 @@ require __DIR__ . '/partials/head.php';
         <section class="sitemap-group">
             <p class="eyebrow">TOOLS</p>
             <h2>Build the story</h2>
+            <a href="index.php?action=landing#campaigns">Browse and join campaigns <span aria-hidden="true">&rarr;</span></a>
             <a href="index.php?action=character_create">Create a character <span aria-hidden="true">→</span></a>
             <a href="index.php?action=dashboard">Create a campaign <span aria-hidden="true">→</span></a>
         </section>

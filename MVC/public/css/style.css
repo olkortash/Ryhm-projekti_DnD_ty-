@@ -37,6 +37,18 @@ a {
     text-decoration: none;
 }
 
+.logout-form {
+    margin: 0;
+}
+
+.logout-form button.text-link {
+    padding: 0;
+    border: 0;
+    background: none;
+    font: inherit;
+    cursor: pointer;
+}
+
 /* Kaikkien sivujen ylätunniste ja navigaatio. */
 
 .topbar {

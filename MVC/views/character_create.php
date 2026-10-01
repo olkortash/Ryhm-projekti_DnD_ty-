@@ -14,6 +14,7 @@ require __DIR__ . '/partials/head.php';
     </div>
 
     <form action="index.php?action=character_create" method="POST" enctype="multipart/form-data">
+        <?= csrf_field(); ?>
         <div class="creator-layout">
             <div class="creator-form">
                 <div class="form-section">

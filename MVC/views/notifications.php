@@ -15,6 +15,7 @@ require __DIR__ . '/partials/head.php';
         </div>
         <?php if (!empty($notifications)): ?>
             <form action="index.php?action=notifications_read_all" method="POST">
+                <?= csrf_field(); ?>
                 <button type="submit" class="btn btn-secondary">Mark all as read</button>
             </form>
         <?php endif; ?>
@@ -36,6 +37,7 @@ require __DIR__ . '/partials/head.php';
                     </div>
                     <?php if ($notification['read_at'] === null): ?>
                         <form action="index.php?action=notification_read" method="POST">
+                            <?= csrf_field(); ?>
                             <input type="hidden" name="notification_id" value="<?= (int)$notification['notification_id']; ?>">
                             <button type="submit" class="btn btn-primary compact">Mark as read</button>
                         </form>

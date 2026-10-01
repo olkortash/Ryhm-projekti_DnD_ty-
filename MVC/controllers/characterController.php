@@ -11,6 +11,12 @@ class CharacterController {
         $this->campaignModel = new Campaign($pdo);
     }
 
+    private function canViewCharacter(array $character, int $userId): bool {
+        return (int)$character['player_id'] === $userId
+            || (!empty($character['campaign_id'])
+                && $this->campaignModel->isCampaignMember((int)$character['campaign_id'], $userId));
+    }
+
     public function create() {
         if (!isset($_SESSION['user_id'])) {
             header('Location: index.php?action=login');
@@ -18,6 +24,23 @@ class CharacterController {
         }
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $name = trim((string)($_POST['character_name'] ?? ''));
+            $integerFields = ['character_class_id', 'character_race_id', 'character_job_id', 'hp_max', 'agi', 'str', 'dex', 'wis', 'cha', 'con', 'int'];
+            $values = [];
+            foreach ($integerFields as $field) {
+                $values[$field] = filter_var($_POST[$field] ?? null, FILTER_VALIDATE_INT);
+            }
+            $abilities = array_intersect_key($values, array_flip(['agi', 'str', 'dex', 'wis', 'cha', 'con', 'int']));
+            $invalid = $name === '' || mb_strlen($name) > 100
+                || in_array(false, $values, true)
+                || $values['character_class_id'] < 1 || $values['character_race_id'] < 1 || $values['character_job_id'] < 1
+                || $values['hp_max'] < 15 || $values['hp_max'] > 25
+                || array_filter($abilities, static fn($score) => $score < 1 || $score > 25) !== []
+                || array_sum($abilities) + $values['hp_max'] > 47;
+            if ($invalid) {
+                $error = 'Check the character name and use the available 47 points within the allowed stat ranges.';
+            }
+
             $image = $this->readUploadedImage();
 
             if ($image['error'] !== null) {
@@ -27,22 +50,17 @@ class CharacterController {
             $data = [
                 'player_id' => $_SESSION['user_id'],
                 'campaign_id' => null,
-                'character_name' => trim($_POST['character_name']),
-                'character_class_id' => $_POST['character_class_id'],
-                'character_race_id' => $_POST['character_race_id'],
-                'character_job_id' => $_POST['character_job_id'],
-                'level' => $_POST['level'] ?? 1,
-                'hp_max' => $_POST['hp_max'],
-                'agi' => $_POST['agi'],
-                'str' => $_POST['str'],
-                'dex' => $_POST['dex'],
-                'wis' => $_POST['wis'],
-                'cha' => $_POST['cha'],
-                'con' => $_POST['con'],
-                'int' => $_POST['int']
+                'character_name' => $name,
+                'character_class_id' => $values['character_class_id'],
+                'character_race_id' => $values['character_race_id'],
+                'character_job_id' => $values['character_job_id'],
+                'level' => 1,
+                'hp_max' => $values['hp_max'],
+                'agi' => $values['agi'], 'str' => $values['str'], 'dex' => $values['dex'],
+                'wis' => $values['wis'], 'cha' => $values['cha'], 'con' => $values['con'], 'int' => $values['int']
             ];
 
-            if ($image['error'] === null && $this->characterModel->create($data, $image['file'])) {
+            if (!$invalid && $image['error'] === null && $this->characterModel->create($data, $image['file'])) {
                 header('Location: index.php?action=dashboard');
                 exit;
             }
@@ -68,6 +86,11 @@ class CharacterController {
             exit;
         }
 
+        if (!$this->canViewCharacter($character, (int)$_SESSION['user_id'])) {
+            http_response_code(403);
+            exit('Forbidden');
+        }
+
         $isOwner = (int) $character['player_id'] === (int) $_SESSION['user_id'];
         require __DIR__ . '/../views/character_view.php';
     }
@@ -79,6 +102,11 @@ class CharacterController {
         }
 
         $characterId = (int) ($_GET['id'] ?? 0);
+        $character = $this->characterModel->getById($characterId);
+        if (!$character || !$this->canViewCharacter($character, (int)$_SESSION['user_id'])) {
+            http_response_code(404);
+            exit;
+        }
         $image = $this->characterModel->getImageByCharacterId($characterId);
 
         if (!$image) {
@@ -99,7 +127,14 @@ class CharacterController {
             exit;
         }
 
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: index.php?action=dashboard'); exit;
+        }
         $characterId = (int) ($_POST['character_id'] ?? 0);
+        $character = $this->characterModel->getById($characterId);
+        if (!$character || (int)$character['player_id'] !== (int)$_SESSION['user_id']) {
+            http_response_code(403); exit('Forbidden');
+        }
         $image = $this->readUploadedImage();
         $removeImage = isset($_POST['remove_image']);
 
@@ -157,9 +192,12 @@ class CharacterController {
             exit;
         }
 
-        $characterId = (int) ($_POST['character_id'] ?? 0);
-        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['hp_current']) && is_numeric($_POST['hp_current'])) {
-            $this->characterModel->updateHp($characterId, (int) $_SESSION['user_id'], (int) $_POST['hp_current']);
+        $characterId = filter_var($_POST['character_id'] ?? null, FILTER_VALIDATE_INT);
+        $hp = filter_var($_POST['hp_current'] ?? null, FILTER_VALIDATE_INT);
+        $character = $characterId ? $this->characterModel->getById($characterId) : false;
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && $character && (int)$character['player_id'] === (int)$_SESSION['user_id']
+            && $hp !== false && $hp >= 0 && $hp <= (int)$character['hp_max']) {
+            $this->characterModel->updateHp($characterId, (int) $_SESSION['user_id'], $hp);
         }
 
         header('Location: index.php?action=character_view&id=' . $characterId);
@@ -229,6 +267,10 @@ class CharacterController {
         $characterId = (int) ($_POST['character_id'] ?? 0);
         $equipment = trim((string) ($_POST['equipment'] ?? ''));
         $skills = trim((string) ($_POST['skills'] ?? ''));
+
+        if (mb_strlen($equipment) > 5000 || mb_strlen($skills) > 5000) {
+            header('Location: index.php?action=character_view&id=' . $characterId . '&error=details'); exit;
+        }
 
         $this->characterModel->updateAdditionalInfo($characterId, (int) $_SESSION['user_id'], $equipment, $skills);
 

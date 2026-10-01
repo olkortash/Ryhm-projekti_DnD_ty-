@@ -17,6 +17,10 @@ require __DIR__ . '/partials/head.php';
         <p class="auth-intro">Create your GM account and start building your campaign.</p>
 
         <form action="index.php?action=register" method="post" class="auth-form">
+            <?= csrf_field(); ?>
+            <?php if (isset($error)): ?>
+                <p class="form-error"><?= e($error); ?></p>
+            <?php endif; ?>
             <label for="username">Username</label>
 
             <input

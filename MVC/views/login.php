@@ -20,6 +20,7 @@ require __DIR__ . '/partials/head.php';
         <?php endif; ?>
 
         <form action="index.php?action=login" method="post" class="auth-form">
+            <?= csrf_field(); ?>
             <label for="username">Username</label>
 
             <input

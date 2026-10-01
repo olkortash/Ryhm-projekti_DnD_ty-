@@ -7,12 +7,25 @@ ini_set('session.cookie_lifetime', '0');
 session_set_cookie_params([
     'lifetime' => 0,
     'path' => '/',
-    'secure' => false,
+    'secure' => !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off',
     'httponly' => true,
     'samesite' => 'Lax',
 ]);
 
 session_start();
+
+if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+
+function csrf_token(): string {
+    return (string)($_SESSION['csrf_token'] ?? '');
+}
+
+function csrf_field(): string {
+    return '<input type="hidden" name="csrf_token" value="'
+        . htmlspecialchars(csrf_token(), ENT_QUOTES, 'UTF-8') . '">';
+}
 
 if (isset($_SESSION['user_id'])) {
     $now = time();
@@ -41,6 +54,14 @@ require_once __DIR__ . '/../database/connection.php';
 $pdo = connectDB();
 
 $action = $_GET['action'] ?? 'landing';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $postedToken = $_POST['csrf_token'] ?? '';
+    if (!is_string($postedToken) || csrf_token() === '' || !hash_equals(csrf_token(), $postedToken)) {
+        http_response_code(403);
+        exit('The request could not be verified. Please return to the previous page and try again.');
+    }
+}
 
 switch ($action) {
     case 'search':

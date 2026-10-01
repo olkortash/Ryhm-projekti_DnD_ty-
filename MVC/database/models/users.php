@@ -12,11 +12,15 @@ class User {
         $passwordHash = password_hash($password, PASSWORD_BCRYPT);
         $sql = "INSERT INTO users (username, email, password_hash) VALUES (:username, :email, :password_hash)";
         $stmt = $this->pdo->prepare($sql);
-        return $stmt->execute([
-            ':username' => $username,
-            ':email' => $email,
-            ':password_hash' => $passwordHash
-        ]);
+        try {
+            return $stmt->execute([
+                ':username' => $username,
+                ':email' => $email,
+                ':password_hash' => $passwordHash
+            ]);
+        } catch (PDOException $exception) {
+            return false;
+        }
     }
 
     public function login($username, $password) {

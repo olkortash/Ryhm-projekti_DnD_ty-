@@ -57,6 +57,7 @@ require __DIR__ . '/partials/head.php';
                             </a>
                             <?php if (!empty($char['campaign_id'])): ?>
                                 <form action="index.php?action=character_unlink_campaign" method="POST" onsubmit="return confirm('Remove this character from the campaign?');">
+                                    <?= csrf_field(); ?>
                                     <input type="hidden" name="character_id" value="<?= $char['character_id']; ?>">
                                     <button type="submit" class="btn btn-danger compact">Leave campaign</button>
                                 </form>
@@ -89,6 +90,7 @@ require __DIR__ . '/partials/head.php';
         </div>
 
         <form id="campaign-form" class="dashboard-form auth-form" action="index.php?action=campaign_create" method="POST" style="display: none; margin-bottom: 24px;">
+            <?= csrf_field(); ?>
             <label>Campaign Name</label>
             <input type="text" name="campaign_name" placeholder="E.g. Kingdoms at War" required>
 

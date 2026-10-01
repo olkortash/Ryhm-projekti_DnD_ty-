@@ -19,8 +19,12 @@ class CampaignController {
         }
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $name = trim($_POST['campaign_name']);
-            $description = trim($_POST['description']);
+            $name = trim((string)($_POST['campaign_name'] ?? ''));
+            $description = trim((string)($_POST['description'] ?? ''));
+            if ($name === '' || mb_strlen($name) > 100 || mb_strlen($description) > 2000) {
+                $this->flash('error', 'Campaign name is required and the submitted text is too long.');
+                header('Location: index.php?action=dashboard'); exit;
+            }
             $gmId = $_SESSION['user_id'];
 
             $campaignId = $this->campaignModel->create($gmId, $name, $description);
@@ -44,10 +48,6 @@ class CampaignController {
         }
 
         $isGm = (int)$campaign['gm_id'] === (int)$_SESSION['user_id'];
-        if (empty($_SESSION['campaign_level_csrf'])) {
-            $_SESSION['campaign_level_csrf'] = bin2hex(random_bytes(32));
-        }
-        $csrfToken = $_SESSION['campaign_level_csrf'];
         $canViewPrivate = $isGm || $this->campaignModel->isCampaignMember($campaignId, $_SESSION['user_id']);
         $players = $canViewPrivate ? $this->campaignModel->getCharactersInCampaign($campaignId) : [];
         $campaignMembers = $canViewPrivate ? $this->campaignModel->getMembers($campaignId) : [];
@@ -74,7 +74,9 @@ class CampaignController {
 
         $campaignId = (int)($_POST['campaign_id'] ?? 0);
         $characterId = (int)($_POST['character_id'] ?? 0);
-        $this->campaignModel->joinPublicCampaign($campaignId, $_SESSION['user_id'], $characterId);
+        if ($campaignId > 0 && $characterId > 0) {
+            $this->campaignModel->joinPublicCampaign($campaignId, $_SESSION['user_id'], $characterId);
+        }
 
         header('Location: index.php?action=campaign_view&id=' . $campaignId);
         exit;
@@ -101,18 +103,24 @@ class CampaignController {
         if (isset($_POST['add_member'])) {
             $characterId = (int)($_POST['character_id'] ?? 0);
             $role = $_POST['member_role'] ?? 'Player';
-            $this->campaignModel->addMember($campaignId, $_SESSION['user_id'], 0, $role, $characterId);
+            if ($characterId > 0 && in_array($role, ['Player', 'Game Master'], true)) {
+                $this->campaignModel->addMember($campaignId, $_SESSION['user_id'], 0, $role, $characterId);
+            }
         }
 
         if (isset($_POST['update_member_role'])) {
             $userId = (int)($_POST['user_id'] ?? 0);
             $role = $_POST['member_role'] ?? 'Player';
-            $this->campaignModel->setMemberRole($campaignId, $_SESSION['user_id'], $userId, $role);
+            if ($userId > 0 && in_array($role, ['Player', 'Game Master'], true)) {
+                $this->campaignModel->setMemberRole($campaignId, $_SESSION['user_id'], $userId, $role);
+            }
         }
 
         if (isset($_POST['remove_member'])) {
             $userId = (int)($_POST['user_id'] ?? 0);
-            $this->campaignModel->removeMember($campaignId, $_SESSION['user_id'], $userId);
+            if ($userId > 0) {
+                $this->campaignModel->removeMember($campaignId, $_SESSION['user_id'], $userId);
+            }
         }
 
         header('Location: index.php?action=campaign_view&id=' . $campaignId);
@@ -140,6 +148,13 @@ class CampaignController {
         if (!$campaign || (int)$campaign['gm_id'] !== (int)$_SESSION['user_id']) {
             header('Location: index.php?action=dashboard');
             exit;
+        }
+
+        $date = DateTimeImmutable::createFromFormat('!Y-m-d', $sessionDate);
+        if (!$date || $date->format('Y-m-d') !== $sessionDate || mb_strlen($title) > 255
+            || mb_strlen($summary) > 10000 || !is_array($attendees)) {
+            $this->flash('error', 'Check the session date and text lengths.');
+            header('Location: index.php?action=campaign_view&id=' . $campaignId); exit;
         }
 
         $sessionId = $this->campaignModel->saveSessionNote(
@@ -174,14 +189,7 @@ class CampaignController {
 
         $campaignId = filter_var($_POST['campaign_id'] ?? null, FILTER_VALIDATE_INT);
         $characterId = filter_var($_POST['character_id'] ?? null, FILTER_VALIDATE_INT);
-        $postedToken = $_POST['csrf_token'] ?? '';
-        $expectedToken = $_SESSION['campaign_level_csrf'] ?? '';
-
-        if (
-            !$campaignId || !$characterId ||
-            !is_string($postedToken) || !is_string($expectedToken) ||
-            $expectedToken === '' || !hash_equals($expectedToken, $postedToken)
-        ) {
+        if (!$campaignId || !$characterId) {
             $this->flash('error', 'Level-up request could not be verified.');
             header('Location: index.php?action=dashboard');
             exit;
@@ -214,9 +222,13 @@ class CampaignController {
                 exit;
             }
 
-            $campaignId = $_POST['campaign_id'];
-            $name = trim($_POST['campaign_name']);
-            $description = trim($_POST['description']);
+            $campaignId = filter_var($_POST['campaign_id'] ?? null, FILTER_VALIDATE_INT);
+            $name = trim((string)($_POST['campaign_name'] ?? ''));
+            $description = trim((string)($_POST['description'] ?? ''));
+            if (!$campaignId || $name === '' || mb_strlen($name) > 100 || mb_strlen($description) > 2000) {
+                $this->flash('error', 'Invalid campaign details.');
+                header('Location: index.php?action=dashboard'); exit;
+            }
 
             $this->campaignModel->update($campaignId, $_SESSION['user_id'], $name, $description);
 
@@ -237,11 +249,11 @@ class CampaignController {
                 exit;
             }
 
-            $campaignId = $_POST['campaign_id'];
+            $campaignId = filter_var($_POST['campaign_id'] ?? null, FILTER_VALIDATE_INT);
+            if (!$campaignId) { header('Location: index.php?action=dashboard'); exit; }
             $this->campaignModel->delete($campaignId, $_SESSION['user_id']);
 
-            $redirect = $_GET['redirect'] ?? 'dashboard';
-            header("Location: index.php?action=" . $redirect);
+            header('Location: index.php?action=dashboard');
             exit;
         }
     }
@@ -257,7 +269,12 @@ class CampaignController {
         $body = trim((string)($_POST['announcement_body'] ?? ''));
         $announcementId = (int)($_POST['announcement_id'] ?? 0);
 
-        if ($title === '' || $body === '' || mb_strlen($title) > 255) {
+        $campaign = $this->campaignModel->getById($campaignId);
+        if (!$campaign || (int)$campaign['gm_id'] !== (int)$_SESSION['user_id']) {
+            http_response_code(403); exit('Forbidden');
+        }
+
+        if ($title === '' || $body === '' || mb_strlen($title) > 255 || mb_strlen($body) > 10000) {
             $this->flash('error', 'Announcement title and message are required.');
         } elseif ($announcementId > 0) {
             $updated = $this->campaignModel->updateAnnouncement(
@@ -288,6 +305,10 @@ class CampaignController {
         }
 
         $campaignId = (int)($_POST['campaign_id'] ?? 0);
+        $campaign = $this->campaignModel->getById($campaignId);
+        if (!$campaign || (int)$campaign['gm_id'] !== (int)$_SESSION['user_id']) {
+            http_response_code(403); exit('Forbidden');
+        }
         $deleted = $this->campaignModel->deleteAnnouncement(
             (int)($_POST['announcement_id'] ?? 0),
             $_SESSION['user_id']

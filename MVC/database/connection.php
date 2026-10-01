@@ -41,7 +41,7 @@ function connect() {
         throw new PDOException('Missing database configuration. Add DB_HOST, DB_PORT, DB_NAME, DB_USERNAME and DB_PASSWORD to the environment or .env file.');
     }
 
-    $connectionString = "mysql:host=$host;dbname=$dbname;port=$port;charset=utf8";
+    $connectionString = "mysql:host=$host;dbname=$dbname;port=$port;charset=utf8mb4";
 
     try {
         $pdo = new PDO($connectionString, $user, $password);

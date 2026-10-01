@@ -41,6 +41,7 @@ require __DIR__ . '/partials/head.php';
             <div class="info-card">
                 <h3>Update Campaign</h3>
                 <form action="index.php?action=campaign_update&redirect=dashboard" method="POST" class="campaign-form">
+                    <?= csrf_field(); ?>
                     <input type="hidden" name="campaign_id" value="<?= $campaign['campaign_id']; ?>">
 
                     <div class="form-group">
@@ -74,6 +75,7 @@ require __DIR__ . '/partials/head.php';
                 <?php elseif (!empty($joinableCharacters)): ?>
                     <p>Select a character to join this public campaign.</p>
                     <form action="index.php?action=campaign_join_public" method="POST" class="campaign-form">
+                        <?= csrf_field(); ?>
                         <input type="hidden" name="campaign_id" value="<?= (int)$campaign['campaign_id']; ?>">
                         <div class="form-group">
                             <label for="join-character">Character</label>
@@ -136,7 +138,7 @@ require __DIR__ . '/partials/head.php';
                                 <?php if ($isGm): ?>
                                     <?php if ($level < 20): ?>
                                         <form action="index.php?action=campaign_level_up" method="POST">
-                                            <input type="hidden" name="csrf_token" value="<?= e($csrfToken); ?>">
+                                            <?= csrf_field(); ?>
                                             <input type="hidden" name="campaign_id" value="<?= (int)$campaign['campaign_id']; ?>">
                                             <input type="hidden" name="character_id" value="<?= (int)$p['character_id']; ?>">
                                             <button type="submit" class="btn btn-secondary compact" aria-label="Raise <?= e($p['character_name']); ?> to level <?= $level + 1; ?>">Level up</button>
@@ -165,6 +167,7 @@ require __DIR__ . '/partials/head.php';
                             <?php if ($isGm): ?>
                                 <div class="col-actions" data-label="Actions">
                                     <form action="index.php?action=campaign_remove_character" method="POST" onsubmit="return confirm('Remove this character from the campaign?');">
+                                        <?= csrf_field(); ?>
                                         <input type="hidden" name="character_id" value="<?= (int)$p['character_id']; ?>">
                                         <input type="hidden" name="campaign_id" value="<?= (int)$campaign['campaign_id']; ?>">
                                         <button type="submit" class="btn btn-danger compact">Remove</button>
@@ -188,6 +191,7 @@ require __DIR__ . '/partials/head.php';
                 <?php if ($isGm): ?>
                     <?php // Sama tallennusreitti luo tiedotteen tai päivittää announcement_id-kentällä valitun tiedotteen. ?>
                     <form action="index.php?action=campaign_announcement_save" method="POST" class="campaign-form">
+                        <?= csrf_field(); ?>
                         <input type="hidden" name="campaign_id" value="<?= (int)$campaign['campaign_id']; ?>">
                         <div class="form-group">
                             <label for="announcement-title">Title</label>
@@ -216,6 +220,7 @@ require __DIR__ . '/partials/head.php';
                                     <details>
                                         <summary>Edit announcement</summary>
                                         <form action="index.php?action=campaign_announcement_save" method="POST" class="campaign-form">
+                                            <?= csrf_field(); ?>
                                             <input type="hidden" name="campaign_id" value="<?= (int)$campaign['campaign_id']; ?>">
                                             <input type="hidden" name="announcement_id" value="<?= (int)$announcement['announcement_id']; ?>">
                                             <div class="form-group">
@@ -229,6 +234,7 @@ require __DIR__ . '/partials/head.php';
                                             <button type="submit" class="btn btn-secondary">Save changes</button>
                                         </form>
                                         <form action="index.php?action=campaign_announcement_delete" method="POST" onsubmit="return confirm('Delete this announcement?');">
+                                            <?= csrf_field(); ?>
                                             <input type="hidden" name="campaign_id" value="<?= (int)$campaign['campaign_id']; ?>">
                                             <input type="hidden" name="announcement_id" value="<?= (int)$announcement['announcement_id']; ?>">
                                             <button type="submit" class="btn btn-danger compact">Delete announcement</button>
@@ -256,6 +262,7 @@ require __DIR__ . '/partials/head.php';
                         <?php // Kampanjan luojan omaa jäsenyyttä ei tarjota muokattavaksi tai poistettavaksi. ?>
                         <?php if ($isGm && (int)$member['user_id'] !== (int)$campaign['gm_id']): ?>
                             <form action="index.php?action=campaign_members_update" method="POST" class="member-form">
+                                <?= csrf_field(); ?>
                                 <input type="hidden" name="campaign_id" value="<?= (int)$campaign['campaign_id']; ?>">
                                 <input type="hidden" name="user_id" value="<?= (int)$member['user_id']; ?>">
 
@@ -278,6 +285,7 @@ require __DIR__ . '/partials/head.php';
 
             <?php if ($isGm): ?>
                 <form action="index.php?action=campaign_members_update" method="POST" class="campaign-form member-add-form">
+                    <?= csrf_field(); ?>
                     <input type="hidden" name="campaign_id" value="<?= (int)$campaign['campaign_id']; ?>">
 
                     <div class="form-group">
@@ -314,6 +322,7 @@ require __DIR__ . '/partials/head.php';
 
                     <?php // attendees[] välittää valittujen osallistujien tunnisteet session tallennukseen. ?>
                     <form action="index.php?action=campaign_session_save" method="POST" class="campaign-form">
+                        <?= csrf_field(); ?>
                         <input type="hidden" name="campaign_id" value="<?= (int)$campaign['campaign_id']; ?>">
 
                         <div class="form-group">

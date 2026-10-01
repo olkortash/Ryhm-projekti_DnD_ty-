@@ -23,7 +23,13 @@ class AuthController {
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $username = trim($_POST['username'] ?? '');
-            $password = trim($_POST['password'] ?? '');
+            $password = (string)($_POST['password'] ?? '');
+
+            if ($username === '' || mb_strlen($username) > 50 || $password === '') {
+                $error = 'Enter a valid username and password.';
+                require __DIR__ . '/../views/login.php';
+                return;
+            }
 
             $user = $this->userModel->login($username, $password);
             if ($user) {
@@ -46,7 +52,17 @@ class AuthController {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $username = trim($_POST['username'] ?? '');
             $email = trim($_POST['email'] ?? '');
-            $password = trim($_POST['password'] ?? '');
+            $password = (string)($_POST['password'] ?? '');
+            $passwordConfirm = (string)($_POST['password_confirm'] ?? '');
+
+            if ($username === '' || mb_strlen($username) > 50
+                || !filter_var($email, FILTER_VALIDATE_EMAIL) || mb_strlen($email) > 75
+                || strlen($password) < 8 || strlen($password) > 255
+                || $password !== $passwordConfirm) {
+                $error = 'Check the username, email address, and matching password of at least 8 characters.';
+                require __DIR__ . '/../views/register.php';
+                return;
+            }
 
             if ($this->userModel->register($username, $email, $password)) {
                 $user = $this->userModel->login($username, $password);
@@ -70,6 +86,10 @@ class AuthController {
     }
 
     public function logout() {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: index.php?action=landing');
+            exit;
+        }
         $_SESSION = [];
 
         if (ini_get('session.use_cookies')) {

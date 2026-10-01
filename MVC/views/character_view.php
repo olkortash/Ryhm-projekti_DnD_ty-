@@ -52,6 +52,7 @@ require __DIR__ . '/partials/head.php';
             <?php // Kuvan lähetys ja poisto ovat omistajan toimintoja; multipart/form-data välittää tiedoston. ?>
             <?php if ($isOwner): ?>
                 <form class="character-image-form" action="index.php?action=character_update_image" method="POST" enctype="multipart/form-data">
+                    <?= csrf_field(); ?>
                     <input type="hidden" name="character_id" value="<?= (int) $character['character_id']; ?>">
                     <label for="replace-character-image"><?= !empty($character['character_img_id']) ? 'Replace image' : 'Upload image'; ?></label>
                     <input id="replace-character-image" type="file" name="character_image" accept="image/jpeg,image/png,image/webp,image/gif">
@@ -121,6 +122,7 @@ require __DIR__ . '/partials/head.php';
 
                 <?php if ($isOwner): ?>
                     <form class="character-hp-form ability-update-form" action="index.php?action=character_update_abilities" method="POST" data-max-points="47" data-hp-max="<?= (int) $character['hp_max']; ?>">
+                        <?= csrf_field(); ?>
                         <input type="hidden" name="character_id" value="<?= (int) $character['character_id']; ?>">
                         <div class="stats-points ability-points">
                             <span>Points remaining</span>
@@ -168,6 +170,7 @@ require __DIR__ . '/partials/head.php';
                 <p class="eyebrow">EQUIPMENT & SPECIAL SKILLS</p>
                 <?php if ($isOwner): ?>
                     <form class="character-hp-form" action="index.php?action=character_update_details" method="POST">
+                        <?= csrf_field(); ?>
                         <input type="hidden" name="character_id" value="<?= (int) $character['character_id']; ?>">
                         <label for="equipment-text">Equipment</label>
                         <textarea id="equipment-text" name="equipment" rows="5" placeholder="List equipment and items acquired during the campaign..."><?= htmlspecialchars($character['equipment'] ?? ''); ?></textarea>
@@ -193,6 +196,7 @@ require __DIR__ . '/partials/head.php';
                 <h2><svg class="profile-icon profile-icon-heading" aria-hidden="true"><use href="#profile-icon-hp"/></svg>Hit Points</h2>
                 <?php if ($isOwner): ?>
                     <form class="character-hp-form" action="index.php?action=character_update_hp" method="POST">
+                        <?= csrf_field(); ?>
                         <input type="hidden" name="character_id" value="<?= $character['character_id']; ?>">
                         <label for="hp-current">Current HP</label>
                         <div class="hp-input-row">
@@ -212,6 +216,7 @@ require __DIR__ . '/partials/head.php';
                     <p class="eyebrow">CAMPAIGN</p>
                     <h2>Join a campaign</h2>
                     <form class="character-hp-form" action="index.php?action=character_join_campaign" method="POST">
+                        <?= csrf_field(); ?>
                         <input type="hidden" name="character_id" value="<?= $character['character_id']; ?>">
                         <label for="invite-code">Invite code</label>
                         <div class="hp-input-row">
@@ -229,6 +234,7 @@ require __DIR__ . '/partials/head.php';
                         method="POST"
                         onsubmit="return confirm('Haluatko varmasti poistaa tämän hahmon? Tätä toimintoa ei voi perua.');"
                     >
+                        <?= csrf_field(); ?>
                         <input type="hidden" name="character_id" value="<?= $character['character_id']; ?>">
                         <button type="submit" class="btn btn-danger">Delete character</button>
                     </form>

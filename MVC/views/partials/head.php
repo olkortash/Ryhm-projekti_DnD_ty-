@@ -10,6 +10,23 @@ if (!function_exists('e')) {
     }
 }
 
+// Keep directly rendered views and isolated tests functional; normal requests
+// define these helpers in public/index.php before routing.
+if (!function_exists('csrf_token')) {
+    function csrf_token(): string {
+        if (empty($_SESSION['csrf_token'])) {
+            $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+        }
+        return (string)$_SESSION['csrf_token'];
+    }
+}
+
+if (!function_exists('csrf_field')) {
+    function csrf_field(): string {
+        return '<input type="hidden" name="csrf_token" value="' . e(csrf_token()) . '">';
+    }
+}
+
 $pageTitle = $pageTitle ?? 'Masters';
 ?>
 
@@ -63,7 +80,10 @@ $pageTitle = $pageTitle ?? 'Masters';
             <a href="index.php?action=dashboard" class="text-link">Dashboard</a>
             <a href="index.php?action=notifications" class="text-link">Notifications<?php if (isset($notificationCount) && $notificationCount > 0): ?> (<?= (int)$notificationCount; ?>)<?php endif; ?></a>
             <a href="index.php?action=profile" class="text-link">Profile</a>
-            <a href="index.php?action=logout" class="text-link">Log out</a>
+            <form action="index.php?action=logout" method="POST" class="logout-form">
+                <?= csrf_field(); ?>
+                <button type="submit" class="text-link">Log out</button>
+            </form>
         <?php else: ?>
             <a href="index.php?action=register" class="text-link">Register</a>
             <a href="index.php?action=login" class="avatar" aria-label="Sign in">Sign in</a>

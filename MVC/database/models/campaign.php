@@ -686,7 +686,7 @@ class Campaign {
     }
 
     public function create($gm_id, $name, $description) {
-        $inviteCode = substr(md5(uniqid(rand(), true)), 0, 8); // Generoidaan max 8-merkkinen invite_code
+        $inviteCode = bin2hex(random_bytes(4));
         $sql = "INSERT INTO campaigns (gm_id, campaign_name, description, invite_code) VALUES (:gm_id, :campaign_name, :description, :invite_code)";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([
