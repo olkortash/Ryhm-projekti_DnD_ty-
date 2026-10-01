@@ -102,10 +102,14 @@ class CampaignController {
 
         if (isset($_POST['add_member'])) {
             $characterId = (int)($_POST['character_id'] ?? 0);
-            $role = $_POST['member_role'] ?? 'Player';
-            if ($characterId > 0 && in_array($role, ['Player', 'Game Master'], true)) {
-                $this->campaignModel->addMember($campaignId, $_SESSION['user_id'], 0, $role, $characterId);
-            }
+            $added = $characterId > 0
+                && $this->campaignModel->addMember($campaignId, $_SESSION['user_id'], 0, 'Player', $characterId);
+            $this->flash(
+                $added ? 'success' : 'error',
+                $added
+                    ? 'Player character added to the campaign.'
+                    : 'Player could not be added. Select an available character owned by another user.'
+            );
         }
 
         if (isset($_POST['update_member_role'])) {

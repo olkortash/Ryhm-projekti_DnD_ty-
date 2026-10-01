@@ -305,10 +305,12 @@ class Campaign {
         $sql = "SELECT c.character_id, c.character_name, c.player_id, u.username
                 FROM characters c
                 JOIN users u ON u.user_id = c.player_id
+                JOIN campaigns cmp ON cmp.campaign_id = :campaign_id
                 WHERE c.campaign_id IS NULL
+                  AND c.player_id <> cmp.gm_id
                 ORDER BY u.username ASC, c.character_name ASC";
         $stmt = $this->pdo->prepare($sql);
-        $stmt->execute();
+        $stmt->execute([':campaign_id' => (int)$campaign_id]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
@@ -428,13 +430,9 @@ class Campaign {
         $existing->execute([':campaign_id' => $campaign_id, ':user_id' => $user_id]);
         $existingRow = $existing->fetch(PDO::FETCH_ASSOC);
 
-        if ($role === 'Game Master') {
-            $gmExists = $this->pdo->prepare("SELECT user_id FROM campaign_members WHERE campaign_id = :campaign_id AND role = 'Game Master' AND user_id != :user_id LIMIT 1");
-            $gmExists->execute([':campaign_id' => $campaign_id, ':user_id' => $user_id]);
-            if ($gmExists->fetch()) {
-                return false;
-            }
-        }
+        // Only the campaign creator has management permissions in the current
+        // authorization model. Added characters are therefore player members.
+        $role = 'Player';
 
         $this->pdo->beginTransaction();
 
@@ -474,6 +472,16 @@ class Campaign {
             }
 
             $this->pdo->commit();
+        } catch (Throwable $exception) {
+            if ($this->pdo->inTransaction()) {
+                $this->pdo->rollBack();
+            }
+            return false;
+        }
+
+        // A notification failure must not turn an already committed member
+        // addition into an apparent failure.
+        try {
             $this->createNotification(
                 $user_id,
                 $campaign_id,
@@ -483,11 +491,11 @@ class Campaign {
                 [],
                 $gm_id
             );
-            return true;
         } catch (Throwable $exception) {
-            $this->pdo->rollBack();
-            return false;
+            // Membership and character assignment were already committed.
         }
+
+        return true;
     }
 
     public function setMemberRole($campaign_id, $gm_id, $user_id, $role) {

@@ -298,18 +298,13 @@ require __DIR__ . '/partials/head.php';
                                 </option>
                             <?php endforeach; ?>
                         </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Role</label>
-                        <select name="member_role">
-                            <option value="Player" selected>Player</option>
-                            <option value="Game Master">Game Master</option>
-                        </select>
+                        <?php if (empty($availableCharacters)): ?>
+                            <small class="form-help">No available player characters. A character must belong to another user and not already be in a campaign.</small>
+                        <?php endif; ?>
                     </div>
 
                     <div class="form-actions">
-                        <button type="submit" name="add_member" value="1" class="btn btn-primary">Add player</button>
+                        <button type="submit" name="add_member" value="1" class="btn btn-primary" <?= empty($availableCharacters) ? 'disabled' : ''; ?>>Add player</button>
                     </div>
                 </form>
             <?php endif; ?>
