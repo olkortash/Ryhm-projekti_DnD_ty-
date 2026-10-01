@@ -170,6 +170,10 @@ switch ($action) {
         require_once __DIR__ . '/../controllers/campaignController.php';
         (new CampaignController($pdo))->levelUpCharacter();
         break;
+    case 'campaign_update_hp':
+        require_once __DIR__ . '/../controllers/campaignController.php';
+        (new CampaignController($pdo))->updateCharacterHp();
+        break;
     case 'campaign_members_update':
         require_once __DIR__ . '/../controllers/campaignController.php';
         (new CampaignController($pdo))->updateMembers();

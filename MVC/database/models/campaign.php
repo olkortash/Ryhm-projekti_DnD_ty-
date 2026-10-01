@@ -738,4 +738,52 @@ class Campaign {
 
         return $stmt->rowCount() === 1;
     }
+
+    public function updateCharacterHpByGm($campaign_id, $gm_id, $character_id, $hp_current) {
+        $find = $this->pdo->prepare(
+            "SELECT c.hp_current, c.hp_max
+             FROM characters c
+             INNER JOIN campaigns cmp ON cmp.campaign_id = c.campaign_id
+             WHERE c.character_id = :character_id
+               AND c.campaign_id = :campaign_id
+               AND cmp.gm_id = :gm_id
+             LIMIT 1"
+        );
+        $find->execute([
+            ':character_id' => (int)$character_id,
+            ':campaign_id' => (int)$campaign_id,
+            ':gm_id' => (int)$gm_id,
+        ]);
+        $characterHp = $find->fetch(PDO::FETCH_ASSOC);
+
+        if (!$characterHp || $hp_current < 0 || $hp_current > (int)$characterHp['hp_max']) {
+            return false;
+        }
+
+        $update = $this->pdo->prepare(
+            "UPDATE characters
+             SET hp_current = :hp_current
+             WHERE character_id = :character_id
+               AND campaign_id = :campaign_id
+               AND :hp_min_check >= 0
+               AND :hp_max_check <= hp_max
+               AND EXISTS (
+                   SELECT 1 FROM campaigns
+                   WHERE campaigns.campaign_id = :authorized_campaign_id
+                     AND campaigns.gm_id = :gm_id
+               )"
+        );
+
+        $executed = $update->execute([
+            ':hp_current' => (int)$hp_current,
+            ':character_id' => (int)$character_id,
+            ':campaign_id' => (int)$campaign_id,
+            ':hp_min_check' => (int)$hp_current,
+            ':hp_max_check' => (int)$hp_current,
+            ':authorized_campaign_id' => (int)$campaign_id,
+            ':gm_id' => (int)$gm_id,
+        ]);
+
+        return $executed && ($update->rowCount() === 1 || $hp_current === (int)$characterHp['hp_current']);
+    }
 }

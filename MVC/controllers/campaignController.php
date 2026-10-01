@@ -211,6 +211,51 @@ class CampaignController {
         exit;
     }
 
+    public function updateCharacterHp() {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: index.php?action=dashboard');
+            exit;
+        }
+
+        if (!isset($_SESSION['user_id'])) {
+            header('Location: index.php?action=login');
+            exit;
+        }
+
+        $campaignId = filter_var($_POST['campaign_id'] ?? null, FILTER_VALIDATE_INT);
+        $characterId = filter_var($_POST['character_id'] ?? null, FILTER_VALIDATE_INT);
+        $hpCurrent = filter_var($_POST['hp_current'] ?? null, FILTER_VALIDATE_INT);
+
+        if (!$campaignId || !$characterId || $hpCurrent === false) {
+            $this->flash('error', 'Invalid HP update request.');
+            header('Location: index.php?action=dashboard');
+            exit;
+        }
+
+        $campaign = $this->campaignModel->getById($campaignId);
+        if (!$campaign || (int)$campaign['gm_id'] !== (int)$_SESSION['user_id']) {
+            http_response_code(403);
+            exit('Forbidden');
+        }
+
+        $updated = $this->campaignModel->updateCharacterHpByGm(
+            (int)$campaignId,
+            (int)$_SESSION['user_id'],
+            (int)$characterId,
+            (int)$hpCurrent
+        );
+
+        $this->flash(
+            $updated ? 'success' : 'error',
+            $updated
+                ? 'Character HP updated.'
+                : 'HP could not be updated. Use a value between 0 and the character maximum HP.'
+        );
+
+        header('Location: index.php?action=campaign_view&id=' . (int)$campaignId);
+        exit;
+    }
+
     public function update() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (!isset($_SESSION['user_id'])) {

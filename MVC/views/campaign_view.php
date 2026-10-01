@@ -163,6 +163,15 @@ require __DIR__ . '/partials/head.php';
                                     <div class="hp-fill" style="width: <?= $hpPercent; ?>%"></div>
                                     <span class="hp-text"><?= $hpCurrent; ?> / <?= $hpMax; ?></span>
                                 </div>
+                                <?php if ($isGm): ?>
+                                    <form class="campaign-hp-form" action="index.php?action=campaign_update_hp" method="POST">
+                                        <?= csrf_field(); ?>
+                                        <input type="hidden" name="campaign_id" value="<?= (int)$campaign['campaign_id']; ?>">
+                                        <input type="hidden" name="character_id" value="<?= (int)$p['character_id']; ?>">
+                                        <input type="number" name="hp_current" value="<?= $hpCurrent; ?>" min="0" max="<?= $hpMax; ?>" aria-label="Current HP for <?= e($p['character_name']); ?>" required>
+                                        <button type="submit" class="btn btn-secondary compact">Save HP</button>
+                                    </form>
+                                <?php endif; ?>
                             </div>
                             <?php if ($isGm): ?>
                                 <div class="col-actions" data-label="Actions">

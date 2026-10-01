@@ -30,6 +30,7 @@ Maksimi-HP ja seitsemän ability scorea jakavat hahmon luonnissa 47 pisteen budj
 - kampanjan luonti, muokkaaminen ja poistaminen
 - julkisten kampanjoiden selaaminen
 - pelaajahahmojen lisääminen ja poistaminen
+- kampanjaan kuuluvien hahmojen nykyisen HP:n muuttaminen GM:nä
 - hahmojen nostaminen tasolle 20 asti
 - d20-nopanheitto kampanjan hahmolistassa
 - kampanjatiedotteiden luonti, muokkaaminen ja poistaminen
