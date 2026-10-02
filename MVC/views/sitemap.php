@@ -26,11 +26,14 @@ require __DIR__ . '/partials/head.php';
         <section class="sitemap-group">
             <p class="eyebrow">ACCOUNT</p>
             <h2>Your table</h2>
-            <a href="index.php?action=notifications">Notifications <span aria-hidden="true">&rarr;</span></a>
-            <a href="index.php?action=login">Sign in <span aria-hidden="true">→</span></a>
-            <a href="index.php?action=register">Create an account <span aria-hidden="true">→</span></a>
-            <a href="index.php?action=dashboard">Dashboard <span aria-hidden="true">→</span></a>
-            <a href="index.php?action=profile">Profile <span aria-hidden="true">→</span></a>
+            <?php if (isset($_SESSION['user_id'])): ?>
+                <a href="index.php?action=notifications">Notifications <span aria-hidden="true">&rarr;</span></a>
+                <a href="index.php?action=dashboard">Dashboard <span aria-hidden="true">→</span></a>
+                <a href="index.php?action=profile">Profile <span aria-hidden="true">→</span></a>
+            <?php else: ?>
+                <a href="index.php?action=login">Sign in <span aria-hidden="true">→</span></a>
+                <a href="index.php?action=register">Create an account <span aria-hidden="true">→</span></a>
+            <?php endif; ?>
         </section>
 
         <section class="sitemap-group">

@@ -49,6 +49,11 @@ class AuthController {
     }
 
     public function register() {
+        if (isset($_SESSION['user_id'])) {
+            header('Location: index.php?action=dashboard');
+            exit;
+        }
+
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $username = trim($_POST['username'] ?? '');
             $email = trim($_POST['email'] ?? '');

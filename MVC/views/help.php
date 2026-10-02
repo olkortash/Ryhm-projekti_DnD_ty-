@@ -66,7 +66,11 @@ require __DIR__ . '/partials/head.php';
 
             <section class="help-callout">
                 <strong>Need a place to start?</strong>
-                <a class="manage-link" href="index.php?action=register">Create your account <span aria-hidden="true">→</span></a>
+                <?php if (isset($_SESSION['user_id'])): ?>
+                    <a class="manage-link" href="index.php?action=dashboard">Open your dashboard <span aria-hidden="true">→</span></a>
+                <?php else: ?>
+                    <a class="manage-link" href="index.php?action=register">Create your account <span aria-hidden="true">→</span></a>
+                <?php endif; ?>
             </section>
         </div>
     </div>
