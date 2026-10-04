@@ -152,19 +152,8 @@ php -l MVC/public/index.php
 
 Nykyinen testi kattaa haun osumat, jokerimerkkien käsittelyn, syötteen validoinnin, HTML-enkoodauksen, käyttölinkit ja tulosrajan. Jatkossa kannattaa lisätä integraatiotestit ainakin kirjautumiselle, CSRF-suojaukselle, käyttöoikeuksille, hahmon luonnille sekä kampanjaan liittymiselle ja poistumiselle.
 
-## Tunnetut rajoitteet
-
-- Alkuperäinen tietokantaskeema ja siementiedot puuttuvat repositoriosta.
-- Osa lisätauluista varmistetaan mallikerroksessa ajonaikaisilla `CREATE TABLE IF NOT EXISTS` -kutsuilla; ne kannattaa siirtää migraatioihin.
-- Sovellus ei tarjoa reaaliaikaista chattia, karttaa tai synkronoitua taistelunhallintaa.
-- Automaattinen testikattavuus on vielä suppea.
-- Käyttöliittymä on pääosin englanniksi, vaikka osa kommenteista ja viesteistä on suomeksi.
-
 ## Jatkokehitysideoita
 
-- yhtenäinen `001_initial_schema.sql` ja siementiedot
-- kattavat controller- ja tietokantaintegraatiotestit
-- jäsenen poistamisen ja hänen kampanjahahmojensa irrottamisen yhtenäinen transaktio
 - sessiomuistiinpanojen muokkaus ja poistaminen
 - kampanjakohtainen nopanhistoria ja aloitejärjestys
 - saavutettavuus- ja responsiivisuustestaus eri selaimilla
