@@ -243,9 +243,9 @@ require __DIR__ . '/partials/head.php';
                     </li>
                 <?php endforeach; ?>
             </ul>
-            <a class="feature-link" href="index.php?action=dashboard">
+            <!-- <a class="feature-link" href="index.php?action=dashboard">
                 View all activity →
-            </a>
+            </a> -->
         </article>
 
         <article class="feature-card session-card">
@@ -262,9 +262,9 @@ require __DIR__ . '/partials/head.php';
                     </li>
                 <?php endforeach; ?>
             </ul>
-            <a class="feature-link" href="index.php?action=dashboard">
+            <!-- <a class="feature-link" href="index.php?action=dashboard">
                 View calendar →
-            </a>
+            </a> -->
         </article>
 
         <article class="feature-card campaign-card">

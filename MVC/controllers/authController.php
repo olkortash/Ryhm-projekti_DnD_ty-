@@ -13,7 +13,7 @@ class AuthController {
 
     public function landing() {
         $campaigns = $this->campaignModel->getPublicCampaigns();
-        $recentActivity = $this->campaignModel->getRecentPublicActivity(3);
+        $recentActivity = $this->campaignModel->getRecentPublicActivity(4);
         $upcomingSessions = $this->campaignModel->getPublicUpcomingSessions(3);
         require __DIR__ . '/../views/mainpage.php';
     }
