@@ -624,6 +624,53 @@ class Campaign {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public function getRecentPublicActivity($limit = 3) {
+        $limit = max(1, min(10, (int)$limit));
+
+        $sql = "
+            (
+                SELECT c.campaign_name AS campaign_name,
+                       c.created_at AS activity_time,
+                       CONCAT('New campaign created: ', c.campaign_name) AS activity_text
+                FROM campaigns c
+                ORDER BY c.created_at DESC
+                LIMIT $limit
+            )
+            UNION ALL
+            (
+                SELECT c.campaign_name AS campaign_name,
+                       cs.session_date AS activity_time,
+                       CONCAT('Session scheduled: ', cs.title) AS activity_text
+                FROM campaign_sessions cs
+                JOIN campaigns c ON c.campaign_id = cs.campaign_id
+                ORDER BY cs.session_date DESC, cs.created_at DESC
+                LIMIT $limit
+            )
+            ORDER BY activity_time DESC
+            LIMIT $limit
+        ";
+
+        $stmt = $this->pdo->query($sql);
+        return $stmt ? $stmt->fetchAll(PDO::FETCH_ASSOC) : [];
+    }
+
+    public function getPublicUpcomingSessions($limit = 3) {
+        $limit = max(1, min(10, (int)$limit));
+        $this->ensureSessionTrackingTablesExist();
+
+        $sql = "
+            SELECT cs.session_date, cs.title, c.campaign_name
+            FROM campaign_sessions cs
+            JOIN campaigns c ON c.campaign_id = cs.campaign_id
+            WHERE cs.session_date >= CURDATE()
+            ORDER BY cs.session_date ASC, cs.created_at ASC
+            LIMIT $limit
+        ";
+
+        $stmt = $this->pdo->query($sql);
+        return $stmt ? $stmt->fetchAll(PDO::FETCH_ASSOC) : [];
+    }
+
     public function getPublicCampaigns() {
         $sql = "SELECT c.*, COUNT(ch.character_id) AS character_count
                 FROM campaigns c
