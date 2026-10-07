@@ -95,7 +95,7 @@ require __DIR__ . '/partials/head.php';
             </button>
         </div>
 
-        <form id="campaign-form" class="dashboard-form auth-form <?= $highlightNewCampaign ? 'campaign-highlight' : ''; ?>" action="index.php?action=campaign_create" method="POST" style="display: <?= $highlightNewCampaign ? 'block' : 'none'; ?>; margin-bottom: 24px;">
+        <form id="campaign-form" class="dashboard-form auth-form <?= $highlightNewCampaign ? 'campaign-highlight' : ''; ?>" action="index.php?action=campaign_create" method="POST" style="display: <?= $highlightNewCampaign ? 'block' : 'none'; ?>; margin-bottom: 45px;">
             <?= csrf_field(); ?>
             <label>Campaign Name</label>
             <input type="text" name="campaign_name" placeholder="E.g. Kingdoms at War" required>
