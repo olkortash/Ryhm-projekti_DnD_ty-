@@ -158,7 +158,7 @@ Nykyinen testi kattaa haun osumat, jokerimerkkien käsittelyn, syötteen validoi
 - kampanjakohtainen nopanhistoria ja aloitejärjestys
 - saavutettavuus- ja responsiivisuustestaus eri selaimilla
 
-## Tekijät ja työnjako
+## Tekijät
 
 Projektin ovat toteuttaneet neljän hengen opiskelijaryhmänä:
 
