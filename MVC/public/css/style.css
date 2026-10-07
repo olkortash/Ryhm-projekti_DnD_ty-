@@ -305,7 +305,7 @@ a {
 /* Etusivun ja hallintapaneelin sisältöalue sekä osio-otsikot. */
 
 .dashboard {
-    width: min(1160px, 89%);
+    width: min(1260px, 89%);
     margin: 0 auto;
     padding: 62px 0 40px;
 }
