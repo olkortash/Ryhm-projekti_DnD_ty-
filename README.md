@@ -167,4 +167,3 @@ Projektin ovat toteuttaneet neljän hengen opiskelijaryhmänä:
 - Taika
 - Pasi
 
-Palautusta varten tähän osioon kannattaa täydentää jokaisen jäsenen päävastuualueet ja merkittävimmät toteutukset. Työnjako voidaan todentaa myös Git-historiasta. Älkää nimetkö ominaisuutta vain yhden henkilön työksi, jos suunnittelu, testaus tai katselmointi tehtiin yhdessä.
