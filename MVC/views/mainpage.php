@@ -165,41 +165,133 @@ require __DIR__ . '/partials/head.php';
             </aside>
         </div>
     </section>
-    <?php // Työkalujen ja resurssien esittelykortit. ?>
+    <?php
+    $recentActivities = [];
+    if (!empty($recentActivity)) {
+        foreach ($recentActivity as $activity) {
+            $activityTime = $activity['activity_time'] ?? null;
+            $recentActivities[] = [
+                'time' => $activityTime ? date('M j', strtotime((string) $activityTime)) : 'Today',
+                'text' => $activity['activity_text'] ?? 'Campaign activity',
+            ];
+        }
+    }
+
+    if (empty($recentActivities)) {
+        $recentActivities = [[
+            'time' => 'Now',
+            'text' => 'No recent activity yet',
+        ]];
+    }
+
+    $upcomingSessionItems = [];
+    if (!empty($upcomingSessions)) {
+        foreach ($upcomingSessions as $session) {
+            $sessionDate = $session['session_date'] ?? null;
+            $upcomingSessionItems[] = [
+                'date' => $sessionDate ? date('M j', strtotime((string) $sessionDate)) : 'No date set',
+                'title' => $session['campaign_name'] ?? ($session['title'] ?? 'Campaign session'),
+            ];
+        }
+    }
+
+    if (empty($upcomingSessionItems)) {
+        $upcomingSessionItems = [[
+            'date' => 'No date set',
+            'title' => 'No upcoming sessions yet',
+        ]];
+    }
+
+    $openCampaigns = [];
+    foreach (array_slice($campaigns, 0, 3) as $campaign) {
+        $campaignId = (int) ($campaign['campaign_id'] ?? 0);
+        $campaignName = $campaign['campaign_name'] ?? 'Untitled campaign';
+        $description = trim((string) ($campaign['description'] ?? ''));
+        $characterCount = (int) ($campaign['character_count'] ?? 0);
+        $spotsOpen = max(1, 4 - $characterCount);
+
+        $openCampaigns[] = [
+            'id' => $campaignId,
+            'name' => $campaignName,
+            'meta' => $description !== ''
+                ? mb_substr($description, 0, 28) . (mb_strlen($description) > 28 ? '…' : '')
+                : 'Story campaign',
+            'spots' => $spotsOpen . ' spots open',
+        ];
+    }
+
+    if (empty($openCampaigns)) {
+        $openCampaigns = [[
+            'name' => 'No public campaigns yet',
+            'meta' => 'Campaign listing is empty',
+            'spots' => '0 spots open',
+        ]];
+    }
+    ?>
     <section class="feature-grid">
-        <div class="feature-card">
-            <span class="feature-icon" aria-hidden="true"> ✦ </span>
-            <h3>Characters</h3>
-            <p>
-                Create and manage the characters belonging
-                to your campaigns.
-            </p>
-            <a href="index.php?action=dashboard">
-                Manage characters →
+        <article class="feature-card activity-card">
+            <div class="feature-header">
+                <span class="feature-icon" aria-hidden="true"> ✦ </span>
+                <span class="feature-badge">Live</span>
+            </div>
+            <h3>Recent activity</h3>
+            <ul class="feature-list">
+                <?php foreach ($recentActivities as $activity): ?>
+                    <li>
+                        <span class="feature-timestamp"><?= e($activity['time']) ?></span>
+                        <span><?= e($activity['text']) ?></span>
+                    </li>
+                <?php endforeach; ?>
+            </ul>
+            <a class="feature-link" href="index.php?action=dashboard">
+                View all activity →
             </a>
-        </div>
-        <div class="feature-card">
-            <span class="feature-icon" aria-hidden="true"> ◈ </span>
-            <h3>Campaigns</h3>
-            <p>
-                Create campaigns, manage their information,
-                and share invite codes with players.
-            </p>
-            <a href="index.php?action=dashboard">
-                Manage campaigns →
+        </article>
+
+        <article class="feature-card session-card">
+            <div class="feature-header">
+                <span class="feature-icon" aria-hidden="true"> ◈ </span>
+                <span class="feature-badge">Calendar</span>
+            </div>
+            <h3>Upcoming sessions</h3>
+            <ul class="feature-list">
+                <?php foreach ($upcomingSessionItems as $session): ?>
+                    <li>
+                        <span class="feature-timestamp"><?= e($session['date']) ?></span>
+                        <span><?= e($session['title']) ?></span>
+                    </li>
+                <?php endforeach; ?>
+            </ul>
+            <a class="feature-link" href="index.php?action=dashboard">
+                View calendar →
             </a>
-        </div>
-        <div class="feature-card">
-            <span class="feature-icon" aria-hidden="true"> ⌁ </span>
-            <h3>Resources</h3>
-            <p>
-                Keep your campaign references and
-                worldbuilding material organized.
-            </p>
-            <a href="index.php?action=landing#features">
-                Browse resources →
+        </article>
+
+        <article class="feature-card campaign-card">
+            <div class="feature-header">
+                <span class="feature-icon" aria-hidden="true"> ⌁ </span>
+                <span class="feature-badge">Open</span>
+            </div>
+            <h3>Looking for players</h3>
+            <ul class="feature-list">
+                <?php foreach ($openCampaigns as $campaign): ?>
+                    <li>
+                        <?php if (!empty($campaign['id'])): ?>
+                            <a class="feature-campaign-link" href="index.php?action=campaign_view&id=<?= (int) $campaign['id'] ?>">
+                                <strong><?= e($campaign['name']) ?></strong>
+                            </a>
+                        <?php else: ?>
+                            <strong><?= e($campaign['name']) ?></strong>
+                        <?php endif; ?>
+                        <span class="feature-meta"><?= e($campaign['meta']) ?></span>
+                        <span class="feature-spots"><?= e($campaign['spots']) ?></span>
+                    </li>
+                <?php endforeach; ?>
+            </ul>
+            <a class="feature-link" href="index.php?action=landing#campaigns">
+                View campaign →
             </a>
-        </div>
+        </article>
     </section>
 </main>
 
