@@ -4,8 +4,14 @@
  * ja käyttäjän luomat kampanjat ($gmCampaigns). Tyhjille listoille näytetään aloitusohje.
  */
 $pageTitle = "Dashboard - Roleplay App";
+
+$highlightNewCampaign =
+    isset($_GET['new_campaign']) &&
+    $_GET['new_campaign'] === '1';
 require __DIR__ . '/partials/head.php';
 ?>
+
+
 
 <div class="dashboard">
     <div class="dashboard-hero">
@@ -75,7 +81,7 @@ require __DIR__ . '/partials/head.php';
     </section>
 
     <?php // Käyttäjän luomat kampanjat; painikkeet avaavat saman piilotetun luontilomakkeen. ?>
-    <section class="dashboard-section">
+    <section class="dashboard-section" id="campaigns-section">
         <div class="section-head">
             <div>
                 <p class="eyebrow">GAME MASTER</p>
@@ -89,7 +95,7 @@ require __DIR__ . '/partials/head.php';
             </button>
         </div>
 
-        <form id="campaign-form" class="dashboard-form auth-form" action="index.php?action=campaign_create" method="POST" style="display: none; margin-bottom: 24px;">
+        <form id="campaign-form" class="dashboard-form auth-form <?= $highlightNewCampaign ? 'campaign-highlight' : ''; ?>" action="index.php?action=campaign_create" method="POST" style="display: <?= $highlightNewCampaign ? 'block' : 'none'; ?>; margin-bottom: 24px;">
             <?= csrf_field(); ?>
             <label>Campaign Name</label>
             <input type="text" name="campaign_name" placeholder="E.g. Kingdoms at War" required>
@@ -135,5 +141,32 @@ require __DIR__ . '/partials/head.php';
         <?php endif; ?>
     </section>
 </div>
+
+<?php if ($highlightNewCampaign): ?>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const form = document.getElementById('campaign-form');
+
+    if (form) {
+        setTimeout(function () {
+            form.scrollIntoView({
+                behavior: 'smooth',
+                block: 'center'
+            });
+
+            const nameInput = form.querySelector(
+                'input[name="campaign_name"]'
+            );
+
+            if (nameInput) {
+                setTimeout(function () {
+                    nameInput.focus();
+                }, 700);
+            }
+        }, 200);
+    }
+});
+</script>
+<?php endif; ?>
 
 <?php require __DIR__ . '/partials/footer.php'; ?>

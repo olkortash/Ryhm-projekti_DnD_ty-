@@ -2850,3 +2850,28 @@ input[type="number"] {
         width: 100%;
     }
 }
+
+.campaign-highlight {
+    position: relative;
+    z-index: 10;
+
+    animation: campaignHighlight 1.2s ease-out 2;
+}
+
+@keyframes campaignHighlight {
+    0% {
+        box-shadow: 0 0 0 0 rgba(120, 80, 255, 0);
+    }
+
+    30% {
+        box-shadow:
+            0 0 0 4px rgba(120, 80, 255, 0.8),
+            0 0 30px rgba(120, 80, 255, 0.5);
+    }
+
+    100% {
+        box-shadow:
+            0 0 0 12px rgba(120, 80, 255, 0),
+            0 0 40px rgba(120, 80, 255, 0);
+    }
+}

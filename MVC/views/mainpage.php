@@ -44,7 +44,7 @@ require __DIR__ . '/partials/head.php';
                 <h2>Public campaigns</h2>
             </div>
             <?php if (isset($_SESSION['user_id'])): ?>
-                <a class="btn btn-primary compact" href="index.php?action=dashboard">
+                <a class="btn btn-primary compact" href="index.php?action=dashboard&new_campaign=1">
                     <span aria-hidden="true">+</span>
                     New campaign
                 </a>
