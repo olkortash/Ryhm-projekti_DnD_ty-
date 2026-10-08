@@ -85,7 +85,7 @@ require __DIR__ . '/partials/head.php';
         <div class="section-head">
             <div>
                 <p class="eyebrow">GAME MASTER</p>
-                <h2>Campaigns</h2>
+                <h2>My Campaigns:</h2>
             </div>
             <button
                 class="btn btn-primary compact"

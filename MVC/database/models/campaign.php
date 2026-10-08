@@ -671,15 +671,23 @@ class Campaign {
         return $stmt ? $stmt->fetchAll(PDO::FETCH_ASSOC) : [];
     }
 
-    public function getPublicCampaigns() {
+    public function getPublicCampaigns(int $limit = 6, int $offset = 0): array {
+        $limit = max(1, min(100, $limit));
+        $offset = max(0, $offset);
         $sql = "SELECT c.*, COUNT(ch.character_id) AS character_count
                 FROM campaigns c
                 LEFT JOIN characters ch ON ch.campaign_id = c.campaign_id
                 GROUP BY c.campaign_id
-                ORDER BY c.campaign_id DESC";
+                ORDER BY c.campaign_id DESC
+                LIMIT $limit OFFSET $offset";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getPublicCampaignCount(): int {
+        $stmt = $this->pdo->query('SELECT COUNT(*) FROM campaigns');
+        return (int) $stmt->fetchColumn();
     }
 
     public function searchPublicCampaigns(string $query): array {

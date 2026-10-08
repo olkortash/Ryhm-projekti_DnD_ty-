@@ -380,6 +380,14 @@ a {
     gap: 20px;
 }
 
+.campaign-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    margin-top: 24px;
+}
+
 .campaign-sidebar {
     position: sticky;
     top: 20px;

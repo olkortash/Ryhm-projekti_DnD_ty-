@@ -146,6 +146,17 @@ require __DIR__ . '/partials/head.php';
                             </article>
                         <?php endforeach; ?>
                     </div>
+                    <?php if ($totalCampaignPages > 1): ?>
+                        <nav class="campaign-pagination" aria-label="Campaign pages">
+                            <?php if ($currentCampaignPage > 1): ?>
+                                <a class="btn btn-secondary compact" href="index.php?action=landing&amp;page=<?= $currentCampaignPage - 1 ?>#campaigns">Previous</a>
+                            <?php endif; ?>
+                            <span>Page <?= $currentCampaignPage ?> of <?= $totalCampaignPages ?></span>
+                            <?php if ($currentCampaignPage < $totalCampaignPages): ?>
+                                <a class="btn btn-secondary compact" href="index.php?action=landing&amp;page=<?= $currentCampaignPage + 1 ?>#campaigns">Next</a>
+                            <?php endif; ?>
+                        </nav>
+                    <?php endif; ?>
                 <?php endif; ?>
             </div>
 
@@ -198,7 +209,7 @@ require __DIR__ . '/partials/head.php';
     }
 
     $openCampaigns = [];
-    foreach (array_slice($campaigns, 0, 3) as $campaign) {
+    foreach (array_slice($featuredCampaigns, 0, 3) as $campaign) {
         $campaignId = (int) ($campaign['campaign_id'] ?? 0);
         $campaignName = $campaign['campaign_name'] ?? 'Untitled campaign';
         $description = trim((string) ($campaign['description'] ?? ''));

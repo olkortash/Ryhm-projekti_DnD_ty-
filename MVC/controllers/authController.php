@@ -30,7 +30,20 @@ class AuthController {
     }
 
     public function landing() {
-        $campaigns = $this->campaignModel->getPublicCampaigns();
+        $campaignsPerPage = 6;
+        $campaignCount = $this->campaignModel->getPublicCampaignCount();
+        $totalCampaignPages = max(1, (int) ceil($campaignCount / $campaignsPerPage));
+        $requestedPage = filter_var($_GET['page'] ?? 1, FILTER_VALIDATE_INT);
+        $currentCampaignPage = $requestedPage !== false && $requestedPage > 0
+            ? min($requestedPage, $totalCampaignPages)
+            : 1;
+        $campaigns = $this->campaignModel->getPublicCampaigns(
+            $campaignsPerPage,
+            ($currentCampaignPage - 1) * $campaignsPerPage
+        );
+        $featuredCampaigns = $currentCampaignPage === 1
+            ? $campaigns
+            : $this->campaignModel->getPublicCampaigns(3);
         $recentActivity = $this->campaignModel->getRecentPublicActivity(4);
         $upcomingSessions = $this->campaignModel->getPublicUpcomingSessions(3);
         require __DIR__ . '/../views/mainpage.php';
