@@ -25,8 +25,12 @@ require __DIR__ . '/partials/head.php';
                 that your players will remember for years.
             </p>
             <div class="hero-actions">
-                <a class="btn btn-primary" href="index.php?action=dashboard">
+                <a class="btn btn-primary" href="index.php?action=dashboard&new_campaign=1">
                     Start a campaign
+                    <span aria-hidden="true">→</span>
+                </a>
+                <a class="btn btn-primary" href="index.php?action=character_create">
+                    Make a character
                     <span aria-hidden="true">→</span>
                 </a>
                 <a class="btn btn-secondary" href="index.php?action=landing#features">
@@ -43,12 +47,6 @@ require __DIR__ . '/partials/head.php';
                 <p class="eyebrow">COMMUNITY</p>
                 <h2>Public campaigns</h2>
             </div>
-            <?php if (isset($_SESSION['user_id'])): ?>
-                <a class="btn btn-primary compact" href="index.php?action=dashboard&new_campaign=1">
-                    <span aria-hidden="true">+</span>
-                    New campaign
-                </a>
-            <?php endif; ?>
         </div>
         <div class="campaign-layout">
             <div class="campaign-list-panel">

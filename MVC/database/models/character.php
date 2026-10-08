@@ -168,7 +168,42 @@ class Character {
         ]);
     }
 
+    public function getAbilityPointBudget($level) {
+        $level = min(max(1, (int) $level), 10);
+        return 47 + ($level - 1) * 3;
+    }
+
     public function updateAbilities($character_id, $player_id, $abilities) {
+        $current = $this->pdo->prepare(
+            'SELECT level, hp_max FROM characters WHERE character_id = :character_id AND player_id = :player_id LIMIT 1'
+        );
+        $current->execute([
+            ':character_id' => $character_id,
+            ':player_id' => $player_id,
+        ]);
+        $character = $current->fetch(PDO::FETCH_ASSOC);
+
+        if (!$character) {
+            return false;
+        }
+
+        foreach ($abilities as $column => $value) {
+            if (!is_int($value) && !ctype_digit((string) $value)) {
+                return false;
+            }
+            $value = (int) $value;
+            if ($value < 1 || $value > 25) {
+                return false;
+            }
+        }
+
+        $totalAbilityScore = array_sum(array_map('intval', $abilities));
+        $pointBudget = $this->getAbilityPointBudget((int) $character['level']);
+
+        if ($totalAbilityScore + (int) $character['hp_max'] > $pointBudget) {
+            return false;
+        }
+
         $setClauses = [];
         $params = [
             ':character_id' => $character_id,
@@ -177,7 +212,7 @@ class Character {
 
         foreach ($abilities as $column => $value) {
             $setClauses[] = $column . ' = :' . $column;
-            $params[':' . $column] = $value;
+            $params[':' . $column] = (int) $value;
         }
 
         if ($setClauses === []) {

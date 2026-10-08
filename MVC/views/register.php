@@ -21,7 +21,7 @@ require __DIR__ . '/partials/head.php';
             <?php if (isset($error)): ?>
                 <p class="form-error"><?= e($error); ?></p>
             <?php endif; ?>
-            <label for="username">Username</label>
+            <label for="username" class="field-label"><span>Username</span><span class="field-required">Required</span></label>
 
             <input
                 type="text"
@@ -33,7 +33,7 @@ require __DIR__ . '/partials/head.php';
                 required
             >
 
-            <label for="email">Email</label>
+            <label for="email" class="field-label"><span>Email</span><span class="field-required">Required</span></label>
 
             <input
                 type="email"
@@ -42,10 +42,11 @@ require __DIR__ . '/partials/head.php';
                 maxlength="75"
                 value="<?= e($_POST['email'] ?? '') ?>"
                 autocomplete="email"
+                pattern="^[A-Za-z0-9.!#$%&'*+/=?^_`{|}~-]+@(?:[A-Za-z0-9-]+\.)+[A-Za-z]{2,63}$"
                 required
             >
 
-            <label for="password">Password</label>
+            <label for="password" class="field-label"><span>Password</span><span class="field-required">Required</span></label>
 
             <input
                 type="password"
@@ -56,7 +57,7 @@ require __DIR__ . '/partials/head.php';
                 required
             >
 
-            <label for="password_confirm">Confirm password</label>
+            <label for="password_confirm" class="field-label"><span>Confirm password</span><span class="field-required">Required</span></label>
 
             <input
                 type="password"

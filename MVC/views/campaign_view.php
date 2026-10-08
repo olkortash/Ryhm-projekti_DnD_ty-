@@ -136,7 +136,7 @@ require __DIR__ . '/partials/head.php';
                             <div class="col-level" data-label="Level">
                                 <strong><?= $level; ?></strong>
                                 <?php if ($isGm): ?>
-                                    <?php if ($level < 20): ?>
+                                    <?php if ($level < 10): ?>
                                         <form action="index.php?action=campaign_level_up" method="POST">
                                             <?= csrf_field(); ?>
                                             <input type="hidden" name="campaign_id" value="<?= (int)$campaign['campaign_id']; ?>">

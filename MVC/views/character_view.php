@@ -75,8 +75,11 @@ require __DIR__ . '/partials/head.php';
                 <div class="character-stat"><span class="stat-label"><svg class="profile-icon" aria-hidden="true"><use href="#profile-icon-level"/></svg>Level</span><strong><?= (int) $character['level']; ?></strong></div>
                 <div class="character-stat"><span class="stat-label"><svg class="profile-icon" aria-hidden="true"><use href="#profile-icon-race"/></svg>Race</span><strong><?= htmlspecialchars($character['race_name']); ?></strong></div>
                 <div class="character-stat"><span class="stat-label"><svg class="profile-icon" aria-hidden="true"><use href="#profile-icon-class"/></svg>Class</span><strong><?= htmlspecialchars($character['class_name']); ?></strong></div>
-                <div class="character-stat"><span class="stat-label"><svg class="profile-icon" aria-hidden="true"><use href="#profile-icon-job"/></svg>Job</span><strong><?= htmlspecialchars($character['job_name']); ?></strong></div>
-                <div class="character-stat"><span class="stat-label"><svg class="profile-icon" aria-hidden="true"><use href="#profile-icon-campaign"/></svg>Campaign</span><strong><?= $character['campaign_name'] ? htmlspecialchars($character['campaign_name']) : 'No campaign'; ?></strong></div>
+                <div class="character-stat <?= empty($character['job_name']) ? 'character-stat-empty' : ''; ?>">
+                    <span class="stat-label"><svg class="profile-icon" aria-hidden="true"><use href="#profile-icon-job"/></svg>Job</span>
+                    <strong><?= htmlspecialchars(!empty($character['job_name']) ? $character['job_name'] : 'No job'); ?></strong>
+                </div>
+                <div class="character-stat character-stat-wide"><span class="stat-label"><svg class="profile-icon" aria-hidden="true"><use href="#profile-icon-campaign"/></svg>Campaign</span><strong><?= $character['campaign_name'] ? htmlspecialchars($character['campaign_name']) : 'No campaign'; ?></strong></div>
             </div>
             <div class="character-created-by"><svg class="profile-icon" aria-hidden="true"><use href="#profile-icon-user"/></svg><span>Created by: <?= htmlspecialchars($character['creator_username']); ?></span></div>
 
@@ -121,7 +124,7 @@ require __DIR__ . '/partials/head.php';
                 </div>
 
                 <?php if ($isOwner): ?>
-                    <form class="character-hp-form ability-update-form" action="index.php?action=character_update_abilities" method="POST" data-max-points="47" data-hp-max="<?= (int) $character['hp_max']; ?>">
+                    <form class="character-hp-form ability-update-form" action="index.php?action=character_update_abilities" method="POST" data-max-points="<?= (int) (47 + max(0, (int) $character['level'] - 1) * 3); ?>" data-hp-max="<?= (int) $character['hp_max']; ?>">
                         <?= csrf_field(); ?>
                         <input type="hidden" name="character_id" value="<?= (int) $character['character_id']; ?>">
                         <div class="stats-points ability-points">
@@ -129,7 +132,7 @@ require __DIR__ . '/partials/head.php';
                             <strong class="ability-points-left"></strong>
                         </div>
                         <?php if (($_GET['error'] ?? '') === 'abilities'): ?>
-                            <p class="form-error">Ability scores must be whole numbers from 1 to 25 and fit within the 47-point budget together with maximum HP.</p>
+                            <p class="form-error">Ability scores must be whole numbers from 1 to 25 and fit within the current level-based budget together with maximum HP.</p>
                         <?php endif; ?>
                         <div class="ability-score-grid ability-score-edit-grid">
                             <label class="ability-score-field">

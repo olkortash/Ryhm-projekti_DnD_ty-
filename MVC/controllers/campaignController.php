@@ -12,6 +12,18 @@ class CampaignController {
         $_SESSION['flash'] = ['type' => $type, 'message' => $message];
     }
 
+    private function isDuplicateSubmission(string $action): bool {
+        $key = 'last_submit_' . $action;
+        $now = time();
+
+        if (isset($_SESSION[$key]) && (int)$_SESSION[$key] > $now - 2) {
+            return true;
+        }
+
+        $_SESSION[$key] = $now;
+        return false;
+    }
+
     public function create() {
         if (!isset($_SESSION['user_id'])) {
             header('Location: index.php?action=login');
@@ -19,6 +31,12 @@ class CampaignController {
         }
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            if ($this->isDuplicateSubmission('campaign_create')) {
+                $this->flash('error', 'Please wait a moment before creating another campaign.');
+                header('Location: index.php?action=dashboard');
+                exit;
+            }
+
             $name = trim((string)($_POST['campaign_name'] ?? ''));
             $description = trim((string)($_POST['description'] ?? ''));
             if ($name === '' || mb_strlen($name) > 100 || mb_strlen($description) > 2000) {
@@ -204,7 +222,7 @@ class CampaignController {
         );
         $this->flash(
             $leveledUp ? 'success' : 'error',
-            $leveledUp ? 'Character level increased by one.' : 'Character could not be leveled up. It may already be level 20 or not belong to this campaign.'
+            $leveledUp ? 'Character level increased by one.' : 'Character could not be leveled up. It may already be level 10 or not belong to this campaign.'
         );
 
         header('Location: index.php?action=campaign_view&id=' . $campaignId);

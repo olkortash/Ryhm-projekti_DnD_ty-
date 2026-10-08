@@ -335,6 +335,33 @@ a {
     padding-inline: 13px;
 }
 
+.field-label,
+.field-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 8px;
+    color: var(--cream);
+    font-weight: 600;
+}
+
+.field-required,
+.field-optional {
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-weight: 700;
+}
+
+.field-required {
+    color: var(--gold);
+}
+
+.field-optional {
+    color: var(--muted);
+}
+
 /* Etusivu: kampanjakortit, kuvitus ja tunnisteet. */
 
 .campaign-layout {
@@ -632,6 +659,49 @@ a {
 
 .manage-link:hover {
     color: var(--gold-bright);
+}
+
+.dashboard-card-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 38px;
+    padding: 0 16px;
+    border-radius: 4px;
+    border: 1px solid transparent;
+    font-family: Arial, sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+    transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.dashboard-card-action:hover {
+    transform: translateY(-1px);
+}
+
+.dashboard-card-action-primary {
+    color: #171008;
+    background: var(--gold);
+    border-color: var(--gold);
+    box-shadow: 0 10px 20px rgba(213, 169, 30, 0.16);
+}
+
+.dashboard-card-action-primary:hover {
+    background: var(--gold-bright);
+    border-color: var(--gold-bright);
+}
+
+.dashboard-card-action-secondary {
+    color: var(--cream);
+    background: rgba(12, 9, 17, 0.9);
+    border-color: rgba(213, 169, 30, 0.35);
+}
+
+.dashboard-card-action-secondary:hover {
+    background: rgba(22, 16, 28, 0.98);
+    border-color: rgba(213, 169, 30, 0.6);
 }
 
 /* Etusivu: työkalujen ja resurssien esittelykortit. */
@@ -1140,6 +1210,16 @@ a {
     padding-top: 12px;
 }
 
+.dashboard-card-footer form {
+    display: flex;
+    align-items: center;
+    margin: 0;
+}
+
+.dashboard-card-footer .compact {
+    margin-top: 0;
+}
+
 .dashboard-card {
     padding: 24px;
     background: linear-gradient(135deg, rgba(22, 16, 28, 0.8), rgba(14, 11, 20, 0.8));
@@ -1512,6 +1592,18 @@ a {
     color: var(--cream);
     font-size: 17px;
     font-weight: 400;
+}
+
+.character-stat-wide {
+    grid-column: 1 / -1;
+}
+
+.character-stat-empty {
+    background: rgba(12, 9, 17, 0.75);
+}
+
+.character-stat-empty strong {
+    color: var(--muted);
 }
 
 .character-created-by {

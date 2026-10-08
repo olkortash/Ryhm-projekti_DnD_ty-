@@ -17,6 +17,18 @@ class CharacterController {
                 && $this->campaignModel->isCampaignMember((int)$character['campaign_id'], $userId));
     }
 
+    private function isDuplicateSubmission(string $action): bool {
+        $key = 'last_submit_' . $action;
+        $now = time();
+
+        if (isset($_SESSION[$key]) && (int)$_SESSION[$key] > $now - 2) {
+            return true;
+        }
+
+        $_SESSION[$key] = $now;
+        return false;
+    }
+
     public function create() {
         if (!isset($_SESSION['user_id'])) {
             header('Location: index.php?action=login');
@@ -24,6 +36,11 @@ class CharacterController {
         }
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            if ($this->isDuplicateSubmission('character_create')) {
+                header('Location: index.php?action=dashboard');
+                exit;
+            }
+
             $name = trim((string)($_POST['character_name'] ?? ''));
             $integerFields = ['character_class_id', 'character_race_id', 'character_job_id', 'hp_max', 'agi', 'str', 'dex', 'wis', 'cha', 'con', 'int'];
             $values = [];
@@ -239,8 +256,8 @@ class CharacterController {
         $character = $this->characterModel->getById($characterId);
         $hasInvalidScore = count($updates) !== count($abilityMap)
             || array_filter($updates, static fn($value) => $value < 1 || $value > 25) !== [];
-        $exceedsPointBudget = !$character
-            || array_sum($updates) + (int) $character['hp_max'] > 47;
+        $pointBudget = $character ? $this->characterModel->getAbilityPointBudget((int) $character['level']) : 47;
+        $exceedsPointBudget = !$character || array_sum($updates) + (int) $character['hp_max'] > $pointBudget;
 
         if (!$hasInvalidScore && !$exceedsPointBudget) {
             $this->characterModel->updateAbilities($characterId, (int) $_SESSION['user_id'], $updates);

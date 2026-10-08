@@ -11,6 +11,24 @@ class AuthController {
         $this->campaignModel = new Campaign($pdo);
     }
 
+    private function isValidEmail(string $email): bool {
+        if ($email === '' || mb_strlen($email) > 75 || preg_match('/\s/', $email)) {
+            return false;
+        }
+
+        if (!preg_match("/^[A-Za-z0-9.!#$%&'*+\\/=.?^_`{|}~-]+@(?:[A-Za-z0-9-]+\\.)+[A-Za-z]{2,63}$/", $email)) {
+            return false;
+        }
+
+        [$localPart, $domain] = array_pad(explode('@', $email, 2), 2, '');
+
+        if ($localPart === '' || $domain === '' || str_contains($domain, '..') || str_starts_with($domain, '.') || str_ends_with($domain, '.')) {
+            return false;
+        }
+
+        return !str_contains($localPart, '..');
+    }
+
     public function landing() {
         $campaigns = $this->campaignModel->getPublicCampaigns();
         $recentActivity = $this->campaignModel->getRecentPublicActivity(4);
@@ -63,7 +81,7 @@ class AuthController {
             $passwordConfirm = (string)($_POST['password_confirm'] ?? '');
 
             if ($username === '' || mb_strlen($username) > 50
-                || !filter_var($email, FILTER_VALIDATE_EMAIL) || mb_strlen($email) > 75
+                || !$this->isValidEmail($email)
                 || strlen($password) < 8 || strlen($password) > 255
                 || $password !== $passwordConfirm) {
                 $error = 'Check the username, email address, and matching password of at least 8 characters.';

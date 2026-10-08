@@ -58,7 +58,7 @@ require __DIR__ . '/partials/head.php';
                             </p>
                         </div>
                         <div class="dashboard-card-footer">
-                            <a class="manage-link" href="index.php?action=character_view&id=<?= $char['character_id']; ?>">
+                            <a class="dashboard-card-action dashboard-card-action-primary" href="index.php?action=character_view&id=<?= $char['character_id']; ?>">
                                 View Character
                             </a>
                             <?php if (!empty($char['campaign_id'])): ?>
@@ -97,10 +97,10 @@ require __DIR__ . '/partials/head.php';
 
         <form id="campaign-form" class="dashboard-form auth-form <?= $highlightNewCampaign ? 'campaign-highlight' : ''; ?>" action="index.php?action=campaign_create" method="POST" style="display: <?= $highlightNewCampaign ? 'block' : 'none'; ?>; margin-bottom: 45px;">
             <?= csrf_field(); ?>
-            <label>Campaign Name</label>
+            <label class="field-label"><span>Campaign Name</span><span class="field-required">Required</span></label>
             <input type="text" name="campaign_name" placeholder="E.g. Kingdoms at War" required>
 
-            <label>Description</label>
+            <label class="field-label"><span>Description</span><span class="field-optional">Optional</span></label>
             <input type="text" name="description" placeholder="Brief description of your campaign">
 
             <button type="submit" class="btn btn-primary auth-submit">Create Campaign</button>
@@ -126,8 +126,8 @@ require __DIR__ . '/partials/head.php';
                             <?php endif; ?>
                         </div>
                         <div class="dashboard-card-footer">
-                            <a class="manage-link" href="index.php?action=campaign_view&id=<?= $camp['campaign_id']; ?>">
-                                Manage Campaign →
+                            <a class="dashboard-card-action dashboard-card-action-primary" href="index.php?action=campaign_view&id=<?= $camp['campaign_id']; ?>">
+                                Manage Campaign
                             </a>
                         </div>
                     </article>
@@ -168,5 +168,23 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 </script>
 <?php endif; ?>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const campaignForm = document.getElementById('campaign-form');
+
+    if (!campaignForm) {
+        return;
+    }
+
+    campaignForm.addEventListener('submit', function () {
+        const submitButtons = campaignForm.querySelectorAll('button[type="submit"], input[type="submit"]');
+        submitButtons.forEach(function (button) {
+            button.disabled = true;
+            button.setAttribute('aria-disabled', 'true');
+        });
+    }, { once: true });
+});
+</script>
 
 <?php require __DIR__ . '/partials/footer.php'; ?>

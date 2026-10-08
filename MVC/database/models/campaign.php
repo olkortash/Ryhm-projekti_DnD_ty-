@@ -769,7 +769,7 @@ class Campaign {
                 WHERE character_id = :character_id
                     AND campaign_id = :campaign_id
                     AND level >= 1
-                    AND level < 20
+                    AND level < 10
                     AND EXISTS (
                         SELECT 1 FROM campaigns
                         WHERE campaigns.campaign_id = :authorized_campaign_id

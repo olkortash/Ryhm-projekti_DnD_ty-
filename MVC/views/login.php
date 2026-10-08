@@ -21,7 +21,7 @@ require __DIR__ . '/partials/head.php';
 
         <form action="index.php?action=login" method="post" class="auth-form">
             <?= csrf_field(); ?>
-            <label for="username">Username</label>
+            <label for="username" class="field-label"><span>Username</span><span class="field-required">Required</span></label>
 
             <input
                 type="text"
@@ -33,7 +33,7 @@ require __DIR__ . '/partials/head.php';
                 required
             >
 
-            <label for="password">Password</label>
+            <label for="password" class="field-label"><span>Password</span><span class="field-required">Required</span></label>
 
             <input
                 type="password"

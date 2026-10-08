@@ -18,16 +18,16 @@ require __DIR__ . '/partials/head.php';
         <div class="creator-layout">
             <div class="creator-form">
                 <div class="form-section">
-                    <h3>Character Name</h3>
+                    <h3 class="field-title"><span>Character Name</span><span class="field-required">Required</span></h3>
                     <div class="form-group">
                         <input type="text" name="character_name" placeholder="T.Halme" required>
                     </div>
                 </div>
 
                 <div class="form-section">
-                    <h3>Profile Image</h3>
+                    <h3 class="field-title"><span>Profile Image</span><span class="field-optional">Optional</span></h3>
                     <div class="form-group">
-                        <label for="character-image">Upload a portrait (optional)</label>
+                        <label for="character-image" class="field-label"><span>Upload a portrait</span><span class="field-optional">Optional</span></label>
                         <input id="character-image" type="file" name="character_image" accept="image/jpeg,image/png,image/webp,image/gif">
                         <small class="form-help">JPG, PNG, WEBP, or GIF. Maximum size 5 MB.</small>
                     </div>
@@ -37,7 +37,7 @@ require __DIR__ . '/partials/head.php';
                 </div>
 
                 <div class="form-section">
-                    <h3>Race</h3>
+                    <h3 class="field-title"><span>Race</span><span class="field-required">Required</span></h3>
                     <div class="options-grid" id="raceGrid">
                         <?php foreach ($races as $race): ?>
                             <label class="option-card">
@@ -55,7 +55,7 @@ require __DIR__ . '/partials/head.php';
                 </div>
 
                 <div class="form-section">
-                    <h3>Class</h3>
+                    <h3 class="field-title"><span>Class</span><span class="field-required">Required</span></h3>
                     <div class="options-grid" id="classGrid">
                         <?php foreach ($classes as $cls): ?>
                             <label class="option-card">
@@ -73,7 +73,7 @@ require __DIR__ . '/partials/head.php';
                 </div>
 
                 <div class="form-section">
-                    <h3>Job</h3>
+                    <h3 class="field-title"><span>Job</span><span class="field-required">Required</span></h3>
                     <div class="form-group">
                         <select name="character_job_id" required id="jobSelect" class="dark-select">
                             <option value="">Choose a profession...</option>
@@ -87,73 +87,73 @@ require __DIR__ . '/partials/head.php';
                 </div>
 
                 <div class="form-section">
-                    <h3>Stats</h3>
+                    <h3 class="field-title"><span>Stats</span></h3>
                     <?php // JavaScript laskee jäljellä olevat pisteet stat-input-kentistä ja päivittää pointsLeft-arvon. ?>
                     <div class="stats-points">
                         <span>Points remaining</span>
                         <strong id="pointsLeft">40</strong>
                     </div>
                     <div class="form-group">
-                        <label>Hit Points (HP)</label>
+                        <label class="field-label"><span>Hit Points (HP)</span></label>
                         <div class="stat-stepper">
                             <button type="button" class="stat-button" data-target="hp_max" data-action="decrease" aria-label="Decrease hit points">−</button>
-                            <input type="number" name="hp_max" value="15" min="15" max="25" class="stat-input hp-input" data-stat="hp_max" required>
+                            <input type="number" name="hp_max" value="15" min="15" max="25" class="stat-input hp-input" data-stat="hp_max">
                             <button type="button" class="stat-button" data-target="hp_max" data-action="increase" aria-label="Increase hit points">+</button>
                         </div>
                         <div class="form-group">
-                            <label>Agility (AGI)</label>
+                            <label class="field-label"><span>Agility (AGI)</span></label>
                             <div class="stat-stepper">
                                 <button type="button" class="stat-button" data-stat="agi" data-action="decrease" aria-label="Decrease agility">−</button>
-                                <input type="number" name="agi" value="1" min="1" max="25" class="stat-input" data-stat="agi" required>
+                                <input type="number" name="agi" value="1" min="1" max="25" class="stat-input" data-stat="agi">
                                 <button type="button" class="stat-button" data-stat="agi" data-action="increase" aria-label="Increase agility">+</button>
                             </div>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label>Strength (STR)</label>
+                        <label class="field-label"><span>Strength (STR)</span></label>
                         <div class="stat-stepper">
                             <button type="button" class="stat-button" data-stat="str" data-action="decrease" aria-label="Decrease strength">−</button>
-                            <input type="number" name="str" value="1" min="1" max="25" class="stat-input" data-stat="str" required>
+                            <input type="number" name="str" value="1" min="1" max="25" class="stat-input" data-stat="str">
                             <button type="button" class="stat-button" data-stat="str" data-action="increase" aria-label="Increase strength">+</button>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label>Dexterity (DEX)</label>
+                        <label class="field-label"><span>Dexterity (DEX)</span></label>
                         <div class="stat-stepper">
                             <button type="button" class="stat-button" data-stat="dex" data-action="decrease" aria-label="Decrease dexterity">−</button>
-                            <input type="number" name="dex" value="1" min="1" max="25" class="stat-input" data-stat="dex" required>
+                            <input type="number" name="dex" value="1" min="1" max="25" class="stat-input" data-stat="dex">
                             <button type="button" class="stat-button" data-stat="dex" data-action="increase" aria-label="Increase dexterity">+</button>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label>Wisdom (WIS)</label>
+                        <label class="field-label"><span>Wisdom (WIS)</span></label>
                         <div class="stat-stepper">
                             <button type="button" class="stat-button" data-stat="wis" data-action="decrease" aria-label="Decrease wisdom">−</button>
-                            <input type="number" name="wis" value="1" min="1" max="25" class="stat-input" data-stat="wis" required>
+                            <input type="number" name="wis" value="1" min="1" max="25" class="stat-input" data-stat="wis">
                             <button type="button" class="stat-button" data-stat="wis" data-action="increase" aria-label="Increase wisdom">+</button>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label>Charm (CHA)</label>
+                        <label class="field-label"><span>Charm (CHA)</span></label>
                         <div class="stat-stepper">
                             <button type="button" class="stat-button" data-stat="cha" data-action="decrease" aria-label="Decrease charm">−</button>
-                            <input type="number" name="cha" value="1" min="1" max="25" class="stat-input" data-stat="cha" required>
+                            <input type="number" name="cha" value="1" min="1" max="25" class="stat-input" data-stat="cha">
                             <button type="button" class="stat-button" data-stat="cha" data-action="increase" aria-label="Increase charm">+</button>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label>Constitution (CON)</label>
+                        <label class="field-label"><span>Constitution (CON)</span></label>
                         <div class="stat-stepper">
                             <button type="button" class="stat-button" data-stat="con" data-action="decrease" aria-label="Decrease constitution">−</button>
-                            <input type="number" name="con" value="1" min="1" max="25" class="stat-input" data-stat="con" required>
+                            <input type="number" name="con" value="1" min="1" max="25" class="stat-input" data-stat="con">
                             <button type="button" class="stat-button" data-stat="con" data-action="increase" aria-label="Increase constitution">+</button>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label>Intelligence (INT)</label>
+                        <label class="field-label"><span>Intelligence (INT)</span></label>
                         <div class="stat-stepper">
                             <button type="button" class="stat-button" data-stat="int" data-action="decrease" aria-label="Decrease intelligence">−</button>
-                            <input type="number" name="int" value="1" min="1" max="25" class="stat-input" data-stat="int" required>
+                            <input type="number" name="int" value="1" min="1" max="25" class="stat-input" data-stat="int">
                             <button type="button" class="stat-button" data-stat="int" data-action="increase" aria-label="Increase intelligence">+</button>
                         </div>
                     </div>
@@ -227,6 +227,24 @@ require __DIR__ . '/partials/head.php';
         </div>
     </form>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const characterForm = document.querySelector('form[action="index.php?action=character_create"]');
+
+    if (!characterForm) {
+        return;
+    }
+
+    characterForm.addEventListener('submit', function () {
+        const submitButtons = characterForm.querySelectorAll('button[type="submit"], input[type="submit"]');
+        submitButtons.forEach(function (button) {
+            button.disabled = true;
+            button.setAttribute('aria-disabled', 'true');
+        });
+    }, { once: true });
+});
+</script>
 
 <script src="js/character-creator.js"></script>
 
