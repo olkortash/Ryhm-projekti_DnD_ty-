@@ -36,6 +36,14 @@ class Character {
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
+    public function nameExists(string $name): bool {
+        $stmt = $this->pdo->prepare(
+            'SELECT 1 FROM characters WHERE LOWER(TRIM(character_name)) = LOWER(:name) LIMIT 1'
+        );
+        $stmt->execute([':name' => trim($name)]);
+        return (bool) $stmt->fetchColumn();
+    }
+
     public function create($data, $image = null) {
         $this->pdo->beginTransaction();
 

@@ -33,9 +33,6 @@ require __DIR__ . '/partials/head.php';
                     Make a character
                     <span aria-hidden="true">→</span>
                 </a>
-                <a class="btn btn-secondary" href="index.php?action=landing#features">
-                    GM resources
-                </a>
             </div>
         </div>
     </section>

@@ -708,6 +708,14 @@ class Campaign {
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
+    public function nameExists(string $name): bool {
+        $stmt = $this->pdo->prepare(
+            'SELECT 1 FROM campaigns WHERE LOWER(TRIM(campaign_name)) = LOWER(:name) LIMIT 1'
+        );
+        $stmt->execute([':name' => trim($name)]);
+        return (bool) $stmt->fetchColumn();
+    }
+
     public function create($gm_id, $name, $description) {
         $inviteCode = bin2hex(random_bytes(4));
         $sql = "INSERT INTO campaigns (gm_id, campaign_name, description, invite_code) VALUES (:gm_id, :campaign_name, :description, :invite_code)";

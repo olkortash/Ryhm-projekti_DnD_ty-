@@ -42,19 +42,22 @@ class CharacterController {
             }
 
             $name = trim((string)($_POST['character_name'] ?? ''));
+            $duplicateName = $name !== '' && $this->characterModel->nameExists($name);
             $integerFields = ['character_class_id', 'character_race_id', 'character_job_id', 'hp_max', 'agi', 'str', 'dex', 'wis', 'cha', 'con', 'int'];
             $values = [];
             foreach ($integerFields as $field) {
                 $values[$field] = filter_var($_POST[$field] ?? null, FILTER_VALIDATE_INT);
             }
             $abilities = array_intersect_key($values, array_flip(['agi', 'str', 'dex', 'wis', 'cha', 'con', 'int']));
-            $invalid = $name === '' || mb_strlen($name) > 100
+            $invalid = $name === '' || mb_strlen($name) > 100 || $duplicateName
                 || in_array(false, $values, true)
                 || $values['character_class_id'] < 1 || $values['character_race_id'] < 1 || $values['character_job_id'] < 1
                 || $values['hp_max'] < 15 || $values['hp_max'] > 25
                 || array_filter($abilities, static fn($score) => $score < 1 || $score > 25) !== []
                 || array_sum($abilities) + $values['hp_max'] > 47;
-            if ($invalid) {
+            if ($duplicateName) {
+                $error = 'A character with this name already exists.';
+            } elseif ($invalid) {
                 $error = 'Check the character name and use the available 47 points within the allowed stat ranges.';
             }
 

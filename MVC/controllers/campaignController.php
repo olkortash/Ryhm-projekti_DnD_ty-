@@ -43,6 +43,13 @@ class CampaignController {
                 $this->flash('error', 'Campaign name is required and the submitted text is too long.');
                 header('Location: index.php?action=dashboard'); exit;
             }
+
+            if ($this->campaignModel->nameExists($name)) {
+                $this->flash('error', 'A campaign with this name already exists.');
+                header('Location: index.php?action=dashboard');
+                exit;
+            }
+
             $gmId = $_SESSION['user_id'];
 
             $campaignId = $this->campaignModel->create($gmId, $name, $description);
